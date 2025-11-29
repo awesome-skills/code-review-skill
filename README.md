@@ -6,7 +6,7 @@
 
 ## English
 
-> A comprehensive code review skill for Claude Code, covering React 19, Vue 3, Rust, TypeScript, and more.
+> A modular code review skill for Claude Code, covering React 19, Vue 3, Rust, TypeScript, Python, and more.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -14,10 +14,11 @@
 
 This is a Claude Code skill designed to help developers conduct effective code reviews. It provides:
 
-- **Language-specific patterns** for React 19, Vue 3, Rust, TypeScript/JavaScript, Python, SQL
+- **Language-specific patterns** for React 19, Vue 3, Rust, TypeScript/JavaScript, Python
 - **Modern framework support** including React Server Components, TanStack Query v5, Suspense & Streaming
 - **Comprehensive checklists** for security, performance, and code quality
 - **Best practices** for giving constructive feedback
+- **Modular structure** for on-demand loading (reduces context usage)
 
 ### Features
 
@@ -33,29 +34,36 @@ This is a Claude Code skill designed to help developers conduct effective code r
 
 #### Content Statistics
 
-- **SKILL.md**: ~1,800 lines of review guidelines and code examples
-- **common-bugs-checklist.md**: ~1,200 lines of bug patterns and checklists
-- Additional reference files for security review, PR templates, and more
+| File | Lines | Description |
+|------|-------|-------------|
+| **SKILL.md** | ~180 | Core principles + index (loads on skill activation) |
+| **references/react.md** | ~650 | React/Next.js patterns (on-demand) |
+| **references/vue.md** | ~200 | Vue 3 patterns (on-demand) |
+| **references/rust.md** | ~200 | Rust patterns (on-demand) |
+| **references/typescript.md** | ~100 | TypeScript/JS patterns (on-demand) |
+| **references/python.md** | ~60 | Python patterns (on-demand) |
+
+**Total: ~2,000+ lines** of review guidelines and code examples, loaded on-demand per language.
 
 ### Installation
 
 #### For Claude Code Users
 
-Copy the skill to your Claude Code plugins directory:
+Copy the skill to your Claude Code skills directory:
 
 ```bash
 # Clone the repository
 git clone https://github.com/tt-a1i/ai-code-review-guide.git
 
 # Copy to Claude Code skills directory
-cp -r ai-code-review-guide ~/.claude/commands/code-review-excellence
+cp -r ai-code-review-guide ~/.claude/skills/code-review-excellence
 ```
 
 Or add to your existing Claude Code plugin:
 
 ```bash
-cp -r ai-code-review-guide/SKILL.md ~/.claude/plugins/your-plugin/skills/code-review/
-cp -r ai-code-review-guide/references ~/.claude/plugins/your-plugin/skills/code-review/
+# Copy the entire directory structure
+cp -r ai-code-review-guide ~/.claude/plugins/your-plugin/skills/code-review/
 ```
 
 ### Usage
@@ -72,11 +80,16 @@ Or reference it in your custom commands.
 
 ```
 ai-code-review-guide/
-├── SKILL.md                    # Main skill definition
-├── README.md                   # This file
-├── LICENSE                     # MIT License
-├── CONTRIBUTING.md             # Contribution guidelines
+├── SKILL.md                        # Core skill (loads immediately)
+├── README.md                       # This file
+├── LICENSE                         # MIT License
+├── CONTRIBUTING.md                 # Contribution guidelines
 ├── references/
+│   ├── react.md                    # React/Next.js patterns (on-demand)
+│   ├── vue.md                      # Vue 3 patterns (on-demand)
+│   ├── rust.md                     # Rust patterns (on-demand)
+│   ├── typescript.md               # TypeScript/JS patterns (on-demand)
+│   ├── python.md                   # Python patterns (on-demand)
 │   ├── common-bugs-checklist.md    # Language-specific bug patterns
 │   ├── security-review-guide.md    # Security review checklist
 │   └── code-review-best-practices.md
@@ -86,6 +99,16 @@ ai-code-review-guide/
 └── scripts/
     └── pr-analyzer.py              # PR complexity analyzer
 ```
+
+### On-Demand Loading
+
+This skill uses **Progressive Disclosure** to minimize context usage:
+
+1. **SKILL.md** (~180 lines) loads when the skill is activated
+2. **Language-specific files** load only when reviewing that language
+3. **Reference files** load only when explicitly needed
+
+This means reviewing a React PR only loads SKILL.md + react.md, not Vue/Rust/Python content.
 
 ### Key Topics Covered
 
@@ -143,7 +166,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 中文
 
-> 一个全面的 Claude Code 代码审查技能，覆盖 React 19、Vue 3、Rust、TypeScript 等。
+> 一个模块化的 Claude Code 代码审查技能，覆盖 React 19、Vue 3、Rust、TypeScript、Python 等。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -151,10 +174,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 这是一个为 Claude Code 设计的代码审查技能，旨在帮助开发者进行高效的代码审查。它提供：
 
-- **语言特定模式**：覆盖 React 19、Vue 3、Rust、TypeScript/JavaScript、Python、SQL
+- **语言特定模式**：覆盖 React 19、Vue 3、Rust、TypeScript/JavaScript、Python
 - **现代框架支持**：包括 React Server Components、TanStack Query v5、Suspense & Streaming
 - **全面的检查清单**：安全、性能和代码质量检查
 - **最佳实践**：如何提供建设性的反馈
+- **模块化结构**：按需加载，减少上下文占用
 
 ### 特性
 
@@ -170,29 +194,36 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 #### 内容统计
 
-- **SKILL.md**：约 1,800 行审查指南和代码示例
-- **common-bugs-checklist.md**：约 1,200 行错误模式和检查清单
-- 额外的安全审查、PR 模板等参考文件
+| 文件 | 行数 | 描述 |
+|------|------|------|
+| **SKILL.md** | ~180 | 核心原则 + 索引（技能激活时加载）|
+| **references/react.md** | ~650 | React/Next.js 模式（按需加载）|
+| **references/vue.md** | ~200 | Vue 3 模式（按需加载）|
+| **references/rust.md** | ~200 | Rust 模式（按需加载）|
+| **references/typescript.md** | ~100 | TypeScript/JS 模式（按需加载）|
+| **references/python.md** | ~60 | Python 模式（按需加载）|
+
+**总计：2,000+ 行**审查指南和代码示例，按语言按需加载。
 
 ### 安装
 
 #### Claude Code 用户
 
-将技能复制到 Claude Code 插件目录：
+将技能复制到 Claude Code skills 目录：
 
 ```bash
 # 克隆仓库
 git clone https://github.com/tt-a1i/ai-code-review-guide.git
 
 # 复制到 Claude Code skills 目录
-cp -r ai-code-review-guide ~/.claude/commands/code-review-excellence
+cp -r ai-code-review-guide ~/.claude/skills/code-review-excellence
 ```
 
 或添加到现有的 Claude Code 插件：
 
 ```bash
-cp -r ai-code-review-guide/SKILL.md ~/.claude/plugins/your-plugin/skills/code-review/
-cp -r ai-code-review-guide/references ~/.claude/plugins/your-plugin/skills/code-review/
+# 复制整个目录结构
+cp -r ai-code-review-guide ~/.claude/plugins/your-plugin/skills/code-review/
 ```
 
 ### 使用方法
@@ -209,11 +240,16 @@ cp -r ai-code-review-guide/references ~/.claude/plugins/your-plugin/skills/code-
 
 ```
 ai-code-review-guide/
-├── SKILL.md                    # 主技能定义
-├── README.md                   # 本文件
-├── LICENSE                     # MIT 许可证
-├── CONTRIBUTING.md             # 贡献指南
+├── SKILL.md                        # 核心技能（立即加载）
+├── README.md                       # 本文件
+├── LICENSE                         # MIT 许可证
+├── CONTRIBUTING.md                 # 贡献指南
 ├── references/
+│   ├── react.md                    # React/Next.js 模式（按需加载）
+│   ├── vue.md                      # Vue 3 模式（按需加载）
+│   ├── rust.md                     # Rust 模式（按需加载）
+│   ├── typescript.md               # TypeScript/JS 模式（按需加载）
+│   ├── python.md                   # Python 模式（按需加载）
 │   ├── common-bugs-checklist.md    # 语言特定的错误模式
 │   ├── security-review-guide.md    # 安全审查清单
 │   └── code-review-best-practices.md
@@ -223,6 +259,16 @@ ai-code-review-guide/
 └── scripts/
     └── pr-analyzer.py              # PR 复杂度分析器
 ```
+
+### 按需加载机制
+
+此技能使用 **Progressive Disclosure（渐进式披露）** 来最小化上下文占用：
+
+1. **SKILL.md**（~180 行）在技能激活时加载
+2. **语言特定文件** 仅在审查该语言时加载
+3. **参考文件** 仅在明确需要时加载
+
+这意味着审查 React PR 时只加载 SKILL.md + react.md，不会加载 Vue/Rust/Python 内容。
 
 ### 核心内容
 
@@ -268,13 +314,6 @@ ai-code-review-guide/
 ### 许可证
 
 本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件。
-
-### 致谢
-
-- 灵感来自软件工程社区的代码审查最佳实践
-- React 19 特性来自 React 官方文档
-- TanStack Query 文档
-- TkDodo 的 React Query 最佳实践博客
 
 ### 参考资料
 
