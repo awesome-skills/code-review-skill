@@ -1,4 +1,4 @@
-# AI Code Review Guide
+# Code Review Excellence
 
 [English](#english) | [中文](#中文)
 
@@ -6,7 +6,7 @@
 
 ## English
 
-> A modular code review skill for Claude Code, covering React 19, Vue 3, Rust, TypeScript, Python, and more.
+> A modular code review skill for Claude Code, covering React 19, Vue 3, Rust, TypeScript, Python, CSS/Less/Sass, architecture design, and performance optimization.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -30,20 +30,26 @@ This is a Claude Code skill designed to help developers conduct effective code r
 | **Vue 3** | Composition API, reactivity system, defineProps/defineEmits, watch cleanup |
 | **Rust** | Ownership & borrowing, unsafe code review, async/await, error handling (thiserror vs anyhow) |
 | **TypeScript** | Type safety, async/await patterns, common pitfalls |
+| **CSS/Less/Sass** | CSS variables, !important usage, performance optimization, responsive design, browser compatibility |
 | **TanStack Query** | v5 best practices, queryOptions, useSuspenseQuery, optimistic updates |
+| **Architecture** | SOLID principles, anti-patterns, coupling/cohesion, layered architecture |
+| **Performance** | Core Web Vitals, N+1 queries, memory leaks, algorithm complexity |
 
 #### Content Statistics
 
 | File | Lines | Description |
 |------|-------|-------------|
-| **SKILL.md** | ~180 | Core principles + index (loads on skill activation) |
+| **SKILL.md** | ~190 | Core principles + index (loads on skill activation) |
 | **reference/react.md** | ~870 | React 19/Next.js/TanStack Query v5 patterns (on-demand) |
 | **reference/vue.md** | ~920 | Vue 3.5 patterns + Composition API (on-demand) |
 | **reference/rust.md** | ~840 | Rust async/ownership/cancellation safety (on-demand) |
 | **reference/typescript.md** | ~540 | TypeScript generics/strict mode/ESLint (on-demand) |
 | **reference/python.md** | ~1070 | Python async/typing/pytest (on-demand) |
+| **reference/css-less-sass.md** | ~660 | CSS/Less/Sass variables/performance/responsive (on-demand) |
+| **reference/architecture-review-guide.md** | ~470 | SOLID/anti-patterns/coupling analysis (on-demand) |
+| **reference/performance-review-guide.md** | ~750 | Core Web Vitals/N+1/memory/complexity (on-demand) |
 
-**Total: ~6,000+ lines** of review guidelines and code examples, loaded on-demand per language.
+**Total: ~8,000 lines** of review guidelines and code examples, loaded on-demand per language.
 
 ### Installation
 
@@ -53,17 +59,17 @@ Copy the skill to your Claude Code skills directory:
 
 ```bash
 # Clone the repository
-git clone https://github.com/tt-a1i/ai-code-review-guide.git
+git clone https://github.com/tt-a1i/code-review-skill.git
 
 # Copy to Claude Code skills directory
-cp -r ai-code-review-guide ~/.claude/skills/code-review-excellence
+cp -r code-review-skill ~/.claude/skills/code-review-excellence
 ```
 
 Or add to your existing Claude Code plugin:
 
 ```bash
 # Copy the entire directory structure
-cp -r ai-code-review-guide ~/.claude/plugins/your-plugin/skills/code-review/
+cp -r code-review-skill ~/.claude/plugins/your-plugin/skills/code-review/
 ```
 
 ### Usage
@@ -79,7 +85,7 @@ Or reference it in your custom commands.
 ### File Structure
 
 ```
-ai-code-review-guide/
+code-review-skill/
 ├── SKILL.md                        # Core skill (loads immediately)
 ├── README.md                       # This file
 ├── LICENSE                         # MIT License
@@ -90,6 +96,9 @@ ai-code-review-guide/
 │   ├── rust.md                     # Rust patterns (on-demand)
 │   ├── typescript.md               # TypeScript/JS patterns (on-demand)
 │   ├── python.md                   # Python patterns (on-demand)
+│   ├── css-less-sass.md            # CSS/Less/Sass patterns (on-demand)
+│   ├── architecture-review-guide.md # Architecture design review (on-demand)
+│   ├── performance-review-guide.md # Performance review (on-demand)
 │   ├── common-bugs-checklist.md    # Language-specific bug patterns
 │   ├── security-review-guide.md    # Security review checklist
 │   └── code-review-best-practices.md
@@ -166,7 +175,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 中文
 
-> 一个模块化的 Claude Code 代码审查技能，覆盖 React 19、Vue 3、Rust、TypeScript、Python 等。
+> 一个模块化的 Claude Code 代码审查技能，覆盖 React 19、Vue 3、Rust、TypeScript、Python、CSS/Less/Sass、架构设计和性能优化。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -190,20 +199,26 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 | **Vue 3** | Composition API、响应性系统、defineProps/defineEmits、watch 清理 |
 | **Rust** | 所有权与借用、unsafe 代码审查、async/await、错误处理（thiserror vs anyhow） |
 | **TypeScript** | 类型安全、async/await 模式、常见陷阱 |
+| **CSS/Less/Sass** | CSS 变量规范、!important 使用、性能优化、响应式设计、浏览器兼容性 |
 | **TanStack Query** | v5 最佳实践、queryOptions、useSuspenseQuery、乐观更新 |
+| **架构设计** | SOLID 原则、架构反模式、耦合度/内聚性、分层架构 |
+| **性能优化** | Core Web Vitals、N+1 查询、内存泄漏、算法复杂度 |
 
 #### 内容统计
 
 | 文件 | 行数 | 描述 |
 |------|------|------|
-| **SKILL.md** | ~180 | 核心原则 + 索引（技能激活时加载）|
+| **SKILL.md** | ~190 | 核心原则 + 索引（技能激活时加载）|
 | **reference/react.md** | ~870 | React 19/Next.js/TanStack Query v5（按需加载）|
 | **reference/vue.md** | ~920 | Vue 3.5 + Composition API（按需加载）|
 | **reference/rust.md** | ~840 | Rust async/所有权/取消安全性（按需加载）|
 | **reference/typescript.md** | ~540 | TypeScript 泛型/strict 模式/ESLint（按需加载）|
 | **reference/python.md** | ~1070 | Python async/类型注解/pytest（按需加载）|
+| **reference/css-less-sass.md** | ~660 | CSS/Less/Sass 变量/性能/响应式（按需加载）|
+| **reference/architecture-review-guide.md** | ~470 | SOLID/反模式/耦合度分析（按需加载）|
+| **reference/performance-review-guide.md** | ~750 | Core Web Vitals/N+1/内存/复杂度（按需加载）|
 
-**总计：6,000+ 行**审查指南和代码示例，按语言按需加载。
+**总计：8,000 行**审查指南和代码示例，按语言按需加载。
 
 ### 安装
 
@@ -213,17 +228,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ```bash
 # 克隆仓库
-git clone https://github.com/tt-a1i/ai-code-review-guide.git
+git clone https://github.com/tt-a1i/code-review-skill.git
 
 # 复制到 Claude Code skills 目录
-cp -r ai-code-review-guide ~/.claude/skills/code-review-excellence
+cp -r code-review-skill ~/.claude/skills/code-review-excellence
 ```
 
 或添加到现有的 Claude Code 插件：
 
 ```bash
 # 复制整个目录结构
-cp -r ai-code-review-guide ~/.claude/plugins/your-plugin/skills/code-review/
+cp -r code-review-skill ~/.claude/plugins/your-plugin/skills/code-review/
 ```
 
 ### 使用方法
@@ -239,7 +254,7 @@ cp -r ai-code-review-guide ~/.claude/plugins/your-plugin/skills/code-review/
 ### 文件结构
 
 ```
-ai-code-review-guide/
+code-review-skill/
 ├── SKILL.md                        # 核心技能（立即加载）
 ├── README.md                       # 本文件
 ├── LICENSE                         # MIT 许可证
@@ -250,6 +265,9 @@ ai-code-review-guide/
 │   ├── rust.md                     # Rust 模式（按需加载）
 │   ├── typescript.md               # TypeScript/JS 模式（按需加载）
 │   ├── python.md                   # Python 模式（按需加载）
+│   ├── css-less-sass.md            # CSS/Less/Sass 模式（按需加载）
+│   ├── architecture-review-guide.md # 架构设计审查（按需加载）
+│   ├── performance-review-guide.md # 性能审查（按需加载）
 │   ├── common-bugs-checklist.md    # 语言特定的错误模式
 │   ├── security-review-guide.md    # 安全审查清单
 │   └── code-review-best-practices.md
