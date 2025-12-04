@@ -1,7 +1,7 @@
 ---
 name: code-review-excellence
 description: |
-  Provides comprehensive code review guidance for React 19, Vue 3, Rust, TypeScript, and Python.
+  Provides comprehensive code review guidance for React 19, Vue 3, Rust, TypeScript, Java, and Python.
   Helps catch bugs, improve code quality, and give constructive feedback.
   Use when: reviewing pull requests, conducting PR reviews, code review, reviewing code changes,
   establishing review standards, mentoring developers, architecture reviews, security audits,
@@ -180,6 +180,7 @@ Use labels to indicate priority:
 | **Rust** | [Rust Guide](reference/rust.md) | 所有权/借用, Unsafe 审查, 异步代码, 错误处理 |
 | **TypeScript** | [TypeScript Guide](reference/typescript.md) | 类型安全, async/await, 不可变性 |
 | **Python** | [Python Guide](reference/python.md) | 可变默认参数, 异常处理, 类属性 |
+| **Java** | [Java Guide](reference/java.md) | Java 17/21 新特性, Spring Boot 3, 虚拟线程, Stream/Optional |
 | **Go** | [Go Guide](reference/go.md) | 错误处理, goroutine/channel, context, 接口设计 |
 | **CSS/Less/Sass** | [CSS Guide](reference/css-less-sass.md) | 变量规范, !important, 性能优化, 响应式, 兼容性 |
 

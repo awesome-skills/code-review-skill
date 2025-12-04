@@ -6,7 +6,7 @@
 
 ## English
 
-> A modular code review skill for Claude Code, covering React 19, Vue 3, Rust, TypeScript, Python, CSS/Less/Sass, architecture design, and performance optimization.
+> A modular code review skill for Claude Code, covering React 19, Vue 3, Rust, TypeScript, Java, Python, CSS/Less/Sass, architecture design, and performance optimization.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -14,7 +14,7 @@
 
 This is a Claude Code skill designed to help developers conduct effective code reviews. It provides:
 
-- **Language-specific patterns** for React 19, Vue 3, Rust, TypeScript/JavaScript, Python
+- **Language-specific patterns** for React 19, Vue 3, Rust, TypeScript/JavaScript, Java, Python
 - **Modern framework support** including React Server Components, TanStack Query v5, Suspense & Streaming
 - **Comprehensive checklists** for security, performance, and code quality
 - **Best practices** for giving constructive feedback
@@ -30,6 +30,7 @@ This is a Claude Code skill designed to help developers conduct effective code r
 | **Vue 3** | Composition API, reactivity system, defineProps/defineEmits, watch cleanup |
 | **Rust** | Ownership & borrowing, unsafe code review, async/await, error handling (thiserror vs anyhow) |
 | **TypeScript** | Type safety, async/await patterns, common pitfalls |
+| **Java** | Java 17/21 features (Records, Switch), Spring Boot 3, Virtual Threads, Stream API best practices |
 | **Go** | Error handling, goroutines/channels, context propagation, interface design, testing patterns |
 | **CSS/Less/Sass** | CSS variables, !important usage, performance optimization, responsive design, browser compatibility |
 | **TanStack Query** | v5 best practices, queryOptions, useSuspenseQuery, optimistic updates |
@@ -45,6 +46,7 @@ This is a Claude Code skill designed to help developers conduct effective code r
 | **reference/vue.md** | ~920 | Vue 3.5 patterns + Composition API (on-demand) |
 | **reference/rust.md** | ~840 | Rust async/ownership/cancellation safety (on-demand) |
 | **reference/typescript.md** | ~540 | TypeScript generics/strict mode/ESLint (on-demand) |
+| **reference/java.md** | ~800 | Java 17/21 & Spring Boot 3 patterns (on-demand) |
 | **reference/python.md** | ~1070 | Python async/typing/pytest (on-demand) |
 | **reference/go.md** | ~990 | Go goroutines/channels/context/interfaces (on-demand) |
 | **reference/css-less-sass.md** | ~660 | CSS/Less/Sass variables/performance/responsive (on-demand) |
@@ -97,6 +99,7 @@ code-review-skill/
 │   ├── vue.md                      # Vue 3 patterns (on-demand)
 │   ├── rust.md                     # Rust patterns (on-demand)
 │   ├── typescript.md               # TypeScript/JS patterns (on-demand)
+│   ├── java.md                     # Java patterns (on-demand)
 │   ├── python.md                   # Python patterns (on-demand)
 │   ├── go.md                       # Go patterns (on-demand)
 │   ├── css-less-sass.md            # CSS/Less/Sass patterns (on-demand)
@@ -123,6 +126,13 @@ This skill uses **Progressive Disclosure** to minimize context usage:
 This means reviewing a React PR only loads SKILL.md + react.md, not Vue/Rust/Python content.
 
 ### Key Topics Covered
+
+#### Java & Spring Boot
+
+- **Java 17/21 Features**: Records, Pattern Matching for Switch, Text Blocks
+- **Virtual Threads**: High-throughput I/O with Project Loom
+- **Spring Boot 3**: Constructor Injection, `@ConfigurationProperties`, ProblemDetail
+- **JPA Performance**: Solving N+1 problems, correct Entity design (equals/hashCode)
 
 #### React 19
 
@@ -178,7 +188,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 中文
 
-> 一个模块化的 Claude Code 代码审查技能，覆盖 React 19、Vue 3、Rust、TypeScript、Python、CSS/Less/Sass、架构设计和性能优化。
+> 一个模块化的 Claude Code 代码审查技能，覆盖 React 19、Vue 3、Rust、TypeScript、Java、Python、CSS/Less/Sass、架构设计和性能优化。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -186,7 +196,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 这是一个为 Claude Code 设计的代码审查技能，旨在帮助开发者进行高效的代码审查。它提供：
 
-- **语言特定模式**：覆盖 React 19、Vue 3、Rust、TypeScript/JavaScript、Python
+- **语言特定模式**：覆盖 React 19、Vue 3、Rust、TypeScript/JavaScript、Java、Python
 - **现代框架支持**：包括 React Server Components、TanStack Query v5、Suspense & Streaming
 - **全面的检查清单**：安全、性能和代码质量检查
 - **最佳实践**：如何提供建设性的反馈
@@ -202,6 +212,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 | **Vue 3** | Composition API、响应性系统、defineProps/defineEmits、watch 清理 |
 | **Rust** | 所有权与借用、unsafe 代码审查、async/await、错误处理（thiserror vs anyhow） |
 | **TypeScript** | 类型安全、async/await 模式、常见陷阱 |
+| **Java** | Java 17/21 特性（Records, Switch）、Spring Boot 3、虚拟线程、Stream API 最佳实践 |
 | **Go** | 错误处理、goroutine/channel、context 传播、接口设计、测试模式 |
 | **CSS/Less/Sass** | CSS 变量规范、!important 使用、性能优化、响应式设计、浏览器兼容性 |
 | **TanStack Query** | v5 最佳实践、queryOptions、useSuspenseQuery、乐观更新 |
@@ -217,6 +228,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 | **reference/vue.md** | ~920 | Vue 3.5 + Composition API（按需加载）|
 | **reference/rust.md** | ~840 | Rust async/所有权/取消安全性（按需加载）|
 | **reference/typescript.md** | ~540 | TypeScript 泛型/strict 模式/ESLint（按需加载）|
+| **reference/java.md** | ~800 | Java 17/21 & Spring Boot 3 模式（按需加载）|
 | **reference/python.md** | ~1070 | Python async/类型注解/pytest（按需加载）|
 | **reference/go.md** | ~990 | Go goroutine/channel/context/接口（按需加载）|
 | **reference/css-less-sass.md** | ~660 | CSS/Less/Sass 变量/性能/响应式（按需加载）|
@@ -269,6 +281,7 @@ code-review-skill/
 │   ├── vue.md                      # Vue 3 模式（按需加载）
 │   ├── rust.md                     # Rust 模式（按需加载）
 │   ├── typescript.md               # TypeScript/JS 模式（按需加载）
+│   ├── java.md                     # Java 模式（按需加载）
 │   ├── python.md                   # Python 模式（按需加载）
 │   ├── go.md                       # Go 模式（按需加载）
 │   ├── css-less-sass.md            # CSS/Less/Sass 模式（按需加载）
@@ -295,6 +308,13 @@ code-review-skill/
 这意味着审查 React PR 时只加载 SKILL.md + react.md，不会加载 Vue/Rust/Python 内容。
 
 ### 核心内容
+
+#### Java & Spring Boot
+
+- **Java 17/21 特性**：Records、Switch 模式匹配、文本块
+- **虚拟线程**：Project Loom 带来的高吞吐量 I/O
+- **Spring Boot 3**：构造器注入、`@ConfigurationProperties`、ProblemDetail
+- **JPA 性能**：解决 N+1 问题、正确的 Entity 设计（equals/hashCode）
 
 #### React 19
 
