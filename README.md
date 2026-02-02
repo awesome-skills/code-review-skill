@@ -34,6 +34,7 @@ This is a Claude Code skill designed to help developers conduct effective code r
 | **Go** | Error handling, goroutines/channels, context propagation, interface design, testing patterns |
 | **C** | Pointer safety, UB pitfalls, resource management, error handling |
 | **C++** | RAII, ownership, move semantics, exception safety, performance |
+| **Qt** | Object model, Signals/Slots, memory management (parent/child), thread safety, GUI performance |
 | **CSS/Less/Sass** | CSS variables, !important usage, performance optimization, responsive design, browser compatibility |
 | **TanStack Query** | v5 best practices, queryOptions, useSuspenseQuery, optimistic updates |
 | **Architecture** | SOLID principles, anti-patterns, coupling/cohesion, layered architecture |
@@ -53,6 +54,7 @@ This is a Claude Code skill designed to help developers conduct effective code r
 | **reference/go.md** | ~990 | Go goroutines/channels/context/interfaces (on-demand) |
 | **reference/c.md** | ~210 | C memory safety/UB/error handling (on-demand) |
 | **reference/cpp.md** | ~300 | C++ RAII/lifetime/move semantics (on-demand) |
+| **reference/qt.md** | ~190 | Qt object model/signals-slots/GUI performance (on-demand) |
 | **reference/css-less-sass.md** | ~660 | CSS/Less/Sass variables/performance/responsive (on-demand) |
 | **reference/architecture-review-guide.md** | ~470 | SOLID/anti-patterns/coupling analysis (on-demand) |
 | **reference/performance-review-guide.md** | ~750 | Core Web Vitals/N+1/memory/complexity (on-demand) |
@@ -108,6 +110,7 @@ code-review-skill/
 │   ├── go.md                       # Go patterns (on-demand)
 │   ├── c.md                        # C patterns (on-demand)
 │   ├── cpp.md                      # C++ patterns (on-demand)
+│   ├── qt.md                       # Qt patterns (on-demand)
 │   ├── css-less-sass.md            # CSS/Less/Sass patterns (on-demand)
 │   ├── architecture-review-guide.md # Architecture design review (on-demand)
 │   ├── performance-review-guide.md # Performance review (on-demand)
@@ -227,6 +230,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 | **Go** | 错误处理、goroutine/channel、context 传播、接口设计、测试模式 |
 | **C** | 指针/缓冲区安全、UB、资源管理、错误处理 |
 | **C++** | RAII、生命周期、Rule of 0/3/5、异常安全 |
+| **Qt** | 对象模型、信号/槽、内存管理（父子关系）、线程安全、GUI 性能 |
 | **CSS/Less/Sass** | CSS 变量规范、!important 使用、性能优化、响应式设计、浏览器兼容性 |
 | **TanStack Query** | v5 最佳实践、queryOptions、useSuspenseQuery、乐观更新 |
 | **架构设计** | SOLID 原则、架构反模式、耦合度/内聚性、分层架构 |
@@ -246,6 +250,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 | **reference/go.md** | ~990 | Go goroutine/channel/context/接口（按需加载）|
 | **reference/c.md** | ~210 | C 内存安全/UB/错误处理（按需加载）|
 | **reference/cpp.md** | ~300 | C++ RAII/生命周期/移动语义（按需加载）|
+| **reference/qt.md** | ~190 | Qt 对象模型/信号槽/GUI 性能（按需加载）|
 | **reference/css-less-sass.md** | ~660 | CSS/Less/Sass 变量/性能/响应式（按需加载）|
 | **reference/architecture-review-guide.md** | ~470 | SOLID/反模式/耦合度分析（按需加载）|
 | **reference/performance-review-guide.md** | ~750 | Core Web Vitals/N+1/内存/复杂度（按需加载）|
@@ -301,6 +306,7 @@ code-review-skill/
 │   ├── go.md                       # Go 模式（按需加载）
 │   ├── c.md                        # C 模式（按需加载）
 │   ├── cpp.md                      # C++ 模式（按需加载）
+│   ├── qt.md                       # Qt 模式（按需加载）
 │   ├── css-less-sass.md            # CSS/Less/Sass 模式（按需加载）
 │   ├── architecture-review-guide.md # 架构设计审查（按需加载）
 │   ├── performance-review-guide.md # 性能审查（按需加载）
