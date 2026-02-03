@@ -1,80 +1,80 @@
-# Qt 代码审查指南
+# Qt Code Review Guide
 
-> 专注于对象模型、信号/槽、事件循环和 GUI 性能的 Qt 代码审查指南。示例基于 Qt 5.15 / Qt 6。
+> Code review guidelines focusing on object model, signals/slots, event loop, and GUI performance. Examples based on Qt 5.15 / Qt 6.
 
-## 目录
+## Table of Contents
 
-- [对象模型与内存管理](#对象模型与内存管理)
-- [信号与槽](#信号与槽)
-- [容器与字符串](#容器与字符串)
-- [线程与并发](#线程与并发)
-- [GUI 与控件](#gui-与控件)
-- [元对象系统](#元对象系统)
-- [审查清单](#审查清单)
+- [Object Model & Memory Management](#object-model--memory-management)
+- [Signals & Slots](#signals--slots)
+- [Containers & Strings](#containers--strings)
+- [Threads & Concurrency](#threads--concurrency)
+- [GUI & Widgets](#gui--widgets)
+- [Meta-Object System](#meta-object-system)
+- [Review Checklist](#review-checklist)
 
 ---
 
-## 对象模型与内存管理
+## Object Model & Memory Management
 
-### 使用父子对象所有权机制
-Qt 的 `QObject` 层次结构会自动管理内存。对于 `QObject`，优先设置父对象，而不是手动 `delete` 或使用智能指针。
+### Use Parent-Child Ownership Mechanism
+Qt's `QObject` hierarchy automatically manages memory. For `QObject`, prefer setting a parent object over manual `delete` or smart pointers.
 
 ```cpp
-// ❌ 手动管理容易导致内存泄漏
+// ❌ Manual management prone to memory leaks
 QWidget* w = new QWidget();
 QLabel* l = new QLabel();
 l->setParent(w);
-// ... 如果 w 被删除，l 会自动被删除。但如果 w 泄漏，l 也会泄漏。
+// ... If w is deleted, l is automatically deleted. But if w leaks, l also leaks.
 
-// ✅ 在构造函数中指定父对象
-QWidget* w = new QWidget(this); // 归 'this' 所有
-QLabel* l = new QLabel(w);      // 归 'w' 所有
+// ✅ Specify parent in constructor
+QWidget* w = new QWidget(this); // Owned by 'this'
+QLabel* l = new QLabel(w);      // Owned by 'w'
 ```
 
-### 配合 QObject 使用智能指针
-如果 `QObject` 没有父对象，使用 `QScopedPointer` 或带有自定义删除器的 `std::unique_ptr`（如果需要跨线程，则用于 `deleteLater`）。除非必要，否则避免对 `QObject` 使用 `std::shared_ptr`，因为它会混淆父子系统的所有权。
+### Use Smart Pointers with QObject
+If a `QObject` has no parent, use `QScopedPointer` or `std::unique_ptr` with a custom deleter (use `deleteLater` if cross-thread). Avoid `std::shared_ptr` for `QObject` unless necessary, as it confuses the parent-child ownership system.
 
 ```cpp
-// ✅ 用于没有父对象的局部/成员 QObject 的作用域指针
+// ✅ Scoped pointer for local/member QObject without parent
 QScopedPointer<MyObject> obj(new MyObject());
 
-// ✅ 防止悬空指针的安全指针
+// ✅ Safe pointer to prevent dangling pointers
 QPointer<MyObject> safePtr = obj.data();
 if (safePtr) {
     safePtr->doSomething();
 }
 ```
 
-### 使用 `deleteLater()`
-对于异步删除，尤其是在槽或事件处理程序中，请使用 `deleteLater()` 而不是 `delete`，以确保存储在事件循环中的待处理事件能够处理完毕。
+### Use `deleteLater()`
+For asynchronous deletion, especially in slots or event handlers, use `deleteLater()` instead of `delete` to ensure pending events in the event loop are processed.
 
 ---
 
-## 信号与槽
+## Signals & Slots
 
-### 优先使用函数指针语法
-使用编译时检查的语法（Qt 5+）。
+### Prefer Function Pointer Syntax
+Use compile-time checked syntax (Qt 5+).
 
 ```cpp
-// ❌ 基于字符串（仅运行时检查，速度较慢）
+// ❌ String-based (runtime check only, slower)
 connect(sender, SIGNAL(valueChanged(int)), receiver, SLOT(updateValue(int)));
 
-// ✅ 编译时检查
+// ✅ Compile-time check
 connect(sender, &Sender::valueChanged, receiver, &Receiver::updateValue);
 ```
 
-### 连接类型
-跨线程时要明确或注意连接类型。
-- `Qt::AutoConnection`（默认）：如果同线程则直连，不同线程则队列连接。
-- `Qt::QueuedConnection`: 始终投递事件（跨线程安全）。
-- `Qt::DirectConnection`: 立即调用（如果跨线程访问非线程安全数据则很危险）。
+### Connection Types
+Be explicit or aware of connection types when crossing threads.
+- `Qt::AutoConnection` (Default): Direct if same thread, Queued if different thread.
+- `Qt::QueuedConnection`: Always posts event (thread-safe across threads).
+- `Qt::DirectConnection`: Immediate call (dangerous if accessing non-thread-safe data across threads).
 
-### 避免循环
-检查可能导致无限信号循环的逻辑（例如 `valueChanged` -> `setValue` -> `valueChanged`）。在设置值之前阻塞信号或检查相等性。
+### Avoid Loops
+Check logic that might cause infinite signal loops (e.g., `valueChanged` -> `setValue` -> `valueChanged`). Block signals or check for equality before setting values.
 
 ```cpp
 void MyClass::setValue(int v) {
-    if (m_value == v) return; // ? Good: 打破循环
+    if (m_value == v) return; // ? Good: Break loop
     m_value = v;
     emit valueChanged(v);
 }
@@ -82,51 +82,51 @@ void MyClass::setValue(int v) {
 
 ---
 
-## 容器与字符串
+## Containers & Strings
 
-### QString 效率
-- 使用 `QStringLiteral("...")` 进行编译时字符串创建，避免运行时分配。
-- 使用 `QLatin1String` 与 ASCII 字面量进行比较（在 Qt 5 中）。
-- 优先使用 `arg()` 进行格式化（或 `QStringBuilder` 的 `%` 运算符）。
+### QString Efficiency
+- Use `QStringLiteral("...")` for compile-time string creation to avoid runtime allocation.
+- Use `QLatin1String` for comparison with ASCII literals (in Qt 5).
+- Prefer `arg()` for formatting (or `QStringBuilder`'s `%` operator).
 
 ```cpp
-// ❌ 运行时转换
+// ❌ Runtime conversion
 if (str == "test") ...
 
-// ✅ 优先使用 QLatin1String 与 ASCII 字面量进行比较（在 Qt 5 中）
+// ✅ Prefer QLatin1String for comparison with ASCII literals (in Qt 5)
 if (str == QLatin1String("test")) ... // Qt 5
 if (str == u"test"_s) ...             // Qt 6
 ```
 
-### 容器选择
-- **Qt 6**: `QList` 现在是默认选择（与 `QVector` 统一）。
-- **Qt 5**: 优先使用 `QVector` 而不是 `QList`，以获得连续内存和缓存性能，除非需要稳定的引用。
-- 注意隐式共享（写时复制）。按值传递容器很便宜，*直到*发生修改。只读访问优先使用 `const &`。
+### Container Selection
+- **Qt 6**: `QList` is now the default choice (unified with `QVector`).
+- **Qt 5**: Prefer `QVector` over `QList` for contiguous memory and cache performance, unless stable references are needed.
+- Be aware of Implicit Sharing (Copy-on-Write). Passing containers by value is cheap *until* modified. Use `const &` for read-only access.
 
 ```cpp
-// ❌ 如果函数修改 'list'，则强制深拷贝
+// ❌ Forces deep copy if function modifies 'list'
 void process(QVector<int> list) {
     list[0] = 1; 
 }
 
-// ✅ 只读引用
+// ✅ Read-only reference
 void process(const QVector<int>& list) { ... }
 ```
 
 ---
 
-## 线程与并发
+## Threads & Concurrency
 
-### 子类化 QThread vs Worker 对象
-优先使用 "Worker 对象" 模式，而不是子类化 `QThread` 的实现细节。
+### Subclassing QThread vs Worker Object
+Prefer the "Worker Object" pattern over subclassing `QThread` implementation details.
 
 ```cpp
-// ❌ 业务逻辑在 QThread::run() 内部
+// ❌ Business logic inside QThread::run()
 class MyThread : public QThread {
     void run() override { ... } 
 };
 
-// ✅ Worker 对象移动到线程 
+// ✅ Worker object moved to thread
 QThread* thread = new QThread;
 Worker* worker = new Worker;
 worker->moveToThread(thread);
@@ -134,31 +134,31 @@ connect(thread, &QThread::started, worker, &Worker::process);
 thread->start();
 ```
 
-### GUI 线程安全
-**切勿** 从后台线程访问 UI 控件（`QWidget` 及其子类）。使用信号/槽将更新通信到主线程。
+### GUI Thread Safety
+**NEVER** access UI widgets (`QWidget` and subclasses) from a background thread. Use signals/slots to communicate updates to the main thread.
 
 ---
 
-## GUI 与控件
+## GUI & Widgets
 
-### 逻辑分离
-将业务逻辑保留在 UI 类（`MainWindow`, `Dialog`）之外。UI 类应仅处理显示和用户输入转发。
+### Logic Separation
+Keep business logic out of UI classes (`MainWindow`, `Dialog`). UI classes should only handle display and user input forwarding.
 
-### 布局
-避免固定大小（`setGeometry`, `resize`）。使用布局（`QVBoxLayout`, `QGridLayout`）来优雅地处理不同的 DPI 和窗口大小调整。
+### Layouts
+Avoid fixed sizes (`setGeometry`, `resize`). Use layouts (`QVBoxLayout`, `QGridLayout`) to handle different DPIs and window resizing gracefully.
 
-### 阻塞事件循环
-切勿在主线程中执行长时间运行的操作（导致 GUI 冻结）。
-- **Bad**: `Sleep()`, `while(busy)`, 同步网络调用。
-- **Good**: `QProcess`, `QThread`, `QtConcurrent`, 或异步 API（`QNetworkAccessManager`）。
+### Blocking Event Loop
+Never execute long-running operations on the main thread (freezes GUI).
+- **Bad**: `Sleep()`, `while(busy)`, synchronous network calls.
+- **Good**: `QProcess`, `QThread`, `QtConcurrent`, or asynchronous APIs (`QNetworkAccessManager`).
 
 ---
 
-## 元对象系统
+## Meta-Object System
 
-### 属性与枚举
-对暴露给 QML 或需要内省的值使用 `Q_PROPERTY`。
-使用 `Q_ENUM` 启用枚举的字符串转换。
+### Properties & Enums
+Use `Q_PROPERTY` for values exposed to QML or needing introspection.
+Use `Q_ENUM` to enable string conversion for enums.
 
 ```cpp
 class MyObject : public QObject {
@@ -172,15 +172,15 @@ public:
 ```
 
 ### qobject_cast
-对 QObject 使用 `qobject_cast<T*>` 而不是 `dynamic_cast`。它更快且不需要 RTTI。
+Use `qobject_cast<T*>` for QObjects instead of `dynamic_cast`. It is faster and doesn't require RTTI.
 
 ---
 
-## 审查清单
+## Review Checklist
 
-- [ ] **内存**: 父子关系是否正确？是否避免了悬空指针（使用 `QPointer`）？
-- [ ] **信号**: 连接是否已检查？Lambda 表达式是否使用了安全的捕获（上下文对象）？
-- [ ] **线程**: UI 是否仅从主线程访问？长任务是否已卸载？
-- [ ] **字符串**: 是否适当地使用了 `QStringLiteral` 或 `tr()`？
-- [ ] **风格**: 命名约定（方法使用 camelCase，类使用 PascalCase）。
-- [ ] **资源**: 资源（图像、样式）是否从 `.qrc` 加载？
+- [ ] **Memory**: Is parent-child relationship correct? Are dangling pointers avoided (using `QPointer`)?
+- [ ] **Signals**: Are connections checked? Do lambdas use safe captures (context object)?
+- [ ] **Threads**: Is UI accessed only from main thread? Are long tasks offloaded?
+- [ ] **Strings**: Are `QStringLiteral` or `tr()` used appropriately?
+- [ ] **Style**: Naming conventions (camelCase for methods, PascalCase for classes).
+- [ ] **Resources**: Are resources (images, styles) loaded from `.qrc`?
