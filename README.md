@@ -1,395 +1,578 @@
-# Code Review Excellence
+<div align="center">
 
-[English](#english) | [中文](#中文)
+<h1>&#128269; Code Review Skill</h1>
+
+<p>
+  <strong>A comprehensive, modular code review skill for Claude Code</strong><br/>
+  <strong>面向 Claude Code 的全面模块化代码审查技能</strong>
+</p>
+
+<p>
+  <a href="https://github.com/awesome-skills/code-review-skill/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-22c55e?style=flat-square" alt="License: MIT"/>
+  </a>
+  <img src="https://img.shields.io/badge/Claude_Code-Skill-7c3aed?style=flat-square&logo=anthropic&logoColor=white" alt="Claude Code Skill"/>
+  <img src="https://img.shields.io/badge/Total_Lines-9%2C500%2B-3b82f6?style=flat-square" alt="9500+ lines"/>
+  <img src="https://img.shields.io/badge/Languages-11%2B-f59e0b?style=flat-square" alt="11+ languages"/>
+  <img src="https://img.shields.io/badge/PRs-Welcome-ec4899?style=flat-square" alt="PRs Welcome"/>
+</p>
+
+<p>
+  <a href="#english">English</a>
+  &middot;
+  <a href="#chinese">中文</a>
+  &middot;
+  <a href="./CONTRIBUTING.md">Contributing</a>
+</p>
+
+</div>
 
 ---
 
+<a name="english"></a>
+
 ## English
 
-> A modular code review skill for Claude Code, covering React 19, Vue 3, Rust, TypeScript, Java, Python, C/C++, CSS/Less/Sass, architecture design, and performance optimization.
+### What is this?
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+**Code Review Skill** is a production-ready skill for [Claude Code](https://claude.ai/code) that transforms AI-assisted code review from vague suggestions into a **structured, consistent, and expert-level** process.
 
-### Overview
+It covers **11+ languages and frameworks** with over **9,500 lines** of carefully curated review guidelines — loaded progressively to minimize context window usage.
 
-This is a Claude Code skill designed to help developers conduct effective code reviews. It provides:
+---
 
-- **Language-specific patterns** for React 19, Vue 3, Rust, TypeScript/JavaScript, Java, Python, C/C++
-- **Modern framework support** including React Server Components, TanStack Query v5, Suspense & Streaming
-- **Comprehensive checklists** for security, performance, and code quality
-- **Best practices** for giving constructive feedback
-- **Modular structure** for on-demand loading (reduces context usage)
+### &#10024; Key Features
 
-### Features
+- **Progressive Disclosure** — Core skill is ~190 lines; language guides (~200–1,000 lines each) load only when needed.
+- **Four-Phase Review Process** — Structured workflow from understanding scope to delivering clear feedback.
+- **Severity Labeling** — Every finding is categorized: `blocking` · `important` · `nit` · `suggestion` · `learning` · `praise`
+- **Security-First** — Dedicated security checklists per language ecosystem.
+- **Collaborative Tone** — Questions over commands, suggestions over mandates.
+- **Automation Awareness** — Clearly separates what human review should catch vs. what linters handle.
 
-#### Supported Languages & Frameworks
+---
 
-| Category | Coverage |
-|----------|----------|
-| **React** | Hooks rules, useEffect patterns, useMemo/useCallback, React 19 Actions (useActionState, useFormStatus, useOptimistic), Server Components, Suspense & Streaming |
-| **Vue 3** | Composition API, reactivity system, defineProps/defineEmits, watch cleanup |
-| **Rust** | Ownership & borrowing, unsafe code review, async/await, error handling (thiserror vs anyhow) |
-| **TypeScript** | Type safety, async/await patterns, common pitfalls |
-| **Java** | Java 17/21 features (Records, Switch), Spring Boot 3, Virtual Threads, Stream API best practices |
-| **Go** | Error handling, goroutines/channels, context propagation, interface design, testing patterns |
-| **C** | Pointer safety, UB pitfalls, resource management, error handling |
-| **C++** | RAII, ownership, move semantics, exception safety, performance |
-| **Qt** | Object model, Signals/Slots, memory management (parent/child), thread safety, GUI performance |
-| **CSS/Less/Sass** | CSS variables, !important usage, performance optimization, responsive design, browser compatibility |
-| **TanStack Query** | v5 best practices, queryOptions, useSuspenseQuery, optimistic updates |
-| **Architecture** | SOLID principles, anti-patterns, coupling/cohesion, layered architecture |
-| **Performance** | Core Web Vitals, N+1 queries, memory leaks, algorithm complexity |
+### &#127760; Supported Languages & Frameworks
 
-#### Content Statistics
+<table>
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Technology</th>
+      <th>Guide</th>
+      <th>Lines</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="4"><strong>Frontend</strong></td>
+      <td>&#9883;&#65039; React 19 / Next.js / TanStack Query v5</td>
+      <td><code>reference/react.md</code></td>
+      <td>~870</td>
+    </tr>
+    <tr>
+      <td>&#128154; Vue 3.5 + Composition API</td>
+      <td><code>reference/vue.md</code></td>
+      <td>~920</td>
+    </tr>
+    <tr>
+      <td>&#127912; CSS / Less / Sass</td>
+      <td><code>reference/css-less-sass.md</code></td>
+      <td>~660</td>
+    </tr>
+    <tr>
+      <td>&#128311; TypeScript</td>
+      <td><code>reference/typescript.md</code></td>
+      <td>~540</td>
+    </tr>
+    <tr>
+      <td rowspan="4"><strong>Backend</strong></td>
+      <td>&#9749; Java 17/21 + Spring Boot 3</td>
+      <td><code>reference/java.md</code></td>
+      <td>~800</td>
+    </tr>
+    <tr>
+      <td>&#128013; Python</td>
+      <td><code>reference/python.md</code></td>
+      <td>~1,070</td>
+    </tr>
+    <tr>
+      <td>&#128057; Go</td>
+      <td><code>reference/go.md</code></td>
+      <td>~990</td>
+    </tr>
+    <tr>
+      <td>&#129408; Rust</td>
+      <td><code>reference/rust.md</code></td>
+      <td>~840</td>
+    </tr>
+    <tr>
+      <td rowspan="3"><strong>Systems</strong></td>
+      <td>&#9881;&#65039; C</td>
+      <td><code>reference/c.md</code></td>
+      <td>~210</td>
+    </tr>
+    <tr>
+      <td>&#128297; C++</td>
+      <td><code>reference/cpp.md</code></td>
+      <td>~300</td>
+    </tr>
+    <tr>
+      <td>&#128421;&#65039; Qt Framework</td>
+      <td><code>reference/qt.md</code></td>
+      <td>~190</td>
+    </tr>
+    <tr>
+      <td rowspan="2"><strong>Architecture</strong></td>
+      <td>&#127963;&#65039; Architecture Design Review</td>
+      <td><code>reference/architecture-review-guide.md</code></td>
+      <td>~470</td>
+    </tr>
+    <tr>
+      <td>&#9889; Performance Review</td>
+      <td><code>reference/performance-review-guide.md</code></td>
+      <td>~750</td>
+    </tr>
+  </tbody>
+</table>
 
-| File | Lines | Description |
-|------|-------|-------------|
-| **SKILL.md** | ~190 | Core principles + index (loads on skill activation) |
-| **reference/react.md** | ~870 | React 19/Next.js/TanStack Query v5 patterns (on-demand) |
-| **reference/vue.md** | ~920 | Vue 3.5 patterns + Composition API (on-demand) |
-| **reference/rust.md** | ~840 | Rust async/ownership/cancellation safety (on-demand) |
-| **reference/typescript.md** | ~540 | TypeScript generics/strict mode/ESLint (on-demand) |
-| **reference/java.md** | ~800 | Java 17/21 & Spring Boot 3 patterns (on-demand) |
-| **reference/python.md** | ~1070 | Python async/typing/pytest (on-demand) |
-| **reference/go.md** | ~990 | Go goroutines/channels/context/interfaces (on-demand) |
-| **reference/c.md** | ~210 | C memory safety/UB/error handling (on-demand) |
-| **reference/cpp.md** | ~300 | C++ RAII/lifetime/move semantics (on-demand) |
-| **reference/qt.md** | ~190 | Qt object model/signals-slots/GUI performance (on-demand) |
-| **reference/css-less-sass.md** | ~660 | CSS/Less/Sass variables/performance/responsive (on-demand) |
-| **reference/architecture-review-guide.md** | ~470 | SOLID/anti-patterns/coupling analysis (on-demand) |
-| **reference/performance-review-guide.md** | ~750 | Core Web Vitals/N+1/memory/complexity (on-demand) |
+---
 
-**Total: ~9,500 lines** of review guidelines and code examples, loaded on-demand per language.
+### &#128260; The Four-Phase Review Process
 
-### Installation
-
-#### For Claude Code Users
-
-Copy the skill to your Claude Code skills directory:
-
-```bash
-# Clone the repository
-git clone https://github.com/tt-a1i/code-review-skill.git
-
-# Copy to Claude Code skills directory
-cp -r code-review-skill ~/.claude/skills/code-review-excellence
+```
+Phase 1 - Context Gathering
+  Understand PR scope, linked issues, and intent
+                    |
+                    v
+Phase 2 - High-Level Review
+  Architecture - Performance impact - Test strategy
+                    |
+                    v
+Phase 3 - Line-by-Line Analysis
+  Logic - Security - Maintainability - Edge cases
+                    |
+                    v
+Phase 4 - Summary & Decision
+  Structured feedback - Approval status - Action items
 ```
 
-Or add to your existing Claude Code plugin:
+---
 
-```bash
-# Copy the entire directory structure
-cp -r code-review-skill ~/.claude/plugins/your-plugin/skills/code-review/
-```
+### &#127991;&#65039; Severity Labels
 
-### Usage
+| Label | Meaning |
+|-------|---------|
+| &#128308; `blocking` | Must be fixed before merge |
+| &#128992; `important` | Should be fixed; may block depending on context |
+| &#128993; `nit` | Minor style or preference issue |
+| &#128309; `suggestion` | Optional improvement worth considering |
+| &#128218; `learning` | Educational note for the author |
+| &#127775; `praise` | Explicitly highlight great work |
 
-Once installed, you can invoke the skill in Claude Code:
+---
 
-```
-Use code-review-excellence skill to review this PR
-```
-
-Or reference it in your custom commands.
-
-### File Structure
+### &#128193; Repository Structure
 
 ```
 code-review-skill/
-├── SKILL.md                        # Core skill (loads immediately)
-├── README.md                       # This file
-├── LICENSE                         # MIT License
-├── CONTRIBUTING.md                 # Contribution guidelines
-├── reference/                      # On-demand loaded guides
-│   ├── react.md                    # React/Next.js patterns (on-demand)
-│   ├── vue.md                      # Vue 3 patterns (on-demand)
-│   ├── rust.md                     # Rust patterns (on-demand)
-│   ├── typescript.md               # TypeScript/JS patterns (on-demand)
-│   ├── java.md                     # Java patterns (on-demand)
-│   ├── python.md                   # Python patterns (on-demand)
-│   ├── go.md                       # Go patterns (on-demand)
-│   ├── c.md                        # C patterns (on-demand)
-│   ├── cpp.md                      # C++ patterns (on-demand)
-│   ├── qt.md                       # Qt patterns (on-demand)
-│   ├── css-less-sass.md            # CSS/Less/Sass patterns (on-demand)
-│   ├── architecture-review-guide.md # Architecture design review (on-demand)
-│   ├── performance-review-guide.md # Performance review (on-demand)
-│   ├── common-bugs-checklist.md    # Language-specific bug patterns
-│   ├── security-review-guide.md    # Security review checklist
-│   └── code-review-best-practices.md
-├── assets/
-│   ├── review-checklist.md         # Quick reference checklist
-│   └── pr-review-template.md       # PR review comment template
-└── scripts/
-    └── pr-analyzer.py              # PR complexity analyzer
+|
++-- SKILL.md                              # Core skill - loaded on activation (~190 lines)
++-- README.md
++-- LICENSE
++-- CONTRIBUTING.md
+|
++-- reference/                            # On-demand language guides
+|   +-- react.md                          # React 19 / Next.js / TanStack Query v5
+|   +-- vue.md                            # Vue 3.5 Composition API
+|   +-- rust.md                           # Rust ownership, async/await, unsafe
+|   +-- typescript.md                     # TypeScript strict mode, generics, ESLint
+|   +-- java.md                           # Java 17/21 & Spring Boot 3
+|   +-- python.md                         # Python async, typing, pytest
+|   +-- go.md                             # Go goroutines, channels, context, interfaces
+|   +-- c.md                              # C memory safety, UB, error handling
+|   +-- cpp.md                            # C++ RAII, move semantics, exception safety
+|   +-- qt.md                             # Qt object model, signals/slots, GUI perf
+|   +-- css-less-sass.md                  # CSS/Less/Sass variables, responsive design
+|   +-- architecture-review-guide.md      # SOLID, anti-patterns, coupling/cohesion
+|   +-- performance-review-guide.md       # Core Web Vitals, N+1, memory leaks
+|   +-- security-review-guide.md          # Security checklist (all languages)
+|   +-- common-bugs-checklist.md          # Language-specific bug patterns
+|   +-- code-review-best-practices.md     # Communication & process guidelines
+|
++-- assets/
+|   +-- review-checklist.md               # Quick reference checklist
+|   +-- pr-review-template.md             # PR review comment template
+|
++-- scripts/
+    +-- pr-analyzer.py                    # PR complexity analyzer
 ```
 
-### On-Demand Loading
+---
 
-This skill uses **Progressive Disclosure** to minimize context usage:
+### &#128640; Installation
 
-1. **SKILL.md** (~180 lines) loads when the skill is activated
-2. **Language-specific files** load only when reviewing that language
-3. **Reference files** load only when explicitly needed
+**Clone to your Claude Code skills directory:**
 
-This means reviewing a React PR only loads SKILL.md + react.md, not Vue/Rust/Python content.
+```bash
+# macOS / Linux
+git clone https://github.com/awesome-skills/code-review-skill.git \
+  ~/.claude/skills/code-review-skill
 
-### Key Topics Covered
+# Windows (PowerShell)
+git clone https://github.com/awesome-skills/code-review-skill.git `
+  "$env:USERPROFILE\.claude\skills\code-review-skill"
+```
 
-#### Java & Spring Boot
+**Or add to an existing plugin:**
 
-- **Java 17/21 Features**: Records, Pattern Matching for Switch, Text Blocks
-- **Virtual Threads**: High-throughput I/O with Project Loom
-- **Spring Boot 3**: Constructor Injection, `@ConfigurationProperties`, ProblemDetail
-- **JPA Performance**: Solving N+1 problems, correct Entity design (equals/hashCode)
+```bash
+cp -r code-review-skill ~/.claude/plugins/your-plugin/skills/code-review/
+```
 
-#### React 19
+---
+
+### &#128161; Usage
+
+Once installed, activate the skill in your Claude Code session:
+
+```
+Use code-review-skill to review this PR
+```
+
+Or create a custom slash command in `.claude/commands/`:
+
+```markdown
+<!-- .claude/commands/review.md -->
+Use code-review-skill to perform a thorough review of the changes in this PR.
+Focus on: security, performance, and maintainability.
+```
+
+**Example prompts:**
+
+| Prompt | What happens |
+|--------|-------------|
+| `Review this React component` | Loads `react.md` - checks hooks, Server Components, Suspense patterns |
+| `Review this Java PR` | Loads `java.md` - checks virtual threads, JPA, Spring Boot 3 patterns |
+| `Security review of this Go service` | Loads `go.md` + `security-review-guide.md` |
+| `Architecture review` | Loads `architecture-review-guide.md` - SOLID, anti-patterns, coupling |
+| `Performance review` | Loads `performance-review-guide.md` - Web Vitals, N+1, complexity |
+
+---
+
+### &#128300; Highlights by Language
+
+<details>
+<summary><strong>&#9883;&#65039; React 19</strong></summary>
 
 - `useActionState` - Unified form state management
 - `useFormStatus` - Access parent form status without prop drilling
 - `useOptimistic` - Optimistic UI updates with automatic rollback
-- Server Actions integration with Next.js 15+
+- Server Components & Server Actions patterns (Next.js 15+)
+- Suspense boundary design, Error Boundary integration, streaming SSR
+- `use()` Hook for consuming Promises
 
-#### Suspense & Streaming SSR
+</details>
 
-- Suspense boundary design patterns
-- Error Boundary integration
-- Next.js 15 streaming with `loading.tsx`
-- `use()` Hook for Promise consumption
+<details>
+<summary><strong>&#9749; Java & Spring Boot 3</strong></summary>
 
-#### TanStack Query v5
+- **Java 17/21**: Records, Pattern Matching for Switch, Text Blocks, Sealed Classes
+- **Virtual Threads** (Project Loom): High-throughput I/O patterns
+- **Spring Boot 3**: Constructor injection, `@ConfigurationProperties`, `ProblemDetail`
+- **JPA Performance**: Solving N+1, correct `equals`/`hashCode` on Entities
 
-- `queryOptions` for type-safe query definitions
-- `useSuspenseQuery` best practices
-- Optimistic updates (simplified v5 approach)
-- `isPending` vs `isLoading` vs `isFetching`
+</details>
 
-#### Rust
+<details>
+<summary><strong>&#129408; Rust</strong></summary>
 
 - Ownership patterns and common pitfalls
-- `unsafe` code review requirements (SAFETY comments)
-- Async/await patterns (avoiding blocking in async context)
-- Error handling (thiserror for libraries, anyhow for applications)
+- `unsafe` code review requirements (mandatory `SAFETY` comments)
+- Async/await - avoiding blocking in async context, cancellation safety
+- Error handling: `thiserror` for libraries, `anyhow` for applications
 
-#### C/C++
+</details>
 
-- **C**: Pointer safety, UB pitfalls, resource cleanup, integer overflow
-- **C++**: RAII ownership, Rule of 0/3/5, move semantics, exception safety
+<details>
+<summary><strong>&#128057; Go</strong></summary>
 
-### Contributing
+- Goroutine lifecycle management and leak prevention
+- Channel patterns, select usage
+- `context.Context` propagation
+- Interface design (accept interfaces, return structs)
+- Error wrapping with `%w`
 
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+</details>
 
-#### Areas for Contribution
+<details>
+<summary><strong>&#9881;&#65039; C / C++</strong></summary>
 
-- Additional language support (C#, Swift, Kotlin, etc.)
-- More framework-specific patterns
-- Translations to other languages
-- Bug pattern submissions
+- **C**: Pointer/buffer safety, undefined behavior, resource cleanup, integer overflow
+- **C++**: RAII ownership, Rule of 0/3/5, move semantics, exception safety, `noexcept`
+- **Qt**: Object parent/child memory model, thread-safe signal/slot connections, GUI performance
 
-### License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-### References
-
-- [React v19 Official Documentation](https://react.dev/blog/2024/12/05/react-19)
-- [TanStack Query v5 Documentation](https://tanstack.com/query/latest)
-- [Vue 3 Composition API](https://vuejs.org/guide/extras/composition-api-faq.html)
-- [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/)
+</details>
 
 ---
 
+### &#129309; Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+
+**Ideas:**
+- New language guides (C#, Swift, Kotlin, Ruby, PHP...)
+- Framework-specific guides (Django, Laravel, NestJS...)
+- Additional checklists and templates
+- Translations of core documentation
+
+---
+
+### &#128196; License
+
+MIT &copy; [awesome-skills](https://github.com/awesome-skills)
+
+---
+
+<a name="chinese"></a>
+
 ## 中文
 
-> 一个模块化的 Claude Code 代码审查技能，覆盖 React 19、Vue 3、Rust、TypeScript、Java、Python、C/C++、CSS/Less/Sass、架构设计和性能优化。
+### 这是什么？
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+**Code Review Skill** 是专为 [Claude Code](https://claude.ai/code) 打造的生产级代码审查技能，将 AI 辅助的代码审查从模糊建议转变为**结构化、一致且专业级**的流程。
 
-### 概述
+覆盖 **11+ 种语言和框架**，拥有超过 **9,500 行**精心整理的代码审查指南——按需加载，最大程度减少上下文占用。
 
-这是一个为 Claude Code 设计的代码审查技能，旨在帮助开发者进行高效的代码审查。它提供：
+---
 
-- **语言特定模式**：覆盖 React 19、Vue 3、Rust、TypeScript/JavaScript、Java、Python、C/C++
-- **现代框架支持**：包括 React Server Components、TanStack Query v5、Suspense & Streaming
-- **全面的检查清单**：安全、性能和代码质量检查
-- **最佳实践**：如何提供建设性的反馈
-- **模块化结构**：按需加载，减少上下文占用
+### &#10024; 核心特性
 
-### 特性
+- **渐进式加载** — 核心技能仅 ~190 行，各语言指南（每份 200–1,000 行）仅在需要时才加载。
+- **四阶段审查流程** — 从理解 PR 范围到输出清晰反馈，每一步都有规可循。
+- **严重性标记** — 每条发现均分级：`blocking` · `important` · `nit` · `suggestion` · `learning` · `praise`
+- **安全优先** — 每个语言生态均配备专属安全检查清单。
+- **协作式语气** — 以提问替代命令，以建议替代指令。
+- **自动化感知** — 明确区分人工审查应关注的内容与 linter 自动处理的内容。
 
-#### 支持的语言和框架
+---
 
-| 分类 | 覆盖内容 |
-|------|----------|
-| **React** | Hooks 规则、useEffect 模式、useMemo/useCallback、React 19 Actions（useActionState、useFormStatus、useOptimistic）、Server Components、Suspense & Streaming |
-| **Vue 3** | Composition API、响应性系统、defineProps/defineEmits、watch 清理 |
-| **Rust** | 所有权与借用、unsafe 代码审查、async/await、错误处理（thiserror vs anyhow） |
-| **TypeScript** | 类型安全、async/await 模式、常见陷阱 |
-| **Java** | Java 17/21 特性（Records, Switch）、Spring Boot 3、虚拟线程、Stream API 最佳实践 |
-| **Go** | 错误处理、goroutine/channel、context 传播、接口设计、测试模式 |
-| **C** | 指针/缓冲区安全、UB、资源管理、错误处理 |
-| **C++** | RAII、生命周期、Rule of 0/3/5、异常安全 |
-| **Qt** | 对象模型、信号/槽、内存管理（父子关系）、线程安全、GUI 性能 |
-| **CSS/Less/Sass** | CSS 变量规范、!important 使用、性能优化、响应式设计、浏览器兼容性 |
-| **TanStack Query** | v5 最佳实践、queryOptions、useSuspenseQuery、乐观更新 |
-| **架构设计** | SOLID 原则、架构反模式、耦合度/内聚性、分层架构 |
-| **性能优化** | Core Web Vitals、N+1 查询、内存泄漏、算法复杂度 |
+### &#127760; 支持的语言与框架
 
-#### 内容统计
+| 分类 | 技术栈 | 指南文件 | 行数 |
+|------|--------|----------|------|
+| **前端** | &#9883;&#65039; React 19 / Next.js / TanStack Query v5 | `reference/react.md` | ~870 |
+| | &#128154; Vue 3.5 Composition API | `reference/vue.md` | ~920 |
+| | &#127912; CSS / Less / Sass | `reference/css-less-sass.md` | ~660 |
+| | &#128311; TypeScript | `reference/typescript.md` | ~540 |
+| **后端** | &#9749; Java 17/21 + Spring Boot 3 | `reference/java.md` | ~800 |
+| | &#128013; Python | `reference/python.md` | ~1,070 |
+| | &#128057; Go | `reference/go.md` | ~990 |
+| | &#129408; Rust | `reference/rust.md` | ~840 |
+| **系统级** | &#9881;&#65039; C | `reference/c.md` | ~210 |
+| | &#128297; C++ | `reference/cpp.md` | ~300 |
+| | &#128421;&#65039; Qt 框架 | `reference/qt.md` | ~190 |
+| **架构** | &#127963;&#65039; 架构设计审查 | `reference/architecture-review-guide.md` | ~470 |
+| | &#9889; 性能审查 | `reference/performance-review-guide.md` | ~750 |
 
-| 文件 | 行数 | 描述 |
-|------|------|------|
-| **SKILL.md** | ~190 | 核心原则 + 索引（技能激活时加载）|
-| **reference/react.md** | ~870 | React 19/Next.js/TanStack Query v5（按需加载）|
-| **reference/vue.md** | ~920 | Vue 3.5 + Composition API（按需加载）|
-| **reference/rust.md** | ~840 | Rust async/所有权/取消安全性（按需加载）|
-| **reference/typescript.md** | ~540 | TypeScript 泛型/strict 模式/ESLint（按需加载）|
-| **reference/java.md** | ~800 | Java 17/21 & Spring Boot 3 模式（按需加载）|
-| **reference/python.md** | ~1070 | Python async/类型注解/pytest（按需加载）|
-| **reference/go.md** | ~990 | Go goroutine/channel/context/接口（按需加载）|
-| **reference/c.md** | ~210 | C 内存安全/UB/错误处理（按需加载）|
-| **reference/cpp.md** | ~300 | C++ RAII/生命周期/移动语义（按需加载）|
-| **reference/qt.md** | ~190 | Qt 对象模型/信号槽/GUI 性能（按需加载）|
-| **reference/css-less-sass.md** | ~660 | CSS/Less/Sass 变量/性能/响应式（按需加载）|
-| **reference/architecture-review-guide.md** | ~470 | SOLID/反模式/耦合度分析（按需加载）|
-| **reference/performance-review-guide.md** | ~750 | Core Web Vitals/N+1/内存/复杂度（按需加载）|
+---
 
-**总计：9,500 行**审查指南和代码示例，按语言按需加载。
-
-### 安装
-
-#### Claude Code 用户
-
-将技能复制到 Claude Code skills 目录：
-
-```bash
-# 克隆仓库
-git clone https://github.com/tt-a1i/code-review-skill.git
-
-# 复制到 Claude Code skills 目录
-cp -r code-review-skill ~/.claude/skills/code-review-excellence
-```
-
-或添加到现有的 Claude Code 插件：
-
-```bash
-# 复制整个目录结构
-cp -r code-review-skill ~/.claude/plugins/your-plugin/skills/code-review/
-```
-
-### 使用方法
-
-安装后，可以在 Claude Code 中调用该技能：
+### &#128260; 四阶段审查流程
 
 ```
-使用 code-review-excellence skill 来审查这个 PR
+阶段一 - 上下文收集
+  理解 PR 范围、关联 Issue 和实现意图
+                    |
+                    v
+阶段二 - 高层级审查
+  架构设计 - 性能影响 - 测试策略
+                    |
+                    v
+阶段三 - 逐行深度分析
+  逻辑正确性 - 安全漏洞 - 可维护性 - 边界情况
+                    |
+                    v
+阶段四 - 总结与决策
+  结构化反馈 - 审批状态 - 后续行动项
 ```
 
-或在自定义命令中引用。
+---
 
-### 文件结构
+### &#127991;&#65039; 严重性标记说明
+
+| 标记 | 含义 |
+|------|------|
+| &#128308; `blocking` | 合并前必须修复 |
+| &#128992; `important` | 应当修复，视情况可能阻塞合并 |
+| &#128993; `nit` | 风格或偏好上的小问题 |
+| &#128309; `suggestion` | 值得考虑的可选优化 |
+| &#128218; `learning` | 给作者的教育性说明 |
+| &#127775; `praise` | 明确表扬优秀代码 |
+
+---
+
+### &#128193; 仓库结构
 
 ```
 code-review-skill/
-├── SKILL.md                        # 核心技能（立即加载）
-├── README.md                       # 本文件
-├── LICENSE                         # MIT 许可证
-├── CONTRIBUTING.md                 # 贡献指南
-├── reference/                      # 按需加载的指南
-│   ├── react.md                    # React/Next.js 模式（按需加载）
-│   ├── vue.md                      # Vue 3 模式（按需加载）
-│   ├── rust.md                     # Rust 模式（按需加载）
-│   ├── typescript.md               # TypeScript/JS 模式（按需加载）
-│   ├── java.md                     # Java 模式（按需加载）
-│   ├── python.md                   # Python 模式（按需加载）
-│   ├── go.md                       # Go 模式（按需加载）
-│   ├── c.md                        # C 模式（按需加载）
-│   ├── cpp.md                      # C++ 模式（按需加载）
-│   ├── qt.md                       # Qt 模式（按需加载）
-│   ├── css-less-sass.md            # CSS/Less/Sass 模式（按需加载）
-│   ├── architecture-review-guide.md # 架构设计审查（按需加载）
-│   ├── performance-review-guide.md # 性能审查（按需加载）
-│   ├── common-bugs-checklist.md    # 语言特定的错误模式
-│   ├── security-review-guide.md    # 安全审查清单
-│   └── code-review-best-practices.md
-├── assets/
-│   ├── review-checklist.md         # 快速参考清单
-│   └── pr-review-template.md       # PR 审查评论模板
-└── scripts/
-    └── pr-analyzer.py              # PR 复杂度分析器
+|
++-- SKILL.md                              # 核心技能，激活时加载（~190 行）
++-- README.md
++-- LICENSE
++-- CONTRIBUTING.md
+|
++-- reference/                            # 按需加载的语言指南
+|   +-- react.md                          # React 19 / Next.js / TanStack Query v5
+|   +-- vue.md                            # Vue 3.5 组合式 API
+|   +-- rust.md                           # Rust 所有权、async/await、unsafe
+|   +-- typescript.md                     # TypeScript strict 模式、泛型、ESLint
+|   +-- java.md                           # Java 17/21 & Spring Boot 3
+|   +-- python.md                         # Python async、类型注解、pytest
+|   +-- go.md                             # Go goroutine、channel、context、接口
+|   +-- c.md                              # C 内存安全、UB、错误处理
+|   +-- cpp.md                            # C++ RAII、移动语义、异常安全
+|   +-- qt.md                             # Qt 对象模型、信号/槽、GUI 性能
+|   +-- css-less-sass.md                  # CSS/Less/Sass 变量、响应式设计
+|   +-- architecture-review-guide.md      # SOLID、反模式、耦合度分析
+|   +-- performance-review-guide.md       # Core Web Vitals、N+1、内存泄漏
+|   +-- security-review-guide.md          # 安全审查清单（全语言通用）
+|   +-- common-bugs-checklist.md          # 各语言常见 Bug 模式
+|   +-- code-review-best-practices.md     # 沟通与流程最佳实践
+|
++-- assets/
+|   +-- review-checklist.md               # 快速参考清单
+|   +-- pr-review-template.md             # PR 审查评论模板
+|
++-- scripts/
+    +-- pr-analyzer.py                    # PR 复杂度分析工具
 ```
 
-### 按需加载机制
+---
 
-此技能使用 **Progressive Disclosure（渐进式披露）** 来最小化上下文占用：
+### &#128640; 安装方法
 
-1. **SKILL.md**（~180 行）在技能激活时加载
-2. **语言特定文件** 仅在审查该语言时加载
-3. **参考文件** 仅在明确需要时加载
+**克隆到 Claude Code skills 目录：**
 
-这意味着审查 React PR 时只加载 SKILL.md + react.md，不会加载 Vue/Rust/Python 内容。
+```bash
+# macOS / Linux
+git clone https://github.com/awesome-skills/code-review-skill.git \
+  ~/.claude/skills/code-review-skill
 
-### 核心内容
+# Windows（PowerShell）
+git clone https://github.com/awesome-skills/code-review-skill.git `
+  "$env:USERPROFILE\.claude\skills\code-review-skill"
+```
 
-#### Java & Spring Boot
+**或添加到现有插件：**
 
-- **Java 17/21 特性**：Records、Switch 模式匹配、文本块
-- **虚拟线程**：Project Loom 带来的高吞吐量 I/O
-- **Spring Boot 3**：构造器注入、`@ConfigurationProperties`、ProblemDetail
-- **JPA 性能**：解决 N+1 问题、正确的 Entity 设计（equals/hashCode）
+```bash
+cp -r code-review-skill ~/.claude/plugins/your-plugin/skills/code-review/
+```
 
-#### React 19
+---
 
-- `useActionState` - 统一的表单状态管理
-- `useFormStatus` - 无需 props 透传即可访问父表单状态
-- `useOptimistic` - 带自动回滚的乐观 UI 更新
-- 与 Next.js 15+ Server Actions 集成
+### &#128161; 使用方式
 
-#### Suspense & Streaming SSR
+安装后，在 Claude Code 会话中激活技能：
 
-- Suspense 边界设计模式
-- Error Boundary 集成
-- Next.js 15 streaming 与 `loading.tsx`
+```
+Use code-review-skill to review this PR
+```
+
+或在 `.claude/commands/` 中创建自定义斜杠命令：
+
+```markdown
+<!-- .claude/commands/review.md -->
+使用 code-review-skill 对这次 PR 的变更进行全面审查。
+重点关注：安全性、性能和可维护性。
+```
+
+**示例提示词：**
+
+| 提示词 | 效果 |
+|--------|------|
+| `审查这个 React 组件` | 加载 `react.md`，检查 Hooks、Server Components、Suspense |
+| `审查这个 Java PR` | 加载 `java.md`，检查虚拟线程、JPA、Spring Boot 3 |
+| `对这个 Go 服务进行安全审查` | 加载 `go.md` + `security-review-guide.md` |
+| `架构审查` | 加载 `architecture-review-guide.md`，检查 SOLID 与反模式 |
+| `性能审查` | 加载 `performance-review-guide.md`，分析 Web Vitals、N+1 等 |
+
+---
+
+### &#128300; 各语言核心内容
+
+<details>
+<summary><strong>&#9883;&#65039; React 19</strong></summary>
+
+- `useActionState` — 统一的表单状态管理
+- `useFormStatus` — 无需 props 透传即可访问父表单状态
+- `useOptimistic` — 带自动回滚的乐观 UI 更新
+- Server Components & Server Actions（Next.js 15+）
+- Suspense 边界设计、Error Boundary 集成、流式 SSR
 - `use()` Hook 消费 Promise
 
-#### TanStack Query v5
+</details>
 
-- `queryOptions` 类型安全的查询定义
-- `useSuspenseQuery` 最佳实践
-- 乐观更新（v5 简化方案）
-- `isPending` vs `isLoading` vs `isFetching` 区别
+<details>
+<summary><strong>&#9749; Java & Spring Boot 3</strong></summary>
 
-#### Rust
+- **Java 17/21**：Records、Switch 模式匹配、文本块、Sealed Classes
+- **虚拟线程**（Project Loom）：高吞吐量 I/O 模式
+- **Spring Boot 3**：构造器注入、`@ConfigurationProperties`、`ProblemDetail`
+- **JPA 性能**：解决 N+1、Entity 正确的 `equals`/`hashCode` 实现
 
-- 所有权模式和常见陷阱
-- `unsafe` 代码审查要求（SAFETY 注释）
-- Async/await 模式（避免在异步上下文中阻塞）
-- 错误处理（库用 thiserror，应用用 anyhow）
+</details>
 
-#### C/C++
+<details>
+<summary><strong>&#129408; Rust</strong></summary>
 
-- **C**：指针/缓冲区安全、UB、资源清理、整数溢出
-- **C++**：RAII 所有权、Rule of 0/3/5、移动语义、异常安全
+- 所有权模式与常见陷阱
+- `unsafe` 代码审查要求（必须有 `SAFETY` 注释）
+- Async/await — 避免在异步上下文中阻塞，取消安全性
+- 错误处理：库用 `thiserror`，应用用 `anyhow`
 
-### 贡献
+</details>
 
-欢迎贡献！请阅读 [CONTRIBUTING.md](CONTRIBUTING.md) 了解贡献指南。
+<details>
+<summary><strong>&#128057; Go</strong></summary>
 
-#### 可贡献的方向
+- Goroutine 生命周期管理与泄漏预防
+- Channel 模式、select 用法
+- `context.Context` 传播规范
+- 接口设计原则（接受接口，返回结构体）
+- 错误包装：使用 `%w`
 
-- 添加更多语言支持（C#、Swift、Kotlin 等）
-- 更多框架特定模式
-- 翻译成其他语言
-- 提交错误模式
+</details>
 
-### 许可证
+<details>
+<summary><strong>&#9881;&#65039; C / C++</strong></summary>
 
-本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件。
+- **C**：指针/缓冲区安全、未定义行为、资源清理、整数溢出
+- **C++**：RAII 所有权、Rule of 0/3/5、移动语义、异常安全、`noexcept`
+- **Qt**：父子内存模型、线程安全的信号/槽连接、GUI 性能优化
 
-### 参考资料
+</details>
 
-- [React v19 官方文档](https://react.dev/blog/2024/12/05/react-19)
-- [TanStack Query v5 文档](https://tanstack.com/query/latest)
-- [Vue 3 Composition API](https://vuejs.org/guide/extras/composition-api-faq.html)
-- [Rust API 指南](https://rust-lang.github.io/api-guidelines/)
+---
+
+### &#129309; 参与贡献
+
+欢迎贡献！请查阅 [CONTRIBUTING.md](./CONTRIBUTING.md) 了解规范。
+
+**可贡献方向：**
+- 新增语言指南（C#、Swift、Kotlin、Ruby、PHP...）
+- 框架专属指南（Django、Laravel、NestJS...）
+- 补充检查清单和审查模板
+- 核心文档的多语言翻译
+
+---
+
+### &#128196; 开源协议
+
+MIT &copy; [awesome-skills](https://github.com/awesome-skills)
+
+---
+
+<div align="center">
+  Made with &#10084;&#65039; for developers who care about code quality
+</div>
