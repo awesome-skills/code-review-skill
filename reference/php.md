@@ -1,61 +1,61 @@
 # PHP Code Review Guide
 
-> PHP 8.x 代码审查指南，覆盖类型系统、现代语言特性、OOP 建模、PDO 数据访问、安全、错误处理、Composer 依赖、性能与测试。
+> PHP 8.x code review guide covering the type system, modern language features, OOP modeling, PDO data access, security, error handling, Composer dependencies, performance, and testing.
 
-## 目录
+## Table of Contents
 
-- [快速审查清单](#快速审查清单)
-- [类型系统与现代 PHP](#类型系统与现代-php)
-- [对象建模](#对象建模)
-- [输入输出与安全](#输入输出与安全)
-- [数据库访问](#数据库访问)
-- [错误处理](#错误处理)
-- [Composer 与依赖](#composer-与依赖)
-- [性能与资源管理](#性能与资源管理)
-- [测试与静态分析](#测试与静态分析)
+- [Quick Review Checklist](#quick-review-checklist)
+- [Type System & Modern PHP](#type-system--modern-php)
+- [Object Modeling](#object-modeling)
+- [Input, Output & Security](#input-output--security)
+- [Database Access](#database-access)
+- [Error Handling](#error-handling)
+- [Composer & Dependencies](#composer--dependencies)
+- [Performance & Resource Management](#performance--resource-management)
+- [Testing & Static Analysis](#testing--static-analysis)
 - [Review Checklist](#review-checklist)
-- [参考资料](#参考资料)
+- [References](#references)
 
 ---
 
-## 快速审查清单
+## Quick Review Checklist
 
-### 必查项
+### Must-check
 
-- [ ] 新文件是否启用 `declare(strict_types=1);`
-- [ ] 公共 API 是否有参数、返回值和属性类型
-- [ ] 用户输入是否经过验证，输出是否按上下文转义
-- [ ] SQL 是否使用参数化查询或 ORM binding
-- [ ] 密码是否使用 `password_hash()` / `password_verify()`
-- [ ] 文件上传是否校验 MIME、大小、扩展名和存储路径
-- [ ] `composer.lock` 是否提交，依赖范围是否合理
-- [ ] 是否有 PHPUnit/Pest 测试和 PHPStan/Psalm 静态分析
+- [ ] New files enable `declare(strict_types=1);`
+- [ ] Public APIs have parameter, return, and property types
+- [ ] User input is validated; output is escaped per context
+- [ ] SQL uses parameterized queries or ORM binding
+- [ ] Passwords use `password_hash()` / `password_verify()`
+- [ ] File uploads validate MIME, size, extension, and storage path
+- [ ] `composer.lock` is committed; dependency ranges are reasonable
+- [ ] PHPUnit/Pest tests and PHPStan/Psalm static analysis are present
 
-### 高频问题
+### Common issues
 
-- [ ] 弱比较 `==` / `!=` 导致类型转换漏洞
-- [ ] 使用 `md5()` / `sha1()` 存密码
-- [ ] 拼接 SQL、HTML、shell 命令或文件路径
-- [ ] 使用 `@` 抑制错误
-- [ ] `unserialize()` 处理不可信数据
-- [ ] `$_GET` / `$_POST` / `$_FILES` 直接进入业务逻辑
-- [ ] PHP 8.2+ 动态属性导致 deprecation，PHP 9 可能升级为错误
+- [ ] Loose comparison `==` / `!=` causing type-juggling vulnerabilities
+- [ ] `md5()` / `sha1()` used to store passwords
+- [ ] Concatenating SQL, HTML, shell commands, or file paths
+- [ ] Using `@` to suppress errors
+- [ ] `unserialize()` on untrusted data
+- [ ] `$_GET` / `$_POST` / `$_FILES` flowing straight into business logic
+- [ ] PHP 8.2+ dynamic properties trigger a deprecation; PHP 9 may turn it into an error
 
 ---
 
-## 类型系统与现代 PHP
+## Type System & Modern PHP
 
-### strict_types 与显式类型
+### strict_types and explicit types
 
 ```php
 <?php
 
-// ❌ 弱类型边界：调用方传入 "42" 也会被悄悄转换
+// ❌ weak boundary: passing "42" gets silently coerced
 function findUser($id) {
     return User::find($id);
 }
 
-// ✅ 文件顶部启用 strict_types，公共 API 写清类型
+// ✅ enable strict_types at the top of the file; type the public API
 declare(strict_types=1);
 
 function findUser(int $id): ?User
@@ -64,24 +64,24 @@ function findUser(int $id): ?User
 }
 ```
 
-审查时不要把类型检查只交给运行时输入验证。类型声明表达的是代码内部契约，输入验证表达的是边界可信度，两者都需要。
+Don't leave type checking entirely to runtime input validation. Type declarations express an internal contract; input validation expresses how much to trust the boundary. You need both.
 
-### 避免弱比较
+### Avoid loose comparisons
 
 ```php
 <?php
 
-// ❌ "0e12345" 这类字符串在弱比较下可能被当成 0
+// ❌ strings like "0e12345" can be treated as 0 under loose comparison
 if ($providedHash == $storedHash) {
     grantAccess();
 }
 
-// ✅ 严格比较；密钥或 token 比较使用 hash_equals()
+// ✅ strict comparison; use hash_equals() for secrets or tokens
 if (hash_equals($storedHash, $providedHash)) {
     grantAccess();
 }
 
-// ✅ match 使用 identity check，比 switch 更少类型转换意外
+// ✅ match uses identity checks, so fewer type-juggling surprises than switch
 $status = match ($code) {
     200 => 'ok',
     404 => 'not_found',
@@ -89,42 +89,42 @@ $status = match ($code) {
 };
 ```
 
-重点关注鉴权、支付、状态机、权限判断里的 `==`、`!=`、`in_array($x, $list)` 默认弱比较。需要时使用 `===`、`!==`、`in_array($x, $list, true)`。
+Pay attention to `==`, `!=`, and `in_array($x, $list)` (loose by default) in auth, payment, state machine, and permission logic. Use `===`, `!==`, and `in_array($x, $list, true)` where it matters.
 
-### Union / Intersection / Nullable 类型
+### Union / intersection / nullable types
 
 ```php
 <?php
 
-// ❌ mixed 或无类型让调用方猜返回形状
+// ❌ mixed or untyped makes callers guess the return shape
 function loadConfig($source) {
     return parseConfig($source);
 }
 
-// ✅ 用类型表达真实契约
+// ✅ express the real contract with types
 function loadConfig(string|PathInfo $source): Config
 {
     return parseConfig($source);
 }
 
-// ✅ null 是业务状态时显式表达
+// ✅ make null explicit when it's a real business state
 function currentUser(): ?User
 {
     return Auth::user();
 }
 ```
 
-`mixed` 可以出现在边界层或兼容旧代码的过渡期，但出现在核心业务服务中通常意味着缺少建模。
+`mixed` can show up at the boundary or while migrating legacy code, but in core business services it usually signals missing modeling.
 
-### Nullsafe operator 不应隐藏缺失状态
+### The nullsafe operator shouldn't hide missing state
 
 ```php
 <?php
 
-// ❌ 链式 nullsafe 让失败原因变模糊
+// ❌ chained nullsafe blurs the reason for failure
 $country = $order?->customer?->profile?->country;
 
-// ✅ 对关键业务状态给出明确分支
+// ✅ branch explicitly on critical business state
 if ($order === null) {
     throw new OrderNotFound();
 }
@@ -137,25 +137,25 @@ if ($customer === null) {
 $country = $customer->profile()?->country;
 ```
 
-审查时区分“可选展示字段”和“必须存在的业务不变量”。前者适合 `?->`，后者应该显式失败。
+Distinguish "optional display field" from "business invariant that must exist." The former is a good fit for `?->`; the latter should fail loudly.
 
 ---
 
-## 对象建模
+## Object Modeling
 
-### 使用 readonly 属性和值对象
+### Use readonly properties and value objects
 
 ```php
 <?php
 
-// ❌ 公开可变数组，调用方可以随意改状态
+// ❌ public mutable fields let callers change state at will
 class Money
 {
     public $amount;
     public $currency;
 }
 
-// ✅ 用类型和 readonly 表达不可变值对象
+// ✅ express an immutable value object with types and readonly
 final readonly class Money
 {
     public function __construct(
@@ -169,19 +169,19 @@ final readonly class Money
 }
 ```
 
-对 DTO、配置、领域值对象，优先看是否能用 `readonly class` 或 readonly 属性减少隐藏副作用。
+For DTOs, config, and domain value objects, check first whether a `readonly class` or readonly properties can remove hidden side effects.
 
-### Enums 替代字符串状态
+### Enums instead of string states
 
 ```php
 <?php
 
-// ❌ 字符串状态容易拼错，也无法枚举所有合法值
+// ❌ string states are easy to typo and can't enumerate the legal set
 if ($order->status === 'paied') {
     ship($order);
 }
 
-// ✅ enum 让非法状态更早暴露
+// ✅ an enum surfaces illegal states earlier
 enum OrderStatus: string
 {
     case Pending = 'pending';
@@ -194,18 +194,18 @@ if ($order->status === OrderStatus::Paid) {
 }
 ```
 
-审查状态机、权限、类型字段时，优先寻找“字符串魔法值”。如果值集合稳定，建议 enum；如果来自外部系统，建议转换到内部 enum 后再进入业务层。
+When reviewing state machines, permissions, or type fields, look for "magic string values." If the value set is stable, suggest an enum; if it comes from an external system, convert it to an internal enum before it enters the business layer.
 
-### 不要依赖动态属性
+### Don't rely on dynamic properties
 
 ```php
 <?php
 
-// ❌ PHP 8.2+ 创建动态属性会触发 deprecation
+// ❌ PHP 8.2+ triggers a deprecation when creating a dynamic property
 $user = new User();
-$user->emali = 'a@example.com'; // 拼写错误也会创建属性
+$user->emali = 'a@example.com'; // a typo also silently creates a property
 
-// ✅ 声明属性或使用专门的数据结构
+// ✅ declare properties or use a dedicated data structure
 final class User
 {
     public function __construct(
@@ -214,14 +214,14 @@ final class User
 }
 ```
 
-`#[AllowDynamicProperties]` 应该是兼容遗留代码的例外，而不是新代码的默认选择。审查时要特别留意序列化、ORM hydration、测试替身里是否靠动态属性工作。
+`#[AllowDynamicProperties]` should be an exception for legacy compatibility, not the default for new code. Watch for serialization, ORM hydration, and test doubles that secretly rely on dynamic properties.
 
-### 构造函数不要做重 I/O
+### Don't do heavy I/O in constructors
 
 ```php
 <?php
 
-// ❌ 构造对象时偷偷连数据库，测试和错误处理都困难
+// ❌ quietly connecting to the DB on construction makes testing and error handling hard
 final class ReportService
 {
     private PDO $pdo;
@@ -232,7 +232,7 @@ final class ReportService
     }
 }
 
-// ✅ 依赖从外部注入
+// ✅ inject dependencies from the outside
 final class ReportService
 {
     public function __construct(
@@ -241,21 +241,21 @@ final class ReportService
 }
 ```
 
-构造函数应建立对象不变量，不应发送 HTTP 请求、打开连接、读大文件或做复杂查询。
+A constructor should establish the object's invariants — not send HTTP requests, open connections, read large files, or run complex queries.
 
 ---
 
-## 输入输出与安全
+## Input, Output & Security
 
-### 输入验证放在边界层
+### Validate input at the boundary
 
 ```php
 <?php
 
-// ❌ 超全局变量直接进入业务逻辑
+// ❌ superglobals flow straight into business logic
 $user = $service->create($_POST['email'], $_POST['age']);
 
-// ✅ 边界层先校验并转换类型
+// ✅ validate and coerce types at the boundary first
 $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
 $age = filter_input(INPUT_POST, 'age', FILTER_VALIDATE_INT, [
     'options' => ['min_range' => 0, 'max_range' => 130],
@@ -268,69 +268,69 @@ if ($email === false || $email === null || $age === false || $age === null) {
 $user = $service->create($email, $age);
 ```
 
-`filter_input()` 只能处理一部分基础校验。复杂规则、跨字段约束、业务约束仍需要专门的 validator 或 request DTO。
+`filter_input()` only handles a slice of basic validation. Complex rules, cross-field constraints, and business constraints still need a dedicated validator or request DTO.
 
-### HTML 输出必须按上下文转义
+### Escape output per context
 
 ```php
 <?php
 
-// ❌ 用户输入直接进入 HTML
+// ❌ user input goes straight into HTML
 echo "<h1>Hello {$_GET['name']}</h1>";
 
-// ✅ HTML 文本上下文使用 htmlspecialchars
+// ✅ use htmlspecialchars in an HTML text context
 $name = (string) ($_GET['name'] ?? '');
 echo '<h1>Hello ' . htmlspecialchars($name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</h1>';
 ```
 
-不同上下文需要不同转义：HTML 文本、HTML 属性、URL、JavaScript 字符串、CSS 都不一样。模板引擎默认转义被关闭时，要把它当作安全风险。
+Different contexts need different escaping: HTML text, HTML attributes, URLs, JavaScript strings, and CSS are all different. When a template engine's default escaping is turned off, treat it as a security risk.
 
-### 密码与随机数
+### Passwords and randomness
 
 ```php
 <?php
 
-// ❌ md5/sha1 不能用于密码存储
+// ❌ md5/sha1 must not be used for password storage
 $hash = md5($password);
 
-// ✅ 使用 PHP 内置密码 API
+// ✅ use PHP's built-in password API
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
 if (!password_verify($password, $hash)) {
     throw new InvalidCredentials();
 }
 
-// ✅ token 使用 CSPRNG
+// ✅ use a CSPRNG for tokens
 $token = bin2hex(random_bytes(32));
 $code = random_int(100000, 999999);
 ```
 
-不要手写 salt、轮数迁移或密码比较逻辑。需要升级成本时用 `password_needs_rehash()`。
+Don't hand-roll salts, round migration, or password comparison. Use `password_needs_rehash()` when you need to upgrade the cost factor.
 
-### 反序列化与对象注入
+### Deserialization and object injection
 
 ```php
 <?php
 
-// ❌ 不可信输入进入 unserialize，可能触发对象注入
+// ❌ untrusted input into unserialize can trigger object injection
 $payload = unserialize($_COOKIE['state']);
 
-// ✅ 外部数据优先使用 JSON，并校验 schema/shape
+// ✅ prefer JSON for external data, and validate its schema/shape
 $payload = json_decode($_COOKIE['state'] ?? '{}', true, flags: JSON_THROW_ON_ERROR);
 ```
 
-如果必须处理历史 serialized 数据，至少限制 `allowed_classes`，并确保相关类的 magic methods 不会产生危险副作用。
+If you must process historical serialized data, at least restrict `allowed_classes` and make sure the relevant classes' magic methods can't produce dangerous side effects.
 
-### 文件上传和路径
+### File uploads and paths
 
 ```php
 <?php
 
-// ❌ 使用原始文件名拼路径
+// ❌ building the path from the raw filename
 $target = __DIR__ . '/uploads/' . $_FILES['avatar']['name'];
 move_uploaded_file($_FILES['avatar']['tmp_name'], $target);
 
-// ✅ 生成服务端文件名，校验上传错误和 MIME
+// ✅ generate a server-side filename, check the upload error and MIME
 $file = $_FILES['avatar'];
 if ($file['error'] !== UPLOAD_ERR_OK) {
     throw new UploadFailed();
@@ -346,18 +346,18 @@ $target = __DIR__ . '/uploads/' . bin2hex(random_bytes(16)) . '.jpg';
 move_uploaded_file($file['tmp_name'], $target);
 ```
 
-审查上传功能时检查大小限制、MIME 检测、扩展名、存储目录不可执行、路径穿越、防覆盖、病毒扫描或异步处理要求。
+When reviewing upload features, check size limits, MIME detection, extensions, a non-executable storage directory, path traversal, overwrite protection, and any virus-scan or async-processing requirements.
 
 ---
 
-## 数据库访问
+## Database Access
 
-### 使用参数化查询
+### Use parameterized queries
 
 ```php
 <?php
 
-// ❌ 拼接 SQL，存在注入风险
+// ❌ concatenated SQL is an injection risk
 $sql = "SELECT * FROM users WHERE email = '" . $_GET['email'] . "'";
 $user = $pdo->query($sql)->fetch();
 
@@ -367,12 +367,12 @@ $stmt->execute(['email' => $email]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 ```
 
-参数只能绑定值，不能绑定表名、列名、排序方向。动态 identifier 必须用白名单映射。
+Parameters can only bind values — not table names, column names, or sort direction. Dynamic identifiers must go through a whitelist mapping.
 
 ```php
 <?php
 
-// ✅ 动态排序字段使用白名单
+// ✅ whitelist the dynamic sort column
 $columns = [
     'created' => 'created_at',
     'email' => 'email',
@@ -382,17 +382,17 @@ $column = $columns[$_GET['sort'] ?? 'created'] ?? $columns['created'];
 $stmt = $pdo->query("SELECT id, email FROM users ORDER BY {$column} DESC");
 ```
 
-### 事务覆盖完整业务操作
+### Wrap multi-step writes in transactions
 
 ```php
 <?php
 
-// ❌ 多步写入没有事务，中途失败会留下半成品
+// ❌ multi-step writes with no transaction leave half-finished state on failure
 $orderId = $orders->create($cart);
 $inventory->reserve($cart);
 $payments->charge($orderId);
 
-// ✅ 明确事务边界
+// ✅ explicit transaction boundary
 $pdo->beginTransaction();
 try {
     $orderId = $orders->create($cart);
@@ -405,20 +405,20 @@ try {
 }
 ```
 
-外部不可回滚副作用（真正扣款、发邮件、消息投递）不要随便放进数据库事务里。常见方案是 outbox、幂等 key 或事务提交后再触发。
+Don't casually put external, non-rollbackable side effects (an actual charge, an email, a message dispatch) inside a database transaction. Common patterns are an outbox, an idempotency key, or triggering after the transaction commits.
 
-### 避免 N+1 查询
+### Avoid N+1 queries
 
 ```php
 <?php
 
-// ❌ 循环里查询
+// ❌ querying inside a loop
 foreach ($orders as $order) {
     $customer = $customerRepo->find($order->customerId);
     render($order, $customer);
 }
 
-// ✅ 批量加载再映射
+// ✅ batch-load, then map
 $customerIds = array_unique(array_map(fn ($o) => $o->customerId, $orders));
 $customers = $customerRepo->findByIds($customerIds);
 
@@ -427,24 +427,24 @@ foreach ($orders as $order) {
 }
 ```
 
-在 Laravel/Doctrine 等 ORM 中，对应检查 eager loading、join fetch、select 列、分页和索引。
+In ORMs like Laravel/Doctrine, check eager loading, join fetch, selected columns, pagination, and indexes.
 
 ---
 
-## 错误处理
+## Error Handling
 
-### 捕获具体异常，保留上下文
+### Catch specific exceptions, keep context
 
 ```php
 <?php
 
-// ❌ 吞掉异常，调用方无法知道失败
+// ❌ swallowing the exception leaves callers unable to know it failed
 try {
     $mailer->send($message);
 } catch (Exception $e) {
 }
 
-// ✅ 捕获具体异常，保留上下文并继续抛出
+// ✅ catch a specific exception, keep context, and rethrow
 try {
     $mailer->send($message);
 } catch (TransportException $e) {
@@ -452,47 +452,47 @@ try {
 }
 ```
 
-生产代码里的空 `catch`、只 `error_log()` 不返回错误、把所有异常转成 `RuntimeException('failed')` 都值得追问。
+Empty `catch` blocks, `error_log()`-and-continue without surfacing the error, and turning every exception into `RuntimeException('failed')` in production code all deserve a question.
 
-### 不要使用 @ 抑制错误
+### Don't suppress errors with @
 
 ```php
 <?php
 
-// ❌ 隐藏真实错误，调试困难
+// ❌ hides the real error and makes debugging hard
 $content = @file_get_contents($path);
 
-// ✅ 显式处理失败
+// ✅ handle failure explicitly
 $content = file_get_contents($path);
 if ($content === false) {
     throw new RuntimeException("Unable to read file: {$path}");
 }
 ```
 
-`@` 常见于文件、网络、数组访问和遗留库调用。审查时优先要求显式分支或把第三方库错误转换成项目内异常。
+`@` is common around file, network, array access, and legacy library calls. Push for an explicit branch, or convert third-party errors into project exceptions.
 
-### 日志不要泄漏敏感信息
+### Don't leak sensitive data in logs
 
 ```php
 <?php
 
-// ❌ 把 token、密码、完整请求体写入日志
+// ❌ writing tokens, passwords, or the full request body to the log
 $logger->error('Login failed', ['request' => $_POST]);
 
-// ✅ 记录可定位问题的非敏感上下文
+// ✅ log non-sensitive context that still helps locate the problem
 $logger->warning('Login failed', [
     'email_hash' => hash('sha256', strtolower($email)),
     'ip' => $requestIp,
 ]);
 ```
 
-检查日志、异常消息、debug toolbar、错误页面和队列失败记录。敏感信息包括密码、token、session、PII、支付数据和完整 cookie。
+Check logs, exception messages, the debug toolbar, error pages, and failed-queue records. Sensitive data includes passwords, tokens, sessions, PII, payment data, and full cookies.
 
 ---
 
-## Composer 与依赖
+## Composer & Dependencies
 
-### 锁定可复现依赖
+### Lock reproducible dependencies
 
 ```json
 {
@@ -507,15 +507,15 @@ $logger->warning('Login failed', [
 }
 ```
 
-审查 `composer.json` / `composer.lock` 时关注：
+When reviewing `composer.json` / `composer.lock`, watch for:
 
-- 应用仓库提交 `composer.lock`，库仓库通常不提交
-- `require-dev` 不应进入生产镜像
-- PHP platform 版本和 CI 版本一致
-- 自动加载规则不要过宽，避免加载测试或脚本目录
-- `scripts` 中的命令不应依赖开发者本机秘密配置
+- Application repos commit `composer.lock`; library repos usually don't
+- `require-dev` shouldn't make it into the production image
+- The PHP platform version matches the CI version
+- Autoload rules aren't too broad (don't load test or script directories)
+- `scripts` commands don't depend on a developer's local secret config
 
-### 依赖安全与维护状态
+### Dependency security and maintenance
 
 ```bash
 composer audit
@@ -523,57 +523,57 @@ composer outdated --direct
 composer validate --strict
 ```
 
-新增包时看维护状态、下载量不是唯一指标。重点是安全历史、发布时间、最小依赖范围、是否替代标准库或框架内置能力。
+When adding a package, look at its maintenance status — download count isn't the only signal. What matters is its security history, release cadence, minimal dependency footprint, and whether it duplicates the standard library or a framework built-in.
 
 ---
 
-## 性能与资源管理
+## Performance & Resource Management
 
-### 大数据处理用生成器或分页
+### Stream large datasets with generators or pagination
 
 ```php
 <?php
 
-// ❌ 一次性读入所有记录
+// ❌ loading every record at once
 $rows = $repo->all();
 foreach ($rows as $row) {
     exportRow($row);
 }
 
-// ✅ 分页或 generator，避免内存峰值
+// ✅ paginate or use a generator to avoid a memory spike
 foreach ($repo->cursor() as $row) {
     exportRow($row);
 }
 ```
 
-PHP 请求生命周期短，但 CLI job、队列 worker、导出任务会长期运行。审查这类代码时特别关注内存增长、未关闭资源和全局状态污染。
+A PHP request lifecycle is short, but CLI jobs, queue workers, and export tasks run for a long time. For that kind of code, watch memory growth, unclosed resources, and global-state pollution especially closely.
 
-### 避免循环中的昂贵操作
+### Avoid expensive work inside loops
 
 ```php
 <?php
 
-// ❌ 每次循环重新解析配置或建立连接
+// ❌ re-parsing config or opening a connection on every iteration
 foreach ($items as $item) {
     $client = new ApiClient($_ENV['API_KEY']);
     $client->send($item);
 }
 
-// ✅ 可复用依赖在循环外创建
+// ✅ create reusable dependencies outside the loop
 $client = new ApiClient($_ENV['API_KEY']);
 foreach ($items as $item) {
     $client->send($item);
 }
 ```
 
-关注循环里的数据库查询、HTTP 请求、正则编译、大数组复制、`array_merge()` 累积追加、反复读取环境变量或配置文件。
+Watch for database queries, HTTP requests, regex compilation, large array copies, accumulating `array_merge()` appends, and repeatedly reading env vars or config files inside loops.
 
-### 资源要释放或限定作用域
+### Release or scope resources
 
 ```php
 <?php
 
-// ✅ 文件句柄使用后关闭
+// ✅ close file handles after use
 $handle = fopen($path, 'rb');
 if ($handle === false) {
     throw new RuntimeException('Unable to open file');
@@ -588,29 +588,29 @@ try {
 }
 ```
 
-PDO 连接通常由容器管理，但文件句柄、curl handle、临时文件、锁、队列 worker 中的缓存对象仍需要明确生命周期。
+PDO connections are usually managed by the container, but file handles, curl handles, temp files, locks, and cached objects in queue workers still need an explicit lifecycle.
 
 ---
 
-## 测试与静态分析
+## Testing & Static Analysis
 
-### 测行为，不测实现细节
+### Test behavior, not implementation details
 
 ```php
 <?php
 
-// ❌ 断言内部方法调用，重构成本高
+// ❌ asserting an internal method call makes refactoring expensive
 $mailer->expects($this->once())->method('buildTemplate');
 
-// ✅ 断言可观察结果
+// ✅ assert observable results
 $service->sendWelcomeEmail($user);
 
 $this->assertTrue($mailbox->hasMessageFor($user->email));
 ```
 
-对业务服务、控制器、队列 job，优先覆盖输入输出、数据库状态、发布事件、发送消息等可观察行为。
+For business services, controllers, and queue jobs, prefer covering observable behavior: inputs/outputs, database state, published events, and dispatched messages.
 
-### 静态分析和格式化
+### Static analysis and formatting
 
 ```bash
 vendor/bin/phpunit
@@ -620,76 +620,76 @@ vendor/bin/php-cs-fixer fix --dry-run --diff
 vendor/bin/rector process --dry-run
 ```
 
-审查 PR 时看新增代码是否降低 PHPStan/Psalm level，是否大量使用 baseline ignore，是否用 `@phpstan-ignore-next-line` 掩盖真实类型问题。
+When reviewing a PR, check whether the new code lowers the PHPStan/Psalm level, leans heavily on baseline ignores, or uses `@phpstan-ignore-next-line` to paper over a real type problem.
 
-### 测试数据隔离
+### Isolate test data
 
 ```php
 <?php
 
-// ❌ 测试依赖真实时间和外部服务
+// ❌ the test depends on real time and external services
 $service->expireOldSessions();
 
-// ✅ 注入 clock 和 fake gateway
+// ✅ inject a clock and a fake gateway
 $clock->setNow(new DateTimeImmutable('2026-01-01T00:00:00Z'));
 $service->expireOldSessions();
 ```
 
-关注数据库事务回滚、fixture 清理、随机数、时间、队列、缓存和外部 API。PHP 测试慢通常不是语言问题，而是边界没有隔离。
+Watch for database transaction rollback, fixture cleanup, randomness, time, queues, caches, and external APIs. Slow PHP tests are usually not a language problem — it's that the boundaries aren't isolated.
 
 ---
 
 ## Review Checklist
 
-### 类型与建模
+### Types & modeling
 
-- [ ] 文件顶部使用 `declare(strict_types=1);`
-- [ ] 参数、返回值、属性有明确类型
-- [ ] 使用 `===` / `!==`，集合查找启用 strict 模式
-- [ ] 稳定状态集合使用 enum，而不是字符串魔法值
-- [ ] 新代码不依赖动态属性
-- [ ] 值对象使用 readonly 或不可变设计
+- [ ] `declare(strict_types=1);` at the top of the file
+- [ ] Parameters, return values, and properties have explicit types
+- [ ] `===` / `!==` used; collection lookups use strict mode
+- [ ] Stable state sets use an enum, not magic strings
+- [ ] New code doesn't rely on dynamic properties
+- [ ] Value objects are readonly or otherwise immutable
 
-### 安全
+### Security
 
-- [ ] 输入在边界层验证并转换类型
-- [ ] 输出按 HTML/URL/JS/CSS 上下文转义
-- [ ] SQL 使用 prepared statements 或 ORM binding
-- [ ] 动态表名、列名、排序字段使用白名单
-- [ ] 密码使用 `password_hash()` / `password_verify()`
-- [ ] token、验证码、文件名使用 `random_bytes()` / `random_int()`
-- [ ] 不可信输入不进入 `unserialize()`
-- [ ] 文件上传检查错误码、大小、MIME、扩展名和存储目录
-- [ ] shell 命令、路径拼接、日志输出没有注入或泄密风险
+- [ ] Input is validated and type-coerced at the boundary
+- [ ] Output is escaped per HTML/URL/JS/CSS context
+- [ ] SQL uses prepared statements or ORM binding
+- [ ] Dynamic table/column/sort names go through a whitelist
+- [ ] Passwords use `password_hash()` / `password_verify()`
+- [ ] Tokens, codes, and filenames use `random_bytes()` / `random_int()`
+- [ ] Untrusted input never reaches `unserialize()`
+- [ ] File uploads check the error code, size, MIME, extension, and storage directory
+- [ ] No injection or leakage risk in shell commands, path building, or log output
 
-### 数据与事务
+### Data & transactions
 
-- [ ] 多步写入有事务或补偿机制
-- [ ] 外部副作用有幂等设计
-- [ ] 避免 N+1 查询
-- [ ] 分页、索引和 select 列合理
-- [ ] 数据库错误不会被吞掉
+- [ ] Multi-step writes have a transaction or compensation mechanism
+- [ ] External side effects are designed to be idempotent
+- [ ] N+1 queries avoided
+- [ ] Pagination, indexes, and selected columns are reasonable
+- [ ] Database errors aren't swallowed
 
-### 可维护性
+### Maintainability
 
-- [ ] 构造函数不做重 I/O
-- [ ] 依赖注入清晰，没有隐藏全局状态
-- [ ] 没有 `@` 错误抑制
-- [ ] 异常保留上下文和 previous
-- [ ] Composer 依赖范围、autoload、scripts 合理
-- [ ] 应用仓库提交 `composer.lock`
+- [ ] Constructors don't do heavy I/O
+- [ ] Dependency injection is clear; no hidden global state
+- [ ] No `@` error suppression
+- [ ] Exceptions preserve context and `previous`
+- [ ] Composer dependency ranges, autoload, and scripts are reasonable
+- [ ] Application repos commit `composer.lock`
 
-### 测试与工具
+### Testing & tooling
 
-- [ ] PHPUnit/Pest 覆盖关键路径和失败路径
-- [ ] PHPStan/Psalm 配置没有降低严格度
-- [ ] 新增 ignore/baseline 有解释
-- [ ] 格式化工具和 CI 命令可复现
-- [ ] 测试隔离时间、随机数、数据库、队列、外部 API
+- [ ] PHPUnit/Pest cover the critical and failure paths
+- [ ] PHPStan/Psalm config doesn't lower strictness
+- [ ] New ignores/baselines are explained
+- [ ] Formatting tools and CI commands are reproducible
+- [ ] Tests isolate time, randomness, the database, queues, and external APIs
 
 ---
 
-## 参考资料
+## References
 
 - [PHP Manual: Type declarations](https://www.php.net/manual/en/language.types.declarations.php)
 - [PHP Manual: match](https://www.php.net/match)

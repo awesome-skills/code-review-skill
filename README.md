@@ -12,7 +12,7 @@
     <img src="https://img.shields.io/badge/License-MIT-22c55e?style=flat-square" alt="License: MIT"/>
   </a>
   <img src="https://img.shields.io/badge/Claude_Code-Skill-7c3aed?style=flat-square&logo=anthropic&logoColor=white" alt="Claude Code Skill"/>
-  <img src="https://img.shields.io/badge/Total_Lines-17%2C000%2B-3b82f6?style=flat-square" alt="17000+ lines"/>
+  <img src="https://img.shields.io/badge/Total_Lines-16%2C000%2B-3b82f6?style=flat-square" alt="16000+ lines"/>
   <img src="https://img.shields.io/badge/Languages-19%2B-f59e0b?style=flat-square" alt="19+ languages"/>
   <img src="https://img.shields.io/badge/PRs-Welcome-ec4899?style=flat-square" alt="PRs Welcome"/>
 </p>
@@ -37,7 +37,7 @@
 
 **Code Review Skill** is a production-ready skill for [Claude Code](https://claude.ai/code) that transforms AI-assisted code review from vague suggestions into a **structured, consistent, and expert-level** process.
 
-It covers **19+ languages and frameworks** with over **17,000 lines** of carefully curated review guidelines — loaded progressively to minimize context window usage.
+It covers **19+ languages and frameworks** with over **16,000 lines** of carefully curated review guidelines — loaded progressively to minimize context window usage.
 
 ---
 
@@ -396,7 +396,7 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 
 **Code Review Skill** 是专为 [Claude Code](https://claude.ai/code) 打造的生产级代码审查技能，将 AI 辅助的代码审查从模糊建议转变为**结构化、一致且专业级**的流程。
 
-覆盖 **19+ 种语言和框架**，拥有超过 **17,000 行**精心整理的代码审查指南——按需加载，最大程度减少上下文占用。
+覆盖 **19+ 种语言和框架**，拥有超过 **16,000 行**精心整理的代码审查指南——按需加载，最大程度减少上下文占用。
 
 ---
 
