@@ -12,8 +12,8 @@
     <img src="https://img.shields.io/badge/License-MIT-22c55e?style=flat-square" alt="License: MIT"/>
   </a>
   <img src="https://img.shields.io/badge/Claude_Code-Skill-7c3aed?style=flat-square&logo=anthropic&logoColor=white" alt="Claude Code Skill"/>
-  <img src="https://img.shields.io/badge/Total_Lines-14%2C000%2B-3b82f6?style=flat-square" alt="14000+ lines"/>
-  <img src="https://img.shields.io/badge/Languages-18%2B-f59e0b?style=flat-square" alt="18+ languages"/>
+  <img src="https://img.shields.io/badge/Total_Lines-17%2C000%2B-3b82f6?style=flat-square" alt="17000+ lines"/>
+  <img src="https://img.shields.io/badge/Languages-19%2B-f59e0b?style=flat-square" alt="19+ languages"/>
   <img src="https://img.shields.io/badge/PRs-Welcome-ec4899?style=flat-square" alt="PRs Welcome"/>
 </p>
 
@@ -37,7 +37,7 @@
 
 **Code Review Skill** is a production-ready skill for [Claude Code](https://claude.ai/code) that transforms AI-assisted code review from vague suggestions into a **structured, consistent, and expert-level** process.
 
-It covers **18+ languages and frameworks** with over **14,000 lines** of carefully curated review guidelines — loaded progressively to minimize context window usage.
+It covers **19+ languages and frameworks** with over **17,000 lines** of carefully curated review guidelines — loaded progressively to minimize context window usage.
 
 ---
 
@@ -96,7 +96,7 @@ It covers **18+ languages and frameworks** with over **14,000 lines** of careful
       <td>~540</td>
     </tr>
     <tr>
-      <td rowspan="8"><strong>Backend</strong></td>
+      <td rowspan="9"><strong>Backend</strong></td>
       <td>&#9749; Java 17/21 + Spring Boot 3</td>
       <td><code>reference/java.md</code></td>
       <td>~800</td>
@@ -105,6 +105,11 @@ It covers **18+ languages and frameworks** with over **14,000 lines** of careful
       <td>&#9889; FastAPI</td>
       <td><code>reference/fastapi.md</code></td>
       <td>~590</td>
+    </tr>
+    <tr>
+      <td>PHP 8.x</td>
+      <td><code>reference/php.md</code></td>
+      <td>~700</td>
     </tr>
     <tr>
       <td>&#128230; NestJS</td>
@@ -231,6 +236,7 @@ code-review-skill/
 |   +-- typescript.md                     # TypeScript strict mode, generics, ESLint
 |   +-- nestjs.md                         # NestJS DI, Guards, Interceptors, DTOs
 |   +-- java.md                           # Java 17/21 & Spring Boot 3
+|   +-- php.md                            # PHP 8.x types, PDO, security, Composer
 |   +-- python.md                         # Python async, typing, pytest
 |   +-- django.md                         # Django / DRF security, serializers, async
 |   +-- fastapi.md                        # FastAPI Depends, Pydantic v2, async, test-driven verification
@@ -369,7 +375,7 @@ Focus on: security, performance, and maintainability.
 Contributions are welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 **Ideas:**
-- New language guides (Swift, Ruby, PHP, Scala...)
+- New language guides (Swift, Ruby, Elixir, Scala...)
 - Framework-specific guides (Laravel, Spring WebFlux, FastAPI...)
 - Additional checklists and templates
 - Translations of core documentation
@@ -390,7 +396,7 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 
 **Code Review Skill** 是专为 [Claude Code](https://claude.ai/code) 打造的生产级代码审查技能，将 AI 辅助的代码审查从模糊建议转变为**结构化、一致且专业级**的流程。
 
-覆盖 **18+ 种语言和框架**，拥有超过 **14,000 行**精心整理的代码审查指南——按需加载，最大程度减少上下文占用。
+覆盖 **19+ 种语言和框架**，拥有超过 **17,000 行**精心整理的代码审查指南——按需加载，最大程度减少上下文占用。
 
 ---
 
@@ -417,6 +423,7 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 | | &#128311; TypeScript | `reference/typescript.md` | ~540 |
 | **后端** | &#9749; Java 17/21 + Spring Boot 3 | `reference/java.md` | ~800 |
 | | &#9889; FastAPI | `reference/fastapi.md` | ~590 |
+| | PHP 8.x | `reference/php.md` | ~700 |
 | | &#128230; NestJS | `reference/nestjs.md` | ~590 |
 | | &#128013; Django / DRF | `reference/django.md` | ~1,030 |
 | | &#128013; Python | `reference/python.md` | ~1,070 |
@@ -486,6 +493,7 @@ code-review-skill/
 |   +-- typescript.md                     # TypeScript strict 模式、泛型、ESLint
 |   +-- nestjs.md                         # NestJS 依赖注入、Guard、Interceptor、DTO
 |   +-- java.md                           # Java 17/21 & Spring Boot 3
+|   +-- php.md                            # PHP 8.x 类型、PDO、安全、Composer
 |   +-- python.md                         # Python async、类型注解、pytest
 |   +-- django.md                         # Django / DRF 安全、Serializer、异步视图
 |   +-- fastapi.md                        # FastAPI Depends、Pydantic v2、异步、测试驱动验证
@@ -624,7 +632,7 @@ Use code-review-skill to review this PR
 欢迎贡献！请查阅 [CONTRIBUTING.md](./CONTRIBUTING.md) 了解规范。
 
 **可贡献方向：**
-- 新增语言指南（Swift、Ruby、PHP、Scala...）
+- 新增语言指南（Swift、Ruby、Elixir、Scala...）
 - 框架专属指南（Laravel、Spring WebFlux、FastAPI...）
 - 补充检查清单和审查模板
 - 核心文档的多语言翻译

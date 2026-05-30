@@ -163,6 +163,21 @@ Quick-reference bug patterns organized by category. For detailed code examples, 
 
 **Full guide:** [Java Review Guide](java.md)
 
+## PHP
+
+- [ ] Missing `declare(strict_types=1);` in new files
+- [ ] Weak comparison (`==`, `!=`) in auth, token, payment, or state logic
+- [ ] `in_array()` / `array_search()` used without strict mode
+- [ ] SQL built with string concatenation instead of prepared statements
+- [ ] User input echoed without context-aware escaping
+- [ ] Passwords stored with `md5()` / `sha1()` instead of `password_hash()`
+- [ ] Untrusted data passed to `unserialize()`
+- [ ] PHP 8.2+ dynamic properties used instead of declared properties
+- [ ] Errors hidden with `@` or swallowed in empty `catch` blocks
+- [ ] File uploads using client-provided names or missing MIME/size validation
+
+**Full guide:** [PHP Review Guide](php.md)
+
 ## C
 
 - [ ] Pointer/buffer overflow or underflow
