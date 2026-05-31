@@ -178,6 +178,20 @@ Quick-reference bug patterns organized by category. For detailed code examples, 
 
 **Full guide:** [PHP Review Guide](php.md)
 
+## Swift
+
+- [ ] Force-unwrap (`!`) or `try!` where safe unwrapping is possible
+- [ ] Closure capturing `self` strongly without `[weak self]` (retain cycle)
+- [ ] Reference type (`class`) used where a value type (`struct`) is intended
+- [ ] Errors swallowed instead of propagated via `throws` / `Result`
+- [ ] Data race across concurrency boundaries (missing `Sendable`, `@MainActor`, actor isolation)
+- [ ] Fire-and-forget `Task {}` that is never cancelled or leaks
+- [ ] `@ObservedObject` used where `@StateObject` is required for ownership
+- [ ] Implicitly unwrapped optional (`var x: T!`) outside IBOutlets
+- [ ] Over-broad access control (`public` / `open` where `internal` suffices)
+
+**Full guide:** [Swift Review Guide](swift.md)
+
 ## C
 
 - [ ] Pointer/buffer overflow or underflow

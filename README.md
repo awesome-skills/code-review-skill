@@ -13,7 +13,7 @@
   </a>
   <img src="https://img.shields.io/badge/Claude_Code-Skill-7c3aed?style=flat-square&logo=anthropic&logoColor=white" alt="Claude Code Skill"/>
   <img src="https://img.shields.io/badge/Total_Lines-16%2C000%2B-3b82f6?style=flat-square" alt="16000+ lines"/>
-  <img src="https://img.shields.io/badge/Languages-19%2B-f59e0b?style=flat-square" alt="19+ languages"/>
+  <img src="https://img.shields.io/badge/Languages-20%2B-f59e0b?style=flat-square" alt="20+ languages"/>
   <img src="https://img.shields.io/badge/PRs-Welcome-ec4899?style=flat-square" alt="PRs Welcome"/>
 </p>
 
@@ -37,7 +37,7 @@
 
 **Code Review Skill** is a production-ready skill for [Claude Code](https://claude.ai/code) that transforms AI-assisted code review from vague suggestions into a **structured, consistent, and expert-level** process.
 
-It covers **19+ languages and frameworks** with over **16,000 lines** of carefully curated review guidelines — loaded progressively to minimize context window usage.
+It covers **20+ languages and frameworks** with over **16,000 lines** of carefully curated review guidelines — loaded progressively to minimize context window usage.
 
 ---
 
@@ -142,10 +142,15 @@ It covers **19+ languages and frameworks** with over **16,000 lines** of careful
       <td>~1,070</td>
     </tr>
     <tr>
-      <td rowspan="4"><strong>Mobile / Systems</strong></td>
+      <td rowspan="5"><strong>Mobile / Systems</strong></td>
       <td>&#128241; Kotlin / Android</td>
       <td><code>reference/kotlin.md</code></td>
       <td>~1,020</td>
+    </tr>
+    <tr>
+      <td>&#127822; Swift / SwiftUI</td>
+      <td><code>reference/swift.md</code></td>
+      <td>~930</td>
     </tr>
     <tr>
       <td>&#9881;&#65039; C</td>
@@ -242,6 +247,7 @@ code-review-skill/
 |   +-- fastapi.md                        # FastAPI Depends, Pydantic v2, async, test-driven verification
 |   +-- go.md                             # Go goroutines, channels, context, interfaces
 |   +-- kotlin.md                         # Kotlin / Android coroutines, Compose, Flow
+|   +-- swift.md                          # Swift 5.9+/6, SwiftUI, concurrency, optionals
 |   +-- csharp.md                         # C# 12 / .NET 8, EF Core, ASP.NET Core
 |   +-- c.md                              # C memory safety, UB, error handling
 |   +-- cpp.md                            # C++ RAII, move semantics, exception safety
@@ -375,7 +381,7 @@ Focus on: security, performance, and maintainability.
 Contributions are welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 **Ideas:**
-- New language guides (Swift, Ruby, Elixir, Scala...)
+- New language guides (Ruby, Elixir, Scala...)
 - Framework-specific guides (Laravel, Spring WebFlux, FastAPI...)
 - Additional checklists and templates
 - Translations of core documentation
@@ -396,7 +402,7 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 
 **Code Review Skill** 是专为 [Claude Code](https://claude.ai/code) 打造的生产级代码审查技能，将 AI 辅助的代码审查从模糊建议转变为**结构化、一致且专业级**的流程。
 
-覆盖 **19+ 种语言和框架**，拥有超过 **16,000 行**精心整理的代码审查指南——按需加载，最大程度减少上下文占用。
+覆盖 **20+ 种语言和框架**，拥有超过 **16,000 行**精心整理的代码审查指南——按需加载，最大程度减少上下文占用。
 
 ---
 
@@ -431,6 +437,7 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 | | &#129408; Rust | `reference/rust.md` | ~840 |
 | | &#128187; C# / .NET 8 | `reference/csharp.md` | ~520 |
 | **移动 / 系统** | &#128241; Kotlin / Android | `reference/kotlin.md` | ~1,020 |
+| | &#127822; Swift / SwiftUI | `reference/swift.md` | ~930 |
 | | &#9881;&#65039; C | `reference/c.md` | ~210 |
 | | &#128297; C++ | `reference/cpp.md` | ~300 |
 | | &#128421;&#65039; Qt 框架 | `reference/qt.md` | ~190 |
@@ -499,6 +506,7 @@ code-review-skill/
 |   +-- fastapi.md                        # FastAPI Depends、Pydantic v2、异步、测试驱动验证
 |   +-- go.md                             # Go goroutine、channel、context、接口
 |   +-- kotlin.md                         # Kotlin / Android 协程、Compose、Flow
+|   +-- swift.md                          # Swift 5.9+/6、SwiftUI、并发、可选值
 |   +-- csharp.md                         # C# 12 / .NET 8、EF Core、ASP.NET Core
 |   +-- c.md                              # C 内存安全、UB、错误处理
 |   +-- cpp.md                            # C++ RAII、移动语义、异常安全
@@ -632,7 +640,7 @@ Use code-review-skill to review this PR
 欢迎贡献！请查阅 [CONTRIBUTING.md](./CONTRIBUTING.md) 了解规范。
 
 **可贡献方向：**
-- 新增语言指南（Swift、Ruby、Elixir、Scala...）
+- 新增语言指南（Ruby、Elixir、Scala...）
 - 框架专属指南（Laravel、Spring WebFlux、FastAPI...）
 - 补充检查清单和审查模板
 - 核心文档的多语言翻译
