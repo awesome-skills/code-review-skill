@@ -38,11 +38,11 @@ Copy and use this template for your code reviews.
 
 💡 **[suggestion]** [Alternative approach to consider]
 
-## Questions
+## Learning Notes
 
-❓ [Clarification needed about X]
+📚 [Educational context worth sharing about X]
 
-❓ [Question about design decision Y]
+📚 [Background behind design decision Y]
 
 ## Security Considerations
 
@@ -106,9 +106,9 @@ Not blocking, but consider [improvement].
 [Why this is good]
 ```
 
-### Question
+### Learning
 ```
-❓ **[question]** [Your question]
+📚 **[learning]** [Educational note]
 
-I'm curious about the decision to [X]. Could you explain [Y]?
+For context, [X] works this way because [Y]. No action needed — just sharing.
 ```

@@ -99,7 +99,7 @@ It covers **20+ languages and frameworks** with over **16,000 lines** of careful
       <td rowspan="9"><strong>Backend</strong></td>
       <td>&#9749; Java 17/21 + Spring Boot 3</td>
       <td><code>reference/java.md</code></td>
-      <td>~800</td>
+      <td>~410</td>
     </tr>
     <tr>
       <td>&#9889; FastAPI</td>
@@ -155,12 +155,12 @@ It covers **20+ languages and frameworks** with over **16,000 lines** of careful
     <tr>
       <td>&#9881;&#65039; C</td>
       <td><code>reference/c.md</code></td>
-      <td>~210</td>
+      <td>~290</td>
     </tr>
     <tr>
       <td>&#128297; C++</td>
       <td><code>reference/cpp.md</code></td>
-      <td>~300</td>
+      <td>~390</td>
     </tr>
     <tr>
       <td>&#128421;&#65039; Qt Framework</td>
@@ -176,12 +176,12 @@ It covers **20+ languages and frameworks** with over **16,000 lines** of careful
     <tr>
       <td>&#9889; Performance Review</td>
       <td><code>reference/performance-review-guide.md</code></td>
-      <td>~850</td>
+      <td>~820</td>
     </tr>
     <tr>
       <td>&#128269; Universal Quality Anti-Patterns</td>
       <td><code>reference/code-quality-universal.md</code></td>
-      <td>~320</td>
+      <td>~490</td>
     </tr>
   </tbody>
 </table>
@@ -382,7 +382,7 @@ Contributions are welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelin
 
 **Ideas:**
 - New language guides (Ruby, Elixir, Scala...)
-- Framework-specific guides (Laravel, Spring WebFlux, FastAPI...)
+- Framework-specific guides (Laravel, Spring WebFlux...)
 - Additional checklists and templates
 - Translations of core documentation
 
@@ -427,7 +427,7 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 | | &#128293; Svelte 5 / SvelteKit | `reference/svelte.md` | ~1,060 |
 | | &#127912; CSS / Less / Sass | `reference/css-less-sass.md` | ~660 |
 | | &#128311; TypeScript | `reference/typescript.md` | ~540 |
-| **后端** | &#9749; Java 17/21 + Spring Boot 3 | `reference/java.md` | ~800 |
+| **后端** | &#9749; Java 17/21 + Spring Boot 3 | `reference/java.md` | ~410 |
 | | &#9889; FastAPI | `reference/fastapi.md` | ~590 |
 | | PHP 8.x | `reference/php.md` | ~700 |
 | | &#128230; NestJS | `reference/nestjs.md` | ~590 |
@@ -438,12 +438,12 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 | | &#128187; C# / .NET 8 | `reference/csharp.md` | ~520 |
 | **移动 / 系统** | &#128241; Kotlin / Android | `reference/kotlin.md` | ~1,020 |
 | | &#127822; Swift / SwiftUI | `reference/swift.md` | ~930 |
-| | &#9881;&#65039; C | `reference/c.md` | ~210 |
-| | &#128297; C++ | `reference/cpp.md` | ~300 |
+| | &#9881;&#65039; C | `reference/c.md` | ~290 |
+| | &#128297; C++ | `reference/cpp.md` | ~390 |
 | | &#128421;&#65039; Qt 框架 | `reference/qt.md` | ~190 |
 | **架构** | &#127963;&#65039; 架构设计审查 | `reference/architecture-review-guide.md` | ~470 |
-| | &#9889; 性能审查 | `reference/performance-review-guide.md` | ~850 |
-| | &#128269; 通用质量反模式 | `reference/code-quality-universal.md` | ~320 |
+| | &#9889; 性能审查 | `reference/performance-review-guide.md` | ~820 |
+| | &#128269; 通用质量反模式 | `reference/code-quality-universal.md` | ~490 |
 
 ---
 
@@ -641,7 +641,7 @@ Use code-review-skill to review this PR
 
 **可贡献方向：**
 - 新增语言指南（Ruby、Elixir、Scala...）
-- 框架专属指南（Laravel、Spring WebFlux、FastAPI...）
+- 框架专属指南（Laravel、Spring WebFlux...）
 - 补充检查清单和审查模板
 - 核心文档的多语言翻译
 

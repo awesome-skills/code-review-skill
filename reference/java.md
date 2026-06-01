@@ -292,7 +292,7 @@ private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 // ✅ 使用 DateTimeFormatter (Java 8+)
 private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-// ❌ HashMap 在多线程环境可能死循环或数据丢失
+// ❌ HashMap 在多线程环境会数据丢失（Java 7 及之前 resize 还可能死循环，Java 8 修复了死循环但仍非线程安全）
 // ✅ 使用 ConcurrentHashMap
 Map<String, String> cache = new ConcurrentHashMap<>();
 ```

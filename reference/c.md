@@ -22,13 +22,13 @@
 ### Always carry size with buffers
 
 ```c
-// ? Bad: ignores destination size
+// ❌ Bad: ignores destination size
 bool copy_name(char *dst, size_t dst_size, const char *src) {
     strcpy(dst, src);
     return true;
 }
 
-// ? Good: validate size and terminate
+// ✅ Good: validate size and terminate
 bool copy_name(char *dst, size_t dst_size, const char *src) {
     size_t len = strlen(src);
     if (len + 1 > dst_size) {
@@ -44,20 +44,20 @@ bool copy_name(char *dst, size_t dst_size, const char *src) {
 Prefer `snprintf`, `fgets`, and explicit bounds over `gets`, `strcpy`, or `sprintf`.
 
 ```c
-// ? Bad: unbounded write
+// ❌ Bad: unbounded write
 sprintf(buf, "%s", input);
 
-// ? Good: bounded write
+// ✅ Good: bounded write
 snprintf(buf, buf_size, "%s", input);
 ```
 
 ### Use the right copy primitive
 
 ```c
-// ? Bad: memcpy with overlapping regions
+// ❌ Bad: memcpy with overlapping regions
 memcpy(dst, src, len);
 
-// ? Good: memmove handles overlap
+// ✅ Good: memmove handles overlap
 memmove(dst, src, len);
 ```
 
@@ -70,7 +70,7 @@ memmove(dst, src, len);
 Track ownership and clean up on every error path.
 
 ```c
-// ? Good: cleanup label avoids leaks
+// ✅ Good: cleanup label avoids leaks
 int load_file(const char *path) {
     int rc = -1;
     FILE *f = NULL;
@@ -107,23 +107,23 @@ cleanup:
 ### Common UB patterns
 
 ```c
-// ? Bad: use after free
+// ❌ Bad: use after free
 char *p = malloc(10);
 free(p);
 p[0] = 'a';
 
-// ? Bad: uninitialized read
+// ❌ Bad: uninitialized read
 int x;
 if (x > 0) { /* UB */ }
 
-// ? Bad: signed overflow
+// ❌ Bad: signed overflow
 int sum = a + b;
 ```
 
 ### Avoid pointer arithmetic past the object
 
 ```c
-// ? Bad: pointer past the end then dereference
+// ❌ Bad: pointer past the end then dereference
 int arr[4];
 int *p = arr + 4;
 int v = *p; // UB
@@ -136,11 +136,11 @@ int v = *p; // UB
 ### Avoid signed/unsigned surprises
 
 ```c
-// ? Bad: negative converted to large size_t
+// ❌ Bad: negative converted to large size_t
 int len = -1;
 size_t n = len;
 
-// ? Good: validate before converting
+// ✅ Good: validate before converting
 if (len < 0) {
     return -1;
 }
@@ -150,10 +150,10 @@ size_t n = (size_t)len;
 ### Check for overflow in size calculations
 
 ```c
-// ? Bad: potential overflow in multiplication
+// ❌ Bad: potential overflow in multiplication
 size_t bytes = count * sizeof(Item);
 
-// ? Good: check before multiplying
+// ✅ Good: check before multiplying
 if (count > SIZE_MAX / sizeof(Item)) {
     return NULL;
 }
@@ -167,10 +167,10 @@ size_t bytes = count * sizeof(Item);
 ### Always check return values
 
 ```c
-// ? Bad: ignore errors
+// ❌ Bad: ignore errors
 fread(buf, 1, size, f);
 
-// ? Good: handle errors
+// ✅ Good: handle errors
 size_t read = fread(buf, 1, size, f);
 if (read != size && ferror(f)) {
     return -1;
@@ -190,13 +190,13 @@ if (read != size && ferror(f)) {
 ### volatile is not synchronization
 
 ```c
-// ? Bad: data race
+// ❌ Bad: data race
 volatile int stop = 0;
 void worker(void) {
     while (!stop) { /* ... */ }
 }
 
-// ? Good: C11 atomics
+// ✅ Good: C11 atomics
 _Atomic int stop = 0;
 void worker(void) {
     while (!atomic_load(&stop)) { /* ... */ }
@@ -214,11 +214,11 @@ Protect shared data with `pthread_mutex_t` or equivalent. Avoid holding locks wh
 ### Parenthesize arguments
 
 ```c
-// ? Bad: macro with side effects
+// ❌ Bad: macro with side effects
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 int x = MIN(i++, j++);
 
-// ? Good: static inline function
+// ✅ Good: static inline function
 static inline int min_int(int a, int b) {
     return a < b ? a : b;
 }
@@ -231,7 +231,7 @@ static inline int min_int(int a, int b) {
 ### Const-correctness and sizes
 
 ```c
-// ? Good: explicit size and const input
+// ✅ Good: explicit size and const input
 int hash_bytes(const uint8_t *data, size_t len, uint8_t *out);
 ```
 

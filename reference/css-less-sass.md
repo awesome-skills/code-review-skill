@@ -562,6 +562,8 @@ module.exports = {
 ### Mixin vs Extend vs 变量
 
 ```scss
+@use 'sass:color';
+
 /* 变量 - 用于单个值 */
 $primary-color: #3b82f6;
 
@@ -570,7 +572,9 @@ $primary-color: #3b82f6;
   background: $bg;
   color: $text;
   &:hover {
-    background: darken($bg, 10%);
+    // Dart Sass 已弃用全局 darken()/lighten()，改用 color 模块
+    background: color.adjust($bg, $lightness: -10%);
+    // color.scale($bg, $lightness: -10%) 按比例调整，深浅过渡更自然
   }
 }
 
@@ -580,7 +584,8 @@ $primary-color: #3b82f6;
   width: 1px;
   height: 1px;
   overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);  /* clip: rect() 已弃用，改用 clip-path */
+  white-space: nowrap;    /* 避免内容被挤成一列后撑开布局 */
 }
 
 .sr-only {

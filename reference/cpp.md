@@ -24,7 +24,7 @@
 Use RAII to express ownership. Default to `std::unique_ptr`, use `std::shared_ptr` only for shared lifetime.
 
 ```cpp
-// ? Bad: manual new/delete with early returns
+// ❌ Bad: manual new/delete with early returns
 Foo* make_foo() {
     Foo* foo = new Foo();
     if (!foo->Init()) {
@@ -34,7 +34,7 @@ Foo* make_foo() {
     return foo;
 }
 
-// ? Good: RAII with unique_ptr
+// ✅ Good: RAII with unique_ptr
 std::unique_ptr<Foo> make_foo() {
     auto foo = std::make_unique<Foo>();
     if (!foo->Init()) {
@@ -47,7 +47,7 @@ std::unique_ptr<Foo> make_foo() {
 ### Wrap C resources
 
 ```cpp
-// ? Good: wrap FILE* with unique_ptr
+// ✅ Good: wrap FILE* with unique_ptr
 using FilePtr = std::unique_ptr<FILE, decltype(&fclose)>;
 
 FilePtr open_file(const char* path) {
@@ -64,18 +64,18 @@ FilePtr open_file(const char* path) {
 `std::string_view` and `std::span` do not own data. Make sure the owner outlives the view.
 
 ```cpp
-// ? Bad: returning string_view to a temporary
+// ❌ Bad: returning string_view to a temporary
 std::string_view bad_view() {
     std::string s = make_name();
     return s; // dangling
 }
 
-// ? Good: return owning string
+// ✅ Good: return owning string
 std::string good_name() {
     return make_name();
 }
 
-// ? Good: view tied to caller-owned data
+// ✅ Good: view tied to caller-owned data
 std::string_view good_view(const std::string& s) {
     return s;
 }
@@ -84,13 +84,13 @@ std::string_view good_view(const std::string& s) {
 ### Lambda captures
 
 ```cpp
-// ? Bad: capture reference that escapes
+// ❌ Bad: capture reference that escapes
 std::function<void()> make_task() {
     int value = 42;
     return [&]() { use(value); }; // dangling
 }
 
-// ? Good: capture by value
+// ✅ Good: capture by value
 std::function<void()> make_task() {
     int value = 42;
     return [value]() { use(value); };
@@ -106,7 +106,7 @@ std::function<void()> make_task() {
 Prefer the Rule of 0 by using RAII types. If you own a resource, define or delete copy and move operations.
 
 ```cpp
-// ? Bad: raw ownership with default copy
+// ❌ Bad: raw ownership with default copy
 struct Buffer {
     int* data;
     size_t size;
@@ -115,7 +115,7 @@ struct Buffer {
     // copy ctor/assign are implicitly generated -> double delete
 };
 
-// ? Good: Rule of 0 with std::vector
+// ✅ Good: Rule of 0 with std::vector
 struct Buffer {
     std::vector<int> data;
     explicit Buffer(size_t n) : data(n) {}
@@ -164,10 +164,10 @@ struct Millis {
 struct Shape { virtual ~Shape() = default; };
 struct Circle : Shape { void draw() const; };
 
-// ? Bad: slices Circle into Shape
+// ❌ Bad: slices Circle into Shape
 void draw(Shape shape);
 
-// ? Good: pass by reference
+// ✅ Good: pass by reference
 void draw(const Shape& shape);
 ```
 
@@ -190,7 +190,7 @@ struct Worker final : Base {
 ### Prefer RAII for cleanup
 
 ```cpp
-// ? Good: RAII handles cleanup on exceptions
+// ✅ Good: RAII handles cleanup on exceptions
 void process() {
     std::vector<int> data = load_data(); // safe cleanup
     do_work(data);
@@ -209,7 +209,7 @@ struct File {
 ### Use expected results for normal failures
 
 ```cpp
-// ? Expected error: use optional or expected
+// ✅ Expected error: use optional or expected
 std::optional<int> parse_int(const std::string& s) {
     try {
         return std::stoi(s);
@@ -226,11 +226,11 @@ std::optional<int> parse_int(const std::string& s) {
 ### Protect shared data
 
 ```cpp
-// ? Bad: data race
+// ❌ Bad: data race
 int counter = 0;
 void inc() { counter++; }
 
-// ? Good: atomic
+// ✅ Good: atomic
 std::atomic<int> counter{0};
 void inc() { counter.fetch_add(1, std::memory_order_relaxed); }
 ```
@@ -254,7 +254,7 @@ void add(int v) {
 ### Avoid repeated allocations
 
 ```cpp
-// ? Bad: repeated reallocation
+// ❌ Bad: repeated reallocation
 std::vector<int> build(int n) {
     std::vector<int> out;
     for (int i = 0; i < n; ++i) {
@@ -263,7 +263,7 @@ std::vector<int> build(int n) {
     return out;
 }
 
-// ? Good: reserve upfront
+// ✅ Good: reserve upfront
 std::vector<int> build(int n) {
     std::vector<int> out;
     out.reserve(static_cast<size_t>(n));
@@ -277,7 +277,7 @@ std::vector<int> build(int n) {
 ### String concatenation
 
 ```cpp
-// ? Bad: repeated allocation
+// ❌ Bad: repeated allocation
 std::string join(const std::vector<std::string>& parts) {
     std::string out;
     for (const auto& p : parts) {
@@ -286,7 +286,7 @@ std::string join(const std::vector<std::string>& parts) {
     return out;
 }
 
-// ? Good: reserve total size
+// ✅ Good: reserve total size
 std::string join(const std::vector<std::string>& parts) {
     size_t total = 0;
     for (const auto& p : parts) {
@@ -308,13 +308,13 @@ std::string join(const std::vector<std::string>& parts) {
 ### Prefer constrained templates (C++20)
 
 ```cpp
-// ? Bad: overly generic
+// ❌ Bad: overly generic
 template <typename T>
 T add(T a, T b) {
     return a + b;
 }
 
-// ? Good: constrained
+// ✅ Good: constrained
 template <typename T>
 requires std::is_integral_v<T>
 T add(T a, T b) {

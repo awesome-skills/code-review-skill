@@ -76,15 +76,11 @@ Svelte 5 / SvelteKit 审查重点：Runes 响应式系统、Server/Client 边界
 
 <!-- ✅ $state.snapshot 获取普通对象副本 -->
 <script lang="ts">
-  import { unstate } from 'svelte';
-
   let state = $state({ x: 0, y: 0 });
 
   onMount(() => {
     // $state.snapshot produces a plain object (Svelte 5)
     chartLibrary.update($state.snapshot(state));
-    // or use unstate() for the same purpose
-    chartLibrary.update(unstate(state));
   });
 </script>
 ```
@@ -385,7 +381,7 @@ export async function load() {
   return {
     stream: fs.createReadStream('data.csv'),  // not serializable!
     callback: () => console.log('hi'),        // functions not serializable!
-    date: new Date(),                         // becomes string via devalue
+    date: new Date(),                         // OK — devalue serializes Date/Map/Set fine
   };
 }
 
@@ -863,7 +859,7 @@ export const actions = {
 {/each}
 
 <!-- ✅ 复合 key -->
-{#each items as item (item.category, item.id)}
+{#each items as item (`${item.category}-${item.id}`)}
   <div>{item.name}</div>
 {/each}
 ```
@@ -1006,7 +1002,7 @@ event.cookies.set('session', token, {
 - [ ] $state 只用于会变化的值，常量直接声明
 - [ ] 大型不可变数据使用 $state.raw
 - [ ] 没有解构 $state 对象（会丢失响应性）
-- [ ] 外部库使用 $state.snapshot / unstate 传入普通对象
+- [ ] 外部库使用 $state.snapshot 传入普通对象
 - [ ] $derived 中没有副作用
 - [ ] 没有用 $effect 替代 $derived 做状态同步
 - [ ] $effect 中不修改被追踪的状态（避免无限循环）

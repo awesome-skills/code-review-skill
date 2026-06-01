@@ -446,34 +446,44 @@ const routes = createConfig(['home', 'about', 'contact'] as const);
 ### 推荐的 @typescript-eslint 规则
 
 ```javascript
-// .eslintrc.js
-module.exports = {
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:@typescript-eslint/recommended-requiring-type-checking',
-    'plugin:@typescript-eslint/strict'
-  ],
-  rules: {
-    // ✅ 类型安全
-    '@typescript-eslint/no-explicit-any': 'error',
-    '@typescript-eslint/no-unsafe-assignment': 'error',
-    '@typescript-eslint/no-unsafe-member-access': 'error',
-    '@typescript-eslint/no-unsafe-call': 'error',
-    '@typescript-eslint/no-unsafe-return': 'error',
+// eslint.config.js（flat config，typescript-eslint v8）
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
 
-    // ✅ 最佳实践
-    '@typescript-eslint/explicit-function-return-type': 'warn',
-    '@typescript-eslint/no-floating-promises': 'error',
-    '@typescript-eslint/await-thenable': 'error',
-    '@typescript-eslint/no-misused-promises': 'error',
+export default tseslint.config(
+  eslint.configs.recommended,
+  // 需要类型信息的规则集，对应旧的 recommended-requiring-type-checking
+  tseslint.configs.recommendedTypeChecked,
+  tseslint.configs.strictTypeChecked,
+  {
+    languageOptions: {
+      parserOptions: {
+        // 让带类型的规则自动找到对应 tsconfig
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      // ✅ 类型安全
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-unsafe-assignment': 'error',
+      '@typescript-eslint/no-unsafe-member-access': 'error',
+      '@typescript-eslint/no-unsafe-call': 'error',
+      '@typescript-eslint/no-unsafe-return': 'error',
 
-    // ✅ 代码风格
-    '@typescript-eslint/consistent-type-imports': 'error',
-    '@typescript-eslint/prefer-nullish-coalescing': 'error',
-    '@typescript-eslint/prefer-optional-chain': 'error'
-  }
-};
+      // ✅ 最佳实践
+      '@typescript-eslint/explicit-function-return-type': 'warn',
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/await-thenable': 'error',
+      '@typescript-eslint/no-misused-promises': 'error',
+
+      // ✅ 代码风格
+      '@typescript-eslint/consistent-type-imports': 'error',
+      '@typescript-eslint/prefer-nullish-coalescing': 'error',
+      '@typescript-eslint/prefer-optional-chain': 'error',
+    },
+  },
+);
 ```
 
 ### 常见 ESLint 错误修复

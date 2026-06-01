@@ -309,10 +309,11 @@ async fn bad_select(stream: &mut TcpStream) {
     let mut buffer = vec![0u8; 1024];
     loop {
         select! {
-            // 如果 timeout 先完成，read 被取消
-            // 部分读取的数据可能丢失！
-            result = stream.read(&mut buffer) => {
-                handle_data(&buffer[..result?]);
+            // read_exact 不是取消安全的：timeout 先完成时，
+            // 已经读进 buffer 的部分字节会随 Future 一起丢弃
+            result = stream.read_exact(&mut buffer) => {
+                result?;
+                handle_data(&buffer);
             }
             _ = tokio::time::sleep(Duration::from_secs(5)) => {
                 println!("Timeout");
@@ -326,8 +327,9 @@ async fn good_select(stream: &mut TcpStream) {
     let mut buffer = vec![0u8; 1024];
     loop {
         select! {
-            // tokio::io::AsyncReadExt::read 是取消安全的
-            // 取消时，未读取的数据留在流中
+            // read 是取消安全的：被取消时未读取的数据仍留在流中
+            // 真的需要按定长读取时，把 read_exact 丢到单独的 task 里，
+            // 这里 select! 它的 JoinHandle，取消就不会丢字节
             result = stream.read(&mut buffer) => {
                 match result {
                     Ok(0) => break,  // EOF

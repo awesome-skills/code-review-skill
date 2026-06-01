@@ -223,15 +223,15 @@ for author in authors:
 ### QuerySet 缓存误用
 
 ```python
-# ❌ 重复评估同一个 QuerySet
+# ❌ count() 后再迭代 —— 两次查询
 qs = Book.objects.all()
-count = len(qs)             # 评估 1: SELECT COUNT(*)
-titles = [b.title for b in qs]  # 评估 2: SELECT * — 缓存失效！
+count = qs.count()          # 查询 1: SELECT COUNT(*) — 不填充缓存
+titles = [b.title for b in qs]  # 查询 2: SELECT * — 重新评估
 
-# ✅ 使用 count() 和一次性迭代
+# ✅ 既要对象又要数量时，用 len() 触发一次评估并复用缓存
 qs = Book.objects.all()
-count = qs.count()          # SELECT COUNT(*) — 不填充缓存
-titles = [b.title for b in qs]  # SELECT * — 唯一一次评估
+count = len(qs)             # 查询 1: SELECT * — 全部加载并缓存
+titles = [b.title for b in qs]  # 复用缓存，无新查询
 
 # ✅ 如果需要多次迭代，先转 list
 books = list(Book.objects.all())  # 一次查询
@@ -239,18 +239,24 @@ count = len(books)
 titles = [b.title for b in books]
 ```
 
-### 切片不填充缓存
+### 切片/索引不填充缓存
 
 ```python
-# ❌ 切片后迭代触发两次查询
-qs = Book.objects.all()[:10]   # 切片：不填充缓存
-first = list(qs)               # 查询 1
-second = list(qs)              # 查询 2 — 重复！
+# ❌ 反复索引未评估的 QuerySet —— 每次都查库
+qs = Book.objects.all()
+qs[0]   # 查询 1: SELECT ... LIMIT 1
+qs[0]   # 查询 2 — 切片/索引不会填充缓存
 
-# ✅ 切片后立即转 list
-books = list(Book.objects.all()[:10])  # 一次查询
-first = books
-second = list(books)  # 使用 Python list，无查询
+# ✅ 先整体评估，缓存保存所有行，之后索引走缓存
+qs = Book.objects.all()
+list(qs)    # SELECT * — 评估并缓存全部行
+qs[0]       # 走缓存，无查询
+qs[5]       # 走缓存，无查询
+
+# ✅ 只需要前 N 条时，切一次并转 list
+books = list(Book.objects.all()[:10])  # 一次查询：SELECT ... LIMIT 10
+first = books[0]
+rest = books[1:]   # 已是 Python list，无查询
 ```
 
 ### len() vs count()
@@ -743,31 +749,28 @@ class TimingMiddleware:
         response["X-Elapsed"] = str(elapsed)
         return response
 
-# ✅ 同时支持同步和异步的中间件
+# ✅ async-capable 中间件：async def __call__，并在 __init__ 里标记实例
 import time
+from asgiref.sync import iscoroutinefunction, markcoroutinefunction
 
 class TimingMiddleware:
     async_capable = True
-    sync_capable = True
+    sync_capable = False
 
     def __init__(self, get_response):
         self.get_response = get_response
+        # get_response 是协程函数时标记自己，Django 才会 await 这个实例
+        if iscoroutinefunction(self.get_response):
+            markcoroutinefunction(self)
 
-    async def __acall__(self, request):
+    async def __call__(self, request):
         start = time.time()
         response = await self.get_response(request)
         elapsed = time.time() - start
         response["X-Elapsed"] = str(elapsed)
         return response
 
-    def __call__(self, request):
-        start = time.time()
-        response = self.get_response(request)
-        elapsed = time.time() - start
-        response["X-Elapsed"] = str(elapsed)
-        return response
-
-# ✅ 或者使用 Django 内置的 async 安全装饰器
+# ✅ 要同时兼容同步和异步，用工厂函数 + 内置装饰器
 from django.utils.decorators import sync_and_async_middleware
 ```
 
@@ -839,9 +842,8 @@ SECURE_HSTS_SECONDS = 31536000      # 1 year HSTS
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SECURE_CONTENT_TYPE_NOSNIFF = True   # X-Content-Type-Options: nosniff
-SECURE_BROWSER_XSS_FILTER = True     # X-XSS-Protection: 1; mode=block
 X_FRAME_OPTIONS = "DENY"             # 防止 clickjacking
-REFERRER_POLICY = "strict-origin-when-cross-origin"
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 # --- 密码验证 ---
 AUTH_PASSWORD_VALIDATORS = [

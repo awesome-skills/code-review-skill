@@ -1,5 +1,5 @@
 ---
-name: code-review-excellence
+name: code-review-skill
 description: |
   Provides comprehensive code review guidance for React 19, Vue 3, Angular 17+, Svelte 5, Rust, TypeScript, Java, PHP, Python, Django, Go, C#/.NET, Kotlin, Swift, NestJS, C/C++, and more.
   Helps catch bugs, improve code quality, and give constructive feedback.
@@ -14,7 +14,7 @@ allowed-tools:
   - WebFetch  # 查阅最新文档和最佳实践
 ---
 
-# Code Review Excellence
+# Code Review Skill
 
 Transform code reviews from gatekeeping to knowledge sharing through constructive feedback, systematic analysis, and collaborative improvement.
 
@@ -99,6 +99,8 @@ Before diving into code, understand:
 4. Understand the business requirement
 5. Note any relevant architectural decisions
 
+> For large diffs, pipe the diff through [`scripts/pr-analyzer.py`](scripts/pr-analyzer.py) (`git diff main...HEAD | python scripts/pr-analyzer.py`) to triage complexity and get a suggested review approach before reading.
+
 ### Phase 2: High-Level Review (5-10 minutes)
 
 1. **Architecture & Design** - Does the solution fit the problem?
@@ -169,6 +171,8 @@ Use labels to indicate priority:
 - 💡 `[suggestion]` - Alternative approach to consider
 - 📚 `[learning]` - Educational comment, no action needed
 - 🎉 `[praise]` - Good work, keep it up!
+
+**Severity levels:** 🔴 / 🟡 / 🟢 are the three severity tiers used as the standard across all guides in this skill — 🔴 blocks the merge, 🟡 should be addressed, 🟢 is optional. The remaining markers (💡 / 📚 / 🎉) are non-blocking annotations.
 
 ## Language-Specific Guides
 

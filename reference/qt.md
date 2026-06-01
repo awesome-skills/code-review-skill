@@ -74,7 +74,7 @@ Check logic that might cause infinite signal loops (e.g., `valueChanged` -> `set
 
 ```cpp
 void MyClass::setValue(int v) {
-    if (m_value == v) return; // ? Good: Break loop
+    if (m_value == v) return; // ✅ Good: Break loop
     m_value = v;
     emit valueChanged(v);
 }

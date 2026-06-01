@@ -131,8 +131,13 @@ def parse_diff(diff_content: str) -> List[FileStats]:
         if line.startswith('diff --git'):
             if current_file:
                 files.append(current_file)
-            # Extract filename from "diff --git a/path b/path"
-            match = re.search(r'b/(.+)$', line)
+            # "diff --git a/<path> b/<path>" — match the b/ side via a
+            # backreference so a literal "b/" inside paths like lib/, web/ or
+            # db/ can't be mistaken for the prefix. Renames have differing
+            # paths, so fall back to the b/ side after the separating space.
+            match = re.match(r'diff --git a/(.+?) b/\1', line)
+            if not match:
+                match = re.search(r' b/(.+)$', line)
             if match:
                 filename = match.group(1)
                 current_file = FileStats(
@@ -141,6 +146,8 @@ def parse_diff(diff_content: str) -> List[FileStats]:
                     is_test=is_test_file(filename),
                     is_config=is_config_file(filename),
                 )
+            else:
+                current_file = None
         elif current_file:
             if line.startswith('+') and not line.startswith('+++'):
                 current_file.additions += 1
@@ -355,14 +362,18 @@ def main():
     args = parser.parse_args()
 
     # Read diff from file or stdin
-    if args.diff_file:
-        with open(args.diff_file, 'r') as f:
-            diff_content = f.read()
-    elif not sys.stdin.isatty():
-        diff_content = sys.stdin.read()
-    else:
-        print("Usage: git diff main...HEAD | python pr-analyzer.py")
-        print("       python pr-analyzer.py -f diff.txt")
+    try:
+        if args.diff_file:
+            with open(args.diff_file, 'r', encoding='utf-8', errors='replace') as f:
+                diff_content = f.read()
+        elif not sys.stdin.isatty():
+            diff_content = sys.stdin.buffer.read().decode('utf-8', errors='replace')
+        else:
+            print("Usage: git diff main...HEAD | python pr-analyzer.py")
+            print("       python pr-analyzer.py -f diff.txt")
+            sys.exit(1)
+    except OSError as e:
+        print(f"Error reading diff input: {e}", file=sys.stderr)
         sys.exit(1)
 
     if not diff_content.strip():

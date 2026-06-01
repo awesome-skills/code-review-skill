@@ -694,7 +694,7 @@ class MyManager(private val scope: CoroutineScope) {
     }
 }
 
-// ✅ ViewModel 中使用 closeableScope（Kotlin 2.1+）
+// ✅ ViewModel 里直接用内置的 viewModelScope，不用自己管生命周期
 class MyViewModel : ViewModel() {
     private val scope = viewModelScope + Dispatchers.IO
     // Automatically cancelled when ViewModel is cleared

@@ -395,9 +395,7 @@ try {
 content = Path("log.txt").read_text()
 first_line = content.split("\n")[0]
 
-# ✅ 只读需要的内容
-first_line = Path("log.txt").read_text().split("\n", 1)[0]
-# 或更好的方式：逐行读取
+# ✅ 只读第一行，不加载整个文件
 with open("log.txt") as f:
     first_line = f.readline()
 ```

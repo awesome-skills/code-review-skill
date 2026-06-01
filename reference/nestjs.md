@@ -516,7 +516,13 @@ describe('UsersController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     // 必须与 main.ts 中相同的全局配置
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
+    );
     await app.init();
   });
 

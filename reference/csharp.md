@@ -247,7 +247,7 @@ var blogs = await context.Blogs
 // ❌ 默认跟踪——只读查询也付出跟踪开销
 var products = await context.Products.ToListAsync();
 
-// ✅ AsNoTracking——性能提升 ~30%，内存减少 ~40%
+// ✅ AsNoTracking——跳过变更跟踪，更快且更省内存
 var products = await context.Products
     .AsNoTracking()
     .ToListAsync();
@@ -334,7 +334,7 @@ var form = await HttpContext.Request.ReadFormAsync();
 ### 异常用于控制流
 
 ```csharp
-// ❌ 用异常判断是否存在——比检查慢 10-100 倍
+// ❌ 用异常判断是否存在——异常开销大，比直接检查慢得多
 try
 {
     var user = await _db.Users.FirstAsync(u => u.Id == id);

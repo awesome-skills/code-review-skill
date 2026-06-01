@@ -96,10 +96,11 @@ const filePath = `./uploads/${req.params.filename}`;
 // ✅ Validate and sanitize path
 const path = require('path');
 const safeName = path.basename(req.params.filename);
-const filePath = path.join('./uploads', safeName);
+const uploadsDir = path.resolve('./uploads');
+const filePath = path.resolve(uploadsDir, safeName);
 
-// Verify it's still within uploads directory
-if (!filePath.startsWith(path.resolve('./uploads'))) {
+// Verify it's still within uploads directory (both sides absolute)
+if (!filePath.startsWith(uploadsDir + path.sep)) {
   throw new Error('Invalid path');
 }
 ```

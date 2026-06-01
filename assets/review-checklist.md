@@ -76,7 +76,7 @@ Quick reference checklist for code reviews.
 | 🟡 `[important]` | Should fix | Discuss if disagree |
 | 🟢 `[nit]` | Nice to have | Non-blocking |
 | 💡 `[suggestion]` | Alternative | Consider |
-| ❓ `[question]` | Need clarity | Respond |
+| 📚 `[learning]` | Educational comment | No action needed |
 | 🎉 `[praise]` | Good work | Celebrate! |
 
 ---
