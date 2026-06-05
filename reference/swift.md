@@ -677,7 +677,9 @@ let shapes: [any Shape] = [Circle(), Square()]
 
 ```swift
 // ❌ Wrong: existential parameter loses the concrete type and is slower
-func total(_ items: [any Numeric]) -> ... { /* awkward */ }
+func logTotal(_ items: [any Numeric]) {
+    // awkward: the concrete numeric type is erased, so arithmetic needs casts
+}
 
 // ✅ Correct: a generic constraint keeps full type information
 func total<T: Numeric>(_ items: [T]) -> T {
@@ -867,8 +869,10 @@ func testFetchUserUnauthorized() async {
     do {
         _ = try await service.fetchUser(id: "42")
         XCTFail("expected to throw")
+    } catch NetworkError.unauthorized {
+        // expected
     } catch {
-        XCTAssertEqual(error as? NetworkError, .unauthorized)
+        XCTFail("unexpected error: \(error)")
     }
 }
 ```
