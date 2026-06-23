@@ -32,6 +32,7 @@ code-review-skill/
 │   ├── php.md                  # PHP 8.x, types, PDO, security, Composer
 │   ├── c.md                    # Memory safety, UB, error handling
 │   ├── cpp.md                  # RAII, move semantics, exception safety
+│   ├── zig.md                  # Allocators, error unions, comptime, C interop
 │   ├── qt.md                   # Object model, signals/slots, GUI perf
 │   ├── css-less-sass.md        # Variables, responsive, performance
 │   ├── architecture-review-guide.md  # SOLID, anti-patterns, coupling

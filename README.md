@@ -142,7 +142,7 @@ It covers **20+ languages and frameworks** with over **16,000 lines** of careful
       <td>~1,070</td>
     </tr>
     <tr>
-      <td rowspan="5"><strong>Mobile / Systems</strong></td>
+      <td rowspan="6"><strong>Mobile / Systems</strong></td>
       <td>&#128241; Kotlin / Android</td>
       <td><code>reference/kotlin.md</code></td>
       <td>~1,020</td>
@@ -160,6 +160,11 @@ It covers **20+ languages and frameworks** with over **16,000 lines** of careful
     <tr>
       <td>&#128297; C++</td>
       <td><code>reference/cpp.md</code></td>
+      <td>~390</td>
+    </tr>
+    <tr>
+      <td>&#9889; Zig</td>
+      <td><code>reference/zig.md</code></td>
       <td>~390</td>
     </tr>
     <tr>
@@ -251,6 +256,7 @@ code-review-skill/
 |   +-- csharp.md                         # C# 12 / .NET 8, EF Core, ASP.NET Core
 |   +-- c.md                              # C memory safety, UB, error handling
 |   +-- cpp.md                            # C++ RAII, move semantics, exception safety
+|   +-- zig.md                            # Zig allocators, errors, comptime, C interop
 |   +-- qt.md                             # Qt object model, signals/slots, GUI perf
 |   +-- css-less-sass.md                  # CSS/Less/Sass variables, responsive design
 |   +-- architecture-review-guide.md      # SOLID, anti-patterns, coupling/cohesion
@@ -440,6 +446,7 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 | | &#127822; Swift / SwiftUI | `reference/swift.md` | ~930 |
 | | &#9881;&#65039; C | `reference/c.md` | ~290 |
 | | &#128297; C++ | `reference/cpp.md` | ~390 |
+| | &#9889; Zig | `reference/zig.md` | ~390 |
 | | &#128421;&#65039; Qt 框架 | `reference/qt.md` | ~190 |
 | **架构** | &#127963;&#65039; 架构设计审查 | `reference/architecture-review-guide.md` | ~470 |
 | | &#9889; 性能审查 | `reference/performance-review-guide.md` | ~820 |
@@ -510,6 +517,7 @@ code-review-skill/
 |   +-- csharp.md                         # C# 12 / .NET 8、EF Core、ASP.NET Core
 |   +-- c.md                              # C 内存安全、UB、错误处理
 |   +-- cpp.md                            # C++ RAII、移动语义、异常安全
+|   +-- zig.md                            # Zig allocator、错误处理、comptime、C 互操作
 |   +-- qt.md                             # Qt 对象模型、信号/槽、GUI 性能
 |   +-- css-less-sass.md                  # CSS/Less/Sass 变量、响应式设计
 |   +-- architecture-review-guide.md      # SOLID、反模式、耦合度分析
