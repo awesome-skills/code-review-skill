@@ -165,7 +165,7 @@ It covers **20+ languages and frameworks** with over **16,000 lines** of careful
     <tr>
       <td>&#9889; Zig</td>
       <td><code>reference/zig.md</code></td>
-      <td>~390</td>
+      <td>~440</td>
     </tr>
     <tr>
       <td>&#128421;&#65039; Qt Framework</td>
@@ -446,7 +446,7 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 | | &#127822; Swift / SwiftUI | `reference/swift.md` | ~930 |
 | | &#9881;&#65039; C | `reference/c.md` | ~290 |
 | | &#128297; C++ | `reference/cpp.md` | ~390 |
-| | &#9889; Zig | `reference/zig.md` | ~390 |
+| | &#9889; Zig | `reference/zig.md` | ~440 |
 | | &#128421;&#65039; Qt 框架 | `reference/qt.md` | ~190 |
 | **架构** | &#127963;&#65039; 架构设计审查 | `reference/architecture-review-guide.md` | ~470 |
 | | &#9889; 性能审查 | `reference/performance-review-guide.md` | ~820 |

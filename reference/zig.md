@@ -26,14 +26,14 @@ Zig code should make allocation policy visible. Libraries should usually accept 
 ```zig
 const std = @import("std");
 
-// Bad: hides allocation policy and lifetime from callers.
-fn readNames() ![][]const u8 {
+// ❌ Bad: hides allocation policy and lifetime from callers.
+fn readNamesBad() ![][]const u8 {
     var gpa = std.heap.DebugAllocator(.{}){};
     const allocator = gpa.allocator();
     return try allocator.alloc([]const u8, 10);
 }
 
-// Good: caller chooses allocator and owns the returned memory.
+// ✅ Good: caller chooses allocator and owns the returned memory.
 fn readNames(allocator: std.mem.Allocator) ![][]const u8 {
     return try allocator.alloc([]const u8, 10);
 }
@@ -51,8 +51,17 @@ Every allocation path should have a visible cleanup path. Look for missing `defe
 ```zig
 const std = @import("std");
 
+fn collectBad(allocator: std.mem.Allocator) ![]u8 {
+    // ❌ Bad: `defer` frees the buffer before the returned slice can be used.
+    var bad_list: std.ArrayListUnmanaged(u8) = .empty;
+    defer bad_list.deinit(allocator);
+    try bad_list.append(allocator, 'a');
+    return bad_list.items;
+}
+
 fn collect(allocator: std.mem.Allocator) ![]u8 {
-    var list: std.ArrayList(u8) = .empty;
+    // ✅ Good: `errdefer` cleans up only on failure; success transfers ownership.
+    var list: std.ArrayListUnmanaged(u8) = .empty;
     errdefer list.deinit(allocator);
 
     try list.append(allocator, 'a');
@@ -71,7 +80,11 @@ Review questions:
 Allocator choice is part of the design. A review should flag broad use of a debug/general-purpose allocator where a fixed buffer, arena, page allocator, or caller-provided allocator better matches the lifetime.
 
 ```zig
-// Good for request/frame-scoped allocations that are freed together.
+// ❌ Bad: allocation lifetime is scattered across many individual frees.
+const user = try allocator.create(User);
+const events = try allocator.alloc(Event, event_count);
+
+// ✅ Good: request/frame-scoped allocations are freed together.
 var arena = std.heap.ArenaAllocator.init(parent_allocator);
 defer arena.deinit();
 const allocator = arena.allocator();
@@ -91,6 +104,14 @@ Review questions:
 Avoid flattening meaningful errors into `anyerror` unless the boundary genuinely needs it. Specific error sets improve API contracts and make callers handle expected failures.
 
 ```zig
+// ❌ Bad: erases the expected parse failures behind `anyerror`.
+fn parseDigitAny(input: []const u8) anyerror!u8 {
+    if (input.len == 0) return error.EmptyInput;
+    if (input[0] < '0' or input[0] > '9') return error.InvalidDigit;
+    return input[0] - '0';
+}
+
+// ✅ Good: names the domain failures that callers should handle.
 const ParseError = error{
     EmptyInput,
     InvalidDigit,
@@ -113,10 +134,10 @@ Review questions:
 Blind `catch unreachable` is a code smell unless the invariant is mechanically guaranteed. Prefer propagating errors with `try`, converting them at boundaries, or adding a comment for unreachable invariants.
 
 ```zig
-// Bad: hides a real allocation failure.
-const buffer = allocator.alloc(u8, size) catch unreachable;
+// ❌ Bad: hides a real allocation failure.
+const buffer_bad = allocator.alloc(u8, size) catch unreachable;
 
-// Good: caller can handle OutOfMemory.
+// ✅ Good: caller can handle OutOfMemory.
 const buffer = try allocator.alloc(u8, size);
 ```
 
@@ -134,14 +155,14 @@ Review questions:
 Slices carry pointer and length together, improving bounds checking and API clarity. Raw pointer plus length should be reserved for FFI or very low-level code.
 
 ```zig
-// Bad: easy to mismatch pointer and length.
-fn checksum(ptr: [*]const u8, len: usize) u32 {
+// ❌ Bad: easy to mismatch pointer and length.
+fn checksumRaw(ptr: [*]const u8, len: usize) u32 {
     var sum: u32 = 0;
     for (ptr[0..len]) |byte| sum += byte;
     return sum;
 }
 
-// Good: one value represents the buffer.
+// ✅ Good: one value represents the buffer.
 fn checksum(bytes: []const u8) u32 {
     var sum: u32 = 0;
     for (bytes) |byte| sum += byte;
@@ -159,11 +180,16 @@ Review questions:
 Review returned slices and pointers carefully. Zig makes many lifetime issues visible, but reviewers should still check that returned data outlives the function.
 
 ```zig
-// Bad: returned slice points to stack memory.
-fn label() []const u8 {
+// ❌ Bad: returned slice points to stack memory.
+fn labelStack() []const u8 {
     var buf: [16]u8 = undefined;
     _ = &buf;
     return buf[0..];
+}
+
+// ✅ Good: caller owns the allocated result and can free it.
+fn label(allocator: std.mem.Allocator) ![]u8 {
+    return try allocator.dupe(u8, "ready");
 }
 ```
 
@@ -182,6 +208,7 @@ Review questions:
 
 ```zig
 fn RingBuffer(comptime T: type, comptime capacity: usize) type {
+    // ✅ Good: invalid generic parameters fail with an actionable message.
     if (capacity == 0) @compileError("capacity must be greater than zero");
 
     return struct {
@@ -201,6 +228,7 @@ Review questions:
 `anytype` can make APIs flexible, but it can also hide required capabilities. Add comptime checks or prefer concrete interfaces when possible.
 
 ```zig
+// ✅ Good: the required writer capability is obvious at the call site.
 fn writeAll(writer: anytype, bytes: []const u8) !void {
     try writer.writeAll(bytes);
 }
@@ -220,10 +248,10 @@ Review questions:
 Zig exposes low-level control directly. Review every `undefined`, `unreachable`, `@ptrCast`, `@alignCast`, `@intCast`, and pointer/int conversion.
 
 ```zig
-// Bad: assumes data layout, byte order, length, and alignment without proof.
+// ❌ Bad: assumes data layout, byte order, length, and alignment without proof.
 const header: *const Header = @ptrCast(@alignCast(bytes.ptr));
 
-// Better: parse fields explicitly and check length before reading.
+// ✅ Good: parse fields explicitly and check length before reading.
 if (bytes.len < 4) return error.ShortInput;
 const magic = std.mem.readInt(u16, bytes[0..2], .little);
 const flags = std.mem.readInt(u16, bytes[2..4], .little);
@@ -239,7 +267,10 @@ Review questions:
 Wrapping operators such as `+%` and `-%` are useful, but they should communicate a deliberate modular arithmetic choice.
 
 ```zig
-// Good when wraparound is the intended hash behavior.
+// ❌ Bad: ordinary addition traps on overflow but may not describe intent.
+sum += byte;
+
+// ✅ Good when wraparound is the intended hash behavior.
 hash = hash *% 16777619;
 hash = hash +% byte;
 ```
@@ -258,12 +289,20 @@ Review questions:
 Keep `@cImport`, C pointer handling, and ABI assumptions close to a wrapper layer. Convert C data into Zig types before it spreads through the codebase.
 
 ```zig
-const c = @cImport({
-    @cInclude("string.h");
-});
+const std = @import("std");
 
-fn strlenZ(input: [*:0]const u8) usize {
+// ❌ Bad: uses C strlen when no external C boundary is needed.
+fn strlenC(input: [*:0]const u8) usize {
+    const c = @cImport({
+        @cInclude("string.h");
+    });
+
     return c.strlen(input);
+}
+
+// ✅ Good: use Zig's sentinel-aware standard library helper.
+fn strlenZ(input: [*:0]const u8) usize {
+    return std.mem.len(input);
 }
 ```
 
@@ -284,12 +323,19 @@ Tests that allocate should use `std.testing.allocator` where practical so leaks 
 ```zig
 const std = @import("std");
 
-test "collect frees intermediate allocations on failure" {
+test "collect returns owned memory on success" {
     const allocator = std.testing.allocator;
     const names = try collect(allocator);
     defer allocator.free(names);
 
     try std.testing.expectEqual(@as(usize, 2), names.len);
+}
+
+test "collect handles allocation failures cleanly" {
+    var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{
+        .fail_index = 0,
+    });
+    try std.testing.expectError(error.OutOfMemory, collect(failing.allocator()));
 }
 ```
 
@@ -313,15 +359,15 @@ Review questions:
 
 ### Follow Zig Naming Conventions
 
-Use the official style guide as the baseline: `TitleCase` for types, `camelCase` for functions, and `snake_case` for variables. Avoid redundant names such as `Value`, `Data`, `Manager`, `State`, and repeated namespace segments.
+Use the official style guide as the baseline: `TitleCase` for types, `camelCase` for functions, and `snake_case` for variables. Avoid redundant words such as `Value`, `Data`, `Manager`, or `State` when the surrounding namespace already provides that meaning.
 
 ```zig
-// Bad: redundant namespace and vague type name.
-pub const json = struct {
+// ❌ Bad: redundant namespace and vague type name.
+pub const json_bad = struct {
     pub const JsonValueManager = struct {};
 };
 
-// Good: name is meaningful in its fully-qualified namespace.
+// ✅ Good: name is meaningful in its fully-qualified namespace.
 pub const json = struct {
     pub const Value = union(enum) {};
 };
