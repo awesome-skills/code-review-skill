@@ -52,7 +52,7 @@ Every allocation path should have a visible cleanup path. Look for missing `defe
 const std = @import("std");
 
 fn collectBad(allocator: std.mem.Allocator) ![]u8 {
-    // ❌ Bad: `defer` frees the buffer before the returned slice can be used.
+    // ❌ Bad: returns a slice whose backing memory is freed as the function exits.
     var bad_list: std.ArrayListUnmanaged(u8) = .empty;
     defer bad_list.deinit(allocator);
     try bad_list.append(allocator, 'a');
@@ -267,10 +267,13 @@ Review questions:
 Wrapping operators such as `+%` and `-%` are useful, but they should communicate a deliberate modular arithmetic choice.
 
 ```zig
-// ❌ Bad: ordinary addition traps on overflow but may not describe intent.
+// ❌ Bad: wrapping silences overflow that should expose a logic bug.
+index = index +% 1;
+
+// ✅ Good: checked arithmetic traps on unexpected overflow.
 sum += byte;
 
-// ✅ Good when wraparound is the intended hash behavior.
+// ✅ Good: wrapping is intentional for modular hash behavior.
 hash = hash *% 16777619;
 hash = hash +% byte;
 ```
