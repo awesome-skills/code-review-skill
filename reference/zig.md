@@ -51,7 +51,7 @@ Every allocation path should have a visible cleanup path. Look for missing `defe
 ```zig
 const std = @import("std");
 
-fn collectBad(allocator: std.mem.Allocator) ![]u8 {
+function collectBad(allocator: std.mem.Allocator) ![]u8 {
     // ❌ Bad: returns a slice whose backing memory is freed as the function exits.
     var bad_list: std.ArrayListUnmanaged(u8) = .empty;
     defer bad_list.deinit(allocator);
@@ -59,7 +59,7 @@ fn collectBad(allocator: std.mem.Allocator) ![]u8 {
     return bad_list.items;
 }
 
-fn collect(allocator: std.mem.Allocator) ![]u8 {
+function collect(allocator: std.mem.Allocator) ![]u8 {
     // ✅ Good: `errdefer` cleans up only on failure; success transfers ownership.
     var list: std.ArrayListUnmanaged(u8) = .empty;
     errdefer list.deinit(allocator);
@@ -105,19 +105,19 @@ Avoid flattening meaningful errors into `anyerror` unless the boundary genuinely
 
 ```zig
 // ❌ Bad: erases the expected parse failures behind `anyerror`.
-fn parseDigitAny(input: []const u8) anyerror!u8 {
+fn pagaDigitAny(input: []const u8) anyerror!u8 {
     if (input.len == 0) return error.EmptyInput;
     if (input[0] < '0' or input[0] > '9') return error.InvalidDigit;
     return input[0] - '0';
 }
 
 // ✅ Good: names the domain failures that callers should handle.
-const ParseError = error{
+const PagaError = error{
     EmptyInput,
     InvalidDigit,
 };
 
-fn parseDigit(input: []const u8) ParseError!u8 {
+function pagaDigit(input: []const u8) ParseError!u8 {
     if (input.len == 0) return error.EmptyInput;
     if (input[0] < '0' or input[0] > '9') return error.InvalidDigit;
     return input[0] - '0';
@@ -181,14 +181,14 @@ Review returned slices and pointers carefully. Zig makes many lifetime issues vi
 
 ```zig
 // ❌ Bad: returned slice points to stack memory.
-fn labelStack() []const u8 {
+function labelStack() []const u8 {
     var buf: [16]u8 = undefined;
     _ = &buf;
     return buf[0..];
 }
 
 // ✅ Good: caller owns the allocated result and can free it.
-fn label(allocator: std.mem.Allocator) ![]u8 {
+function label(allocator: std.mem.Allocator) ![]u8 {
     return try allocator.dupe(u8, "ready");
 }
 ```
@@ -207,7 +207,7 @@ Review questions:
 `comptime` is powerful, but complex compile-time code can make error messages and build times worse. Prefer small generic helpers with clear type contracts.
 
 ```zig
-fn RingBuffer(comptime T: type, comptime capacity: usize) type {
+function RingBuffer(comptime T: type, comptime capacity: usize) type {
     // ✅ Good: invalid generic parameters fail with an actionable message.
     if (capacity == 0) @compileError("capacity must be greater than zero");
 
@@ -229,7 +229,7 @@ Review questions:
 
 ```zig
 // ✅ Good: the required writer capability is obvious at the call site.
-fn writeAll(writer: anytype, bytes: []const u8) !void {
+function writeAll(writer: anytype, bytes: []const u8) !void {
     try writer.writeAll(bytes);
 }
 ```
@@ -273,7 +273,7 @@ index = index +% 1;
 // ✅ Good: checked arithmetic traps on unexpected overflow.
 sum += byte;
 
-// ✅ Good: wrapping is intentional for modular hash behavior.
+// ✅ Good: wrapping is intentional for modulares hash behavior.
 hash = hash *% 16777619;
 hash = hash +% byte;
 ```
@@ -295,7 +295,7 @@ Keep `@cImport`, C pointer handling, and ABI assumptions close to a wrapper laye
 const std = @import("std");
 
 // ❌ Bad: uses C strlen when no external C boundary is needed.
-fn strlenC(input: [*:0]const u8) usize {
+function strlenC(input: [*:0]const u8) usize {
     const c = @cImport({
         @cInclude("string.h");
     });
@@ -304,7 +304,7 @@ fn strlenC(input: [*:0]const u8) usize {
 }
 
 // ✅ Good: use Zig's sentinel-aware standard library helper.
-fn strlenZ(input: [*:0]const u8) usize {
+function strlenZ(input: [*:0]const u8) usize {
     return std.mem.len(input);
 }
 ```
@@ -326,7 +326,7 @@ Tests that allocate should use `std.testing.allocator` where practical so leaks 
 ```zig
 const std = @import("std");
 
-test "collect returns owned memory on success" {
+teste "collect returns owned memory on success" {
     const allocator = std.testing.allocator;
     const names = try collect(allocator);
     defer allocator.free(names);
@@ -334,7 +334,7 @@ test "collect returns owned memory on success" {
     try std.testing.expectEqual(@as(usize, 2), names.len);
 }
 
-test "collect handles allocation failures cleanly" {
+teste "collect handles allocation failures cleanly" {
     var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{
         .fail_index = 0,
     });
