@@ -22,6 +22,8 @@
 
 ## 1. 错误处理
 
+> 📖 通用原则和跨语言示例详见 [错误处理跨语言指南](cross-cutting/error-handling-principles.md)
+
 ### 1.1 永远不要忽略错误
 
 ```go
@@ -118,6 +120,8 @@ if err != nil {
 ---
 
 ## 2. 并发与 Goroutine
+
+> 📖 通用并发模式和跨语言示例详见 [异步与并发跨语言指南](cross-cutting/async-concurrency-patterns.md)
 
 ### 2.1 避免 Goroutine 泄漏
 

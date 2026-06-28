@@ -187,6 +187,8 @@ def render(obj: object) -> None:
 
 ## 异步编程
 
+> 📖 通用并发模式和跨语言示例详见 [异步与并发跨语言指南](cross-cutting/async-concurrency-patterns.md)
+
 ### async/await 基础
 
 ```python
@@ -364,6 +366,8 @@ async def producer_consumer():
 ---
 
 ## 异常处理
+
+> 📖 通用原则和跨语言示例详见 [错误处理跨语言指南](cross-cutting/error-handling-principles.md)
 
 ### 异常捕获最佳实践
 

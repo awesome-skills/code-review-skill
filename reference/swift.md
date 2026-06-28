@@ -275,6 +275,8 @@ struct Container {
 
 ## 4. Error Handling
 
+> 📖 For cross-language error handling principles, see [Error Handling Guide](cross-cutting/error-handling-principles.md)
+
 ### 4.1 Avoid try! and try?
 
 ```swift
@@ -366,6 +368,8 @@ do {
 ---
 
 ## 5. Swift Concurrency
+
+> 📖 For cross-language concurrency patterns, see [Async & Concurrency Guide](cross-cutting/async-concurrency-patterns.md)
 
 ### 5.1 Prefer async/await Over Nested Callbacks
 

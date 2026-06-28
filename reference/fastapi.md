@@ -289,6 +289,8 @@ async def signup(user: UserCreate, tasks: BackgroundTasks):
 
 ## Database Sessions & N+1
 
+> 📖 For cross-language N+1 patterns and solutions, see [N+1 Queries Guide](cross-cutting/n-plus-one-queries.md)
+
 ### One session per request, injected — not a global
 
 ```python
@@ -391,13 +393,7 @@ The [Test-Driven Verification](#test-driven-verification) section reproduces exa
 
 ### Parameterize SQL; never f-string user input
 
-```python
-# ❌ Bad — SQL injection
-await session.execute(text(f"SELECT * FROM users WHERE email = '{email}'"))
-
-# ✅ Good — bound parameter
-await session.execute(text("SELECT * FROM users WHERE email = :email"), {"email": email})
-```
+> **跨语言 SQL 注入防护详见 [SQL Injection Prevention Guide](cross-cutting/sql-injection-prevention.md)**，含 Python/Java/Go/Node.js/PHP/C# 示例及 ORM 不安全用法。
 
 ### Don't widen CORS to credentials + wildcard
 

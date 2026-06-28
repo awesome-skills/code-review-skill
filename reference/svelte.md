@@ -905,6 +905,10 @@ export async function load({ params }) {
 
 ## 安全审查
 
+Svelte/SvelteKit 默认自动转义模板表达式。审查重点：`{@html}` 的使用、`$env/static/private` 泄露、CSRF 内建防护。
+
+> **跨框架 XSS 防护详见 [XSS Prevention Guide](cross-cutting/xss-prevention.md)**，含 React/Vue/Angular/Svelte 示例及 CSP 配置。
+
 ### 不暴露私有环境变量
 
 ```typescript

@@ -10,6 +10,10 @@
 - [Zoneless 变更检测](#zoneless-变更检测)
 - [模板最佳实践](#模板最佳实践)
 - [性能优化](#性能优化)
+- [测试](#测试)
+- [路由守卫](#路由守卫)
+- [依赖注入模式](#依赖注入模式)
+- [HttpInterceptor](#httpinterceptor)
 - [Review Checklist](#review-checklist)
 
 ---
@@ -375,6 +379,351 @@ export class UserService {
 ```
 
 ---
+
+---
+
+## 测试
+
+### 组件测试（TestBed）
+
+```typescript
+// ✅ 独立组件测试
+@Component({
+  standalone: true,
+  template: `<button (click)="increment()">{{ count() }}</button>`,
+})
+export class CounterComponent {
+  count = signal(0);
+  increment() { this.count.update(c => c + 1); }
+}
+
+describe('CounterComponent', () => {
+  let fixture: ComponentFixture<CounterComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [CounterComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(CounterComponent);
+    fixture.detectChanges();
+  });
+
+  it('should increment on click', () => {
+    const button = fixture.nativeElement.querySelector('button');
+    button.click();
+    fixture.detectChanges();
+    expect(button.textContent.trim()).toBe('1');
+  });
+});
+```
+
+### 服务测试（依赖注入 Mock）
+
+```typescript
+// ✅ 使用 TestBed.inject + provide 覆盖
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  private http = inject(HttpClient);
+  getUser(id: number) {
+    return this.http.get<User>(`/api/users/${id}`);
+  }
+}
+
+describe('UserService', () => {
+  let service: UserService;
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+    service = TestBed.inject(UserService);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => httpMock.verify());
+
+  it('should fetch user', () => {
+    const mockUser = { id: 1, name: 'Alice' };
+
+    service.getUser(1).subscribe(user => {
+      expect(user).toEqual(mockUser);
+    });
+
+    const req = httpMock.expectOne('/api/users/1');
+    expect(req.request.method).toBe('GET');
+    req.flush(mockUser);
+  });
+});
+```
+
+### 集成测试策略
+
+```typescript
+// ❌ 过度 Mock——测试的是 Mock 而非真实行为
+provideHttpClient: () => ({
+  get: jasmine.createSpy().and.returnValue(of(mockData)),
+}),
+
+// ✅ 使用 HttpTestingController 验证真实 HTTP 交互
+TestBed.configureTestingModule({
+  providers: [
+    provideHttpClient(),
+    provideHttpClientTesting(),
+  ],
+});
+
+// ✅ 浅渲染：只测试组件本身，Mock 子组件
+describe('UserProfile', () => {
+  it('should pass user to child', () => {
+    const fixture = TestBed.createComponent(UserProfile);
+    fixture.componentRef.setInput('user', testUser);
+    fixture.detectChanges();
+
+    const child = fixture.debugElement.query(By.directive(UserAvatar));
+    expect(child.componentInstance.user()).toEqual(testUser);
+  });
+});
+```
+
+---
+
+## 路由守卫
+
+### AuthGuard / CanActivate
+
+```typescript
+// ✅ 函数式路由守卫（Angular 15+ 推荐）
+export const authGuard: CanActivateFn = (route, state) => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+
+  if (auth.isAuthenticated()) return true;
+
+  return router.createUrlTree(['/login'], {
+    queryParams: { returnUrl: state.url },
+  });
+};
+
+// 使用
+export const routes: Routes = [
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [authGuard],
+  },
+];
+```
+
+### 延迟加载路由守卫
+
+```typescript
+// ✅ 守卫在路由加载时才被解析
+// auth.guard.ts
+export const authGuard: CanActivateFn = () => {
+  const auth = inject(AuthService);
+  return auth.isAuthenticated();
+};
+
+// routes.ts
+export const routes: Routes = [
+  {
+    path: 'admin',
+    loadChildren: () => import('./admin/routes').then(m => m.routes),
+    canActivate: [authGuard],
+  },
+];
+```
+
+### 参数化路由守卫
+
+```typescript
+// ✅ 带角色参数的守卫
+export function roleGuard(allowedRoles: string[]): CanActivateFn {
+  return (route, state) => {
+    const auth = inject(AuthService);
+    const user = auth.currentUser();
+    return user ? allowedRoles.includes(user.role) : false;
+  };
+}
+
+// 使用
+{
+  path: 'admin',
+  component: AdminComponent,
+  canActivate: [roleGuard(['admin', 'superadmin'])],
+}
+```
+
+### CanDeactivate 守卫
+
+```typescript
+// ✅ 防止未保存修改的导航离开
+export const unsavedChangesGuard: CanDeactivateFn<EditFormComponent> = (
+  component
+) => {
+  if (component.hasUnsavedChanges()) {
+    return confirm('You have unsaved changes. Leave anyway?');
+  }
+  return true;
+};
+```
+
+---
+
+## 依赖注入模式
+
+### InjectionToken 使用
+
+```typescript
+// ❌ 使用字符串 token——易冲突且无类型安全
+providers: [{ provide: 'API_URL', useValue: 'https://api.example.com' }]
+
+// ✅ InjectionToken 提供类型安全
+export const API_URL = new InjectionToken<string>('API_URL');
+
+providers: [{ provide: API_URL, useValue: 'https://api.example.com' }]
+
+// 使用
+private apiUrl = inject(API_URL);
+```
+
+### 多级提供者
+
+```typescript
+// ✅ 不同注入层级
+// 根级——全局单例
+@Injectable({ providedIn: 'root' })
+export class GlobalService {}
+
+// 组件级——每个组件实例独立
+@Component({
+  providers: [LocalService],
+})
+export class MyComponent {
+  private local = inject(LocalService);
+}
+
+// 路由级——路由及其子路由共享
+{
+  path: 'checkout',
+  providers: [CheckoutService],
+  children: [/* ... */],
+}
+```
+
+### 工厂提供者
+
+```typescript
+// ✅ 根据条件动态提供不同实现
+export const themeProvider: FactoryProvider = {
+  provide: ThemeService,
+  useFactory: () => {
+    const platform = inject(PLATFORM_ID);
+    if (isPlatformServer(platform)) {
+      return new ServerThemeService();
+    }
+    return new BrowserThemeService();
+  },
+};
+
+// ✅ 使用环境变量配置
+export const apiConfigProvider: FactoryProvider = {
+  provide: ApiConfig,
+  useFactory: () => {
+    const env = inject(ENVIRONMENT);
+    return env.production
+      ? new ProductionApiConfig()
+      : new DevelopmentApiConfig();
+  },
+};
+```
+
+---
+
+## HttpInterceptor
+
+### 认证 Token 拦截器
+
+```typescript
+// ✅ 函数式拦截器——自动附加 Auth Token
+export function authInterceptor(
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn
+): Observable<HttpEvent<unknown>> {
+  const token = inject(AuthService).token();
+  if (!token) return next(req);
+
+  return next(req.clone({
+    setHeaders: { Authorization: `Bearer ${token}` },
+  }));
+}
+
+// 注册
+provideHttpClient(withInterceptors([authInterceptor]))
+```
+
+### 错误处理拦截器
+
+```typescript
+// ✅ 函数式拦截器——统一错误处理
+export function errorInterceptor(
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn
+): Observable<HttpEvent<unknown>> {
+  const router = inject(Router);
+
+  return next(req).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        router.navigate(['/login']);
+      }
+      if (error.status === 500) {
+        console.error('Server error:', error);
+      }
+      return throwError(() => error);
+    })
+  );
+}
+```
+
+### 请求/响应转换
+
+```typescript
+// ✅ 函数式拦截器——自动 camelCase ↔ snake_case
+export function transformInterceptor(
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn
+): Observable<HttpEvent<unknown>> {
+  const transformedBody = req.body ? toSnakeCase(req.body) : null;
+  const transformedReq = req.clone({ body: transformedBody });
+
+  return next(transformedReq).pipe(
+    map(event => {
+      if (event instanceof HttpResponse) {
+        return event.clone({ body: toCamelCase(event.body) });
+      }
+      return event;
+    })
+  );
+}
+```
+
+### 拦截器顺序
+
+```typescript
+// ✅ 拦截器按注册顺序执行
+// 请求：A → B → C → 后端
+// 响应：后端 → C → B → A
+provideHttpClient(
+  withInterceptors([
+    authInterceptor,
+    loggingInterceptor,
+    errorInterceptor,
+  ])
+)
+```
 
 ## Review Checklist
 

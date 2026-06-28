@@ -17,6 +17,8 @@
 
 ## 协程：作用域与取消
 
+> 📖 通用并发模式和跨语言示例详见 [异步与并发跨语言指南](cross-cutting/async-concurrency-patterns.md)
+
 ### 避免 GlobalScope
 
 ```kotlin

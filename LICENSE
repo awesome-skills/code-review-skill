@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2025 tt-a1i
+Copyright (c) 2025 awesome-skills
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

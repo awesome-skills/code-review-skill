@@ -12,7 +12,7 @@
     <img src="https://img.shields.io/badge/License-MIT-22c55e?style=flat-square" alt="License: MIT"/>
   </a>
   <img src="https://img.shields.io/badge/Claude_Code-Skill-7c3aed?style=flat-square&logo=anthropic&logoColor=white" alt="Claude Code Skill"/>
-  <img src="https://img.shields.io/badge/Total_Lines-16%2C000%2B-3b82f6?style=flat-square" alt="16000+ lines"/>
+  <img src="https://img.shields.io/badge/Total_Lines-21%2C000%2B-3b82f6?style=flat-square" alt="21000+ lines"/>
   <img src="https://img.shields.io/badge/Languages-20%2B-f59e0b?style=flat-square" alt="20+ languages"/>
   <img src="https://img.shields.io/badge/PRs-Welcome-ec4899?style=flat-square" alt="PRs Welcome"/>
 </p>
@@ -37,13 +37,13 @@
 
 **Code Review Skill** is a production-ready skill for [Claude Code](https://claude.ai/code) that transforms AI-assisted code review from vague suggestions into a **structured, consistent, and expert-level** process.
 
-It covers **20+ languages and frameworks** with over **16,000 lines** of carefully curated review guidelines — loaded progressively to minimize context window usage.
+It covers **20+ languages and frameworks** with over **21,000 lines** of carefully curated review guidelines — loaded progressively to minimize context window usage.
 
 ---
 
 ### &#10024; Key Features
 
-- **Progressive Disclosure** — Core skill is ~190 lines; language guides (~200–1,000 lines each) load only when needed.
+- **Progressive Disclosure** — Core skill is ~220 lines; language guides (~200–1,100 lines each) load only when needed.
 - **Four-Phase Review Process** — Structured workflow from understanding scope to delivering clear feedback.
 - **Severity Labeling** — Every finding is categorized: `blocking` · `important` · `nit` · `suggestion` · `learning` · `praise`
 - **Security-First** — Dedicated security checklists per language ecosystem.
@@ -78,7 +78,7 @@ It covers **20+ languages and frameworks** with over **16,000 lines** of careful
     <tr>
       <td>&#128302; Angular 17+ / Signals / Zoneless</td>
       <td><code>reference/angular.md</code></td>
-      <td>~420</td>
+      <td>~790</td>
     </tr>
     <tr>
       <td>&#128293; Svelte 5 / SvelteKit</td>
@@ -93,7 +93,7 @@ It covers **20+ languages and frameworks** with over **16,000 lines** of careful
     <tr>
       <td>&#128311; TypeScript</td>
       <td><code>reference/typescript.md</code></td>
-      <td>~540</td>
+      <td>~1,020</td>
     </tr>
     <tr>
       <td rowspan="9"><strong>Backend</strong></td>
@@ -155,12 +155,12 @@ It covers **20+ languages and frameworks** with over **16,000 lines** of careful
     <tr>
       <td>&#9881;&#65039; C</td>
       <td><code>reference/c.md</code></td>
-      <td>~290</td>
+      <td>~890</td>
     </tr>
     <tr>
       <td>&#128297; C++</td>
       <td><code>reference/cpp.md</code></td>
-      <td>~390</td>
+      <td>~890</td>
     </tr>
     <tr>
       <td>&#9889; Zig</td>
@@ -170,10 +170,10 @@ It covers **20+ languages and frameworks** with over **16,000 lines** of careful
     <tr>
       <td>&#128421;&#65039; Qt Framework</td>
       <td><code>reference/qt.md</code></td>
-      <td>~190</td>
+      <td>~760</td>
     </tr>
     <tr>
-      <td rowspan="3"><strong>Cross-Cutting</strong></td>
+      <td rowspan="9"><strong>Cross-Cutting</strong></td>
       <td>&#127963;&#65039; Architecture Design Review</td>
       <td><code>reference/architecture-review-guide.md</code></td>
       <td>~470</td>
@@ -187,6 +187,36 @@ It covers **20+ languages and frameworks** with over **16,000 lines** of careful
       <td>&#128269; Universal Quality Anti-Patterns</td>
       <td><code>reference/code-quality-universal.md</code></td>
       <td>~490</td>
+    </tr>
+    <tr>
+      <td>&#128737;&#65039; Security Review</td>
+      <td><code>reference/security-review-guide.md</code></td>
+      <td>~640</td>
+    </tr>
+    <tr>
+      <td>&#128200; N+1 Queries</td>
+      <td><code>reference/cross-cutting/n-plus-one-queries.md</code></td>
+      <td>~310</td>
+    </tr>
+    <tr>
+      <td>&#9888;&#65039; Error Handling Principles</td>
+      <td><code>reference/cross-cutting/error-handling-principles.md</code></td>
+      <td>~490</td>
+    </tr>
+    <tr>
+      <td>&#9889; Async &amp; Concurrency Patterns</td>
+      <td><code>reference/cross-cutting/async-concurrency-patterns.md</code></td>
+      <td>~540</td>
+    </tr>
+    <tr>
+      <td>&#128737;&#65039; SQL Injection Prevention</td>
+      <td><code>reference/cross-cutting/sql-injection-prevention.md</code></td>
+      <td>~310</td>
+    </tr>
+    <tr>
+      <td>&#128737;&#65039; XSS Prevention</td>
+      <td><code>reference/cross-cutting/xss-prevention.md</code></td>
+      <td>~260</td>
     </tr>
   </tbody>
 </table>
@@ -232,7 +262,7 @@ Phase 4 - Summary & Decision
 ```
 code-review-skill/
 |
-+-- SKILL.md                              # Core skill - loaded on activation (~190 lines)
++-- SKILL.md                              # Core skill - loaded on activation (~220 lines)
 +-- README.md
 +-- LICENSE
 +-- CONTRIBUTING.md
@@ -265,6 +295,13 @@ code-review-skill/
 |   +-- security-review-guide.md          # Security checklist (all languages)
 |   +-- common-bugs-checklist.md          # Language-specific bug patterns
 |   +-- code-review-best-practices.md     # Communication & process guidelines
+|
++-- reference/cross-cutting/             # Language-agnostic cross-cutting patterns
+|   +-- sql-injection-prevention.md       # Parameterized queries, 6 languages
+|   +-- xss-prevention.md                 # Output encoding, CSP, 5 frameworks
+|   +-- n-plus-one-queries.md             # N+1 queries, eager loading, 5 languages
+|   +-- error-handling-principles.md      # Error handling principles, 7 languages
+|   +-- async-concurrency-patterns.md     # Concurrency patterns, 7 languages
 |
 +-- assets/
 |   +-- review-checklist.md               # Quick reference checklist
@@ -408,13 +445,13 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 
 **Code Review Skill** 是专为 [Claude Code](https://claude.ai/code) 打造的生产级代码审查技能，将 AI 辅助的代码审查从模糊建议转变为**结构化、一致且专业级**的流程。
 
-覆盖 **20+ 种语言和框架**，拥有超过 **16,000 行**精心整理的代码审查指南——按需加载，最大程度减少上下文占用。
+覆盖 **20+ 种语言和框架**，拥有超过 **21,000 行**精心整理的代码审查指南——按需加载，最大程度减少上下文占用。
 
 ---
 
 ### &#10024; 核心特性
 
-- **渐进式加载** — 核心技能仅 ~190 行，各语言指南（每份 200–1,000 行）仅在需要时才加载。
+- **渐进式加载** — 核心技能仅 ~220 行，各语言指南（每份 200–1,100 行）仅在需要时才加载。
 - **四阶段审查流程** — 从理解 PR 范围到输出清晰反馈，每一步都有规可循。
 - **严重性标记** — 每条发现均分级：`blocking` · `important` · `nit` · `suggestion` · `learning` · `praise`
 - **安全优先** — 每个语言生态均配备专属安全检查清单。
@@ -429,10 +466,10 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 |------|--------|----------|------|
 | **前端** | &#9883;&#65039; React 19 / Next.js / TanStack Query v5 | `reference/react.md` | ~870 |
 | | &#128154; Vue 3.5 Composition API | `reference/vue.md` | ~920 |
-| | &#128302; Angular 17+ / Signals / Zoneless | `reference/angular.md` | ~420 |
+| | &#128302; Angular 17+ / Signals / Zoneless | `reference/angular.md` | ~790 |
 | | &#128293; Svelte 5 / SvelteKit | `reference/svelte.md` | ~1,060 |
 | | &#127912; CSS / Less / Sass | `reference/css-less-sass.md` | ~660 |
-| | &#128311; TypeScript | `reference/typescript.md` | ~540 |
+| | &#128311; TypeScript | `reference/typescript.md` | ~1,020 |
 | **后端** | &#9749; Java 17/21 + Spring Boot 3 | `reference/java.md` | ~410 |
 | | &#9889; FastAPI | `reference/fastapi.md` | ~590 |
 | | PHP 8.x | `reference/php.md` | ~700 |
@@ -444,13 +481,19 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 | | &#128187; C# / .NET 8 | `reference/csharp.md` | ~520 |
 | **移动 / 系统** | &#128241; Kotlin / Android | `reference/kotlin.md` | ~1,020 |
 | | &#127822; Swift / SwiftUI | `reference/swift.md` | ~930 |
-| | &#9881;&#65039; C | `reference/c.md` | ~290 |
-| | &#128297; C++ | `reference/cpp.md` | ~390 |
+| | &#9881;&#65039; C | `reference/c.md` | ~890 |
+| | &#128297; C++ | `reference/cpp.md` | ~890 |
 | | &#9889; Zig | `reference/zig.md` | ~440 |
-| | &#128421;&#65039; Qt 框架 | `reference/qt.md` | ~190 |
+| | &#128421;&#65039; Qt 框架 | `reference/qt.md` | ~760 |
 | **架构** | &#127963;&#65039; 架构设计审查 | `reference/architecture-review-guide.md` | ~470 |
 | | &#9889; 性能审查 | `reference/performance-review-guide.md` | ~820 |
 | | &#128269; 通用质量反模式 | `reference/code-quality-universal.md` | ~490 |
+| | &#128737;&#65039; 安全审查 | `reference/security-review-guide.md` | ~640 |
+| | &#128200; N+1 查询 | `reference/cross-cutting/n-plus-one-queries.md` | ~310 |
+| | &#9888;&#65039; 错误处理原则 | `reference/cross-cutting/error-handling-principles.md` | ~490 |
+| | &#9889; 异步与并发模式 | `reference/cross-cutting/async-concurrency-patterns.md` | ~540 |
+| | &#128737;&#65039; SQL 注入防护 | `reference/cross-cutting/sql-injection-prevention.md` | ~310 |
+| | &#128737;&#65039; XSS 防护 | `reference/cross-cutting/xss-prevention.md` | ~260 |
 
 ---
 
@@ -493,7 +536,7 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 ```
 code-review-skill/
 |
-+-- SKILL.md                              # 核心技能，激活时加载（~190 行）
++-- SKILL.md                              # 核心技能，激活时加载（~220 行）
 +-- README.md
 +-- LICENSE
 +-- CONTRIBUTING.md
@@ -526,6 +569,13 @@ code-review-skill/
 |   +-- security-review-guide.md          # 安全审查清单（全语言通用）
 |   +-- common-bugs-checklist.md          # 各语言常见 Bug 模式
 |   +-- code-review-best-practices.md     # 沟通与流程最佳实践
+|
++-- reference/cross-cutting/             # 语言无关跨领域模式
+|   +-- sql-injection-prevention.md       # 参数化查询, 6 语言
+|   +-- xss-prevention.md                 # 输出编码, CSP, 5 框架
+|   +-- n-plus-one-queries.md             # N+1 查询, 预加载, 5 语言
+|   +-- error-handling-principles.md      # 错误处理原则, 7 语言
+|   +-- async-concurrency-patterns.md     # 并发模式, 7 语言
 |
 +-- assets/
 |   +-- review-checklist.md               # 快速参考清单

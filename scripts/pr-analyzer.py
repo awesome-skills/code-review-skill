@@ -95,30 +95,77 @@ def detect_language(filename: str) -> str:
 def is_test_file(filename: str) -> bool:
     """Check if file is a test file."""
     test_patterns = [
-        r'test_.*\.py$',
-        r'.*_test\.py$',
-        r'.*\.test\.(js|ts|tsx)$',
-        r'.*\.spec\.(js|ts|tsx)$',
-        r'tests?/',
-        r'__tests__/',
+        r'(?:^|/)test_[^/]+\.py$',   # Python: test_handler.py (anchored to path segment)
+        r'[^/]+_test\.',             # *_test.<ext> — Rust, Go, etc.
+        r'[^/]+\.test\.(js|ts|tsx|jsx)$',  # JS/TS: handler.test.ts
+        r'[^/]+\.spec\.(js|ts|tsx|jsx)$',  # JS/TS: handler.spec.ts
+        r'(?:^|/)tests?/',           # tests/ or test/ directory
+        r'(?:^|/)__tests__/',        # __tests__/ directory
+        r'(?:^|/)spec/',             # spec/ directory (Ruby, etc.)
     ]
     return any(re.search(p, filename) for p in test_patterns)
 
 
 def is_config_file(filename: str) -> bool:
-    """Check if file is a configuration file."""
-    config_patterns = [
-        r'\.env',
-        r'config\.',
-        r'\.json$',
-        r'\.yaml$',
-        r'\.yml$',
-        r'\.toml$',
-        r'Cargo\.toml$',
-        r'package\.json$',
-        r'tsconfig\.json$',
+    """Check if file is a configuration file.
+
+    Uses explicit known-name matching to avoid flagging data files
+    like data.json, openapi.yaml, or swagger.json as config.
+    """
+    basename = os.path.basename(filename)
+
+    # Env files (.env, .env.local, .env.production, …)
+    if basename.startswith('.env'):
+        return True
+
+    # Known config filenames (exact match)
+    known_config_names = {
+        'package.json', 'package-lock.json',
+        'tsconfig.json', 'jsconfig.json',
+        'babel.config.json', 'babel.config.js',
+        'webpack.config.js', 'webpack.config.ts',
+        'rollup.config.js', 'vite.config.ts', 'vite.config.js',
+        '.eslintrc.json', '.eslintrc.js', '.eslintrc.yml',
+        '.prettierrc.json', '.prettierrc.yml', '.prettierrc.js',
+        'jest.config.js', 'jest.config.ts',
+        'vitest.config.ts', 'vitest.config.js',
+        'tailwind.config.js', 'tailwind.config.ts',
+        'postcss.config.js',
+        'docker-compose.yml', 'docker-compose.yaml',
+        'Dockerfile',
+        'Makefile', 'CMakeLists.txt',
+        'pyproject.toml', 'poetry.toml', 'Pipfile',
+        'setup.cfg', 'setup.py', 'tox.ini',
+        'Cargo.toml', 'Cargo.lock',
+        'go.mod', 'go.sum',
+        'Gemfile', 'Gemfile.lock',
+        'composer.json', 'composer.lock',
+        'Podfile', 'Package.swift',
+        '.gitignore', '.gitattributes',
+        'gradle.properties', 'build.gradle', 'build.gradle.kts',
+        'settings.gradle', 'settings.gradle.kts',
+    }
+    if basename in known_config_names:
+        return True
+
+    # Known config path patterns
+    config_path_patterns = [
+        r'\.github/workflows/[^/]+\.ya?ml$',
+        r'\.vscode/',
+        r'\.idea/',
     ]
-    return any(re.search(p, filename) for p in config_patterns)
+    if any(re.search(p, filename) for p in config_path_patterns):
+        return True
+
+    # Files with "config" in the name (e.g. app.config.ts, database_config.yml)
+    if re.search(r'config\.', basename):
+        return True
+
+    # Files under a config/ directory
+    if re.search(r'(?:^|/)config/', filename):
+        return True
+
+    return False
 
 
 def parse_diff(diff_content: str) -> List[FileStats]:

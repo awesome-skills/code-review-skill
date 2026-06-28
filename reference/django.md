@@ -18,27 +18,9 @@
 
 ### XSS 防护
 
-```python
-from django.utils.safestring import mark_safe
-from django.template import engines
+Django 模板引擎默认自动转义。审查重点：`mark_safe`、`autoescape off`、`format_html` 的使用。
 
-# ❌ mark_safe 绕过自动转义，直接渲染用户输入
-def user_profile(request):
-    user_bio = request.user.bio  # 用户可控
-    return HttpResponse(mark_safe(f"<p>{user_bio}</p>"))
-
-# ❌ 在模板中手动关闭 autoescape
-# {% autoescape off %}{{ user_bio }}{% endautoescape %}
-
-# ✅ 让 Django 模板引擎自动转义
-# template: <p>{{ user_bio }}</p>
-
-# ✅ 必须使用 mark_safe 时，先手动转义
-from django.utils.html import escape
-
-def render_bio(bio: str) -> str:
-    return mark_safe(f"<p>{escape(bio)}</p>")
-```
+> **跨框架 XSS 防护详见 [XSS Prevention Guide](cross-cutting/xss-prevention.md)**，含 React/Vue/Angular/Svelte 示例及 CSP 配置。
 
 ### CSRF 防护
 
@@ -98,38 +80,9 @@ CSRF_COOKIE_SAMESITE = "Lax"
 
 ### SQL 注入防护
 
-```python
-from django.db import connection
+Django ORM 自动参数化查询。审查重点：`raw()`、`extra()`、`RawSQL`、`connection.cursor()` 中的字符串拼接。
 
-# ❌ 字符串拼接 SQL — SQL 注入风险
-def search_users(keyword):
-    query = f"SELECT * FROM auth_user WHERE username LIKE '%{keyword}%'"
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-
-# ❌ extra() 方法不安全
-User.objects.extra(
-    where=[f"username = '{keyword}'"]
-)
-
-# ✅ 使用 ORM 参数化查询
-def search_users(keyword):
-    return User.objects.filter(username__icontains=keyword)
-
-# ✅ 原始 SQL 使用参数化
-def search_users(keyword):
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "SELECT * FROM auth_user WHERE username LIKE %s",
-            [f"%{keyword}%"],
-        )
-
-# ✅ 使用 raw() 参数化
-User.objects.raw(
-    "SELECT * FROM auth_user WHERE username LIKE %s",
-    [f"%{keyword}%"],
-)
-```
+> **跨语言 SQL 注入防护详见 [SQL Injection Prevention Guide](cross-cutting/sql-injection-prevention.md)**，含 Python/Java/Go/Node.js/PHP/C# 示例及 ORM 不安全用法。
 
 ### 文件上传安全
 
@@ -164,6 +117,8 @@ def validate_upload(file):
 ---
 
 ## N+1 查询优化
+
+> 📖 通用原理和跨语言方案详见 [N+1 查询跨语言指南](cross-cutting/n-plus-one-queries.md)
 
 ### select_related（ForeignKey / OneToOne）
 

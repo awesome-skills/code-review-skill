@@ -27,6 +27,7 @@ code-review-skill/
 │   ├── fastapi.md              # FastAPI, Depends, Pydantic v2, async
 │   ├── java.md                 # Java 17/21, Spring Boot 3, virtual threads
 │   ├── kotlin.md               # Kotlin / Android, coroutines, Flow, Compose
+│   ├── swift.md                # Swift 5.9+/6, SwiftUI, concurrency, optionals
 │   ├── go.md                   # Error handling, goroutines, context
 │   ├── csharp.md               # C# / .NET 8, async, EF Core, ASP.NET Core
 │   ├── php.md                  # PHP 8.x, types, PDO, security, Composer
@@ -40,7 +41,13 @@ code-review-skill/
 │   ├── security-review-guide.md      # OWASP Top 10, JWT, validation
 │   ├── common-bugs-checklist.md      # Quick-reference bug patterns
 │   ├── code-quality-universal.md      # Language-agnostic quality anti-patterns
-│   └── code-review-best-practices.md # Communication & process
+│   ├── code-review-best-practices.md # Communication & process
+│   └── cross-cutting/               # Language-agnostic cross-cutting patterns
+│       ├── sql-injection-prevention.md # Parameterized queries, 6 languages
+│       ├── xss-prevention.md           # Output encoding, CSP, 5 frameworks
+│       ├── n-plus-one-queries.md       # N+1 queries, eager loading, 5 languages
+│       ├── error-handling-principles.md # Error handling principles, 7 languages
+│       └── async-concurrency-patterns.md # Concurrency patterns, 7 languages
 ├── assets/                     # Templates and quick reference
 │   ├── review-checklist.md
 │   └── pr-review-template.md

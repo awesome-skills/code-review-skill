@@ -11,6 +11,9 @@
 - [异步处理](#异步处理)
 - [不可变性](#不可变性)
 - [ESLint 规则](#eslint-规则)
+- [测试](#测试)
+- [模块解析](#模块解析)
+- [TS 4.9+ / 5.x 新特性](#ts-49--5x-新特性)
 - [Review Checklist](#review-checklist)
 
 ---
@@ -515,6 +518,466 @@ await Promise.all(items.map(processItem));
 ```
 
 ---
+
+---
+
+## 测试
+
+### Vitest vs Jest 选择
+
+```typescript
+// ✅ 新项目推荐 Vitest（与 Vite 生态集成，原生 ESM 支持）
+// vitest.config.ts
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'node',
+    include: ['src/**/*.test.ts'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+    },
+  },
+});
+
+// ✅ 已有 Jest 项目可保持，注意配置差异
+// jest.config.ts
+import type { Config } from 'jest';
+
+const config: Config = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
+};
+export default config;
+```
+
+### 类型测试（tsd / expect-type）
+
+```typescript
+// ✅ 使用 expect-type 验证类型推断
+import { expectTypeOf } from 'vitest';
+
+function getFirst<T>(arr: T[]): T | undefined {
+  return arr[0];
+}
+
+it('should infer correct return type', () => {
+  const result = getFirst([1, 2, 3]);
+  expectTypeOf(result).toEqualTypeOf<number | undefined>();
+});
+
+// ✅ 使用 expect-type 验证函数签名
+const fn = (a: string, b: number) => a.repeat(b);
+expectTypeOf(fn).parameters.toEqualTypeOf<[string, number]>();
+expectTypeOf(fn).returns.toBeString();
+
+// ❌ 类型错误会在编译时被捕获
+const result = getFirst(['a', 'b']);
+// @ts-expect-error: 类型不匹配
+expectTypeOf(result).toEqualTypeOf<number>();
+```
+
+### Snapshot 测试最佳实践
+
+```typescript
+// ✅ Snapshot 适合：稳定的输出结构、配置对象、错误消息
+it('should match serialized config', () => {
+  const config = createAppConfig();
+  expect(config).toMatchSnapshot();
+});
+
+// ❌ 避免：大对象、动态数据、随机值
+it('should not snapshot large payloads', () => {
+  const hugePayload = { users: generateRandomUsers(1000) };
+  // 太长的 snapshot 难以审查，变更时不知道意图
+});
+
+// ✅ 使用 inline snapshot 处理小片段
+it('should generate correct error message', () => {
+  expect(formatError('INVALID_INPUT')).toMatchInlineSnapshot(
+    `"Error: Invalid input provided"`
+  );
+});
+
+// ✅ 使用 snapshot 属性匹配器处理动态值
+it('should match user with generated id', () => {
+  expect(createUser('Alice')).toMatchSnapshot({
+    id: expect.any(String),
+    createdAt: expect.any(Date),
+  });
+});
+```
+
+### Mock 策略
+
+```typescript
+// ✅ Vitest: vi.mock 自动 hoist
+import { vi, describe, it, expect } from 'vitest';
+
+vi.mock('./api', () => ({
+  fetchUser: vi.fn().mockResolvedValue({ id: 1, name: 'Alice' }),
+}));
+
+it('should display user', async () => {
+  const { fetchUser } = await import('./api');
+  const user = await fetchUser('1');
+  expect(user.name).toBe('Alice');
+});
+
+// ✅ Jest: jest.mock 同样自动 hoist
+jest.mock('./database', () => ({
+  query: jest.fn().mockResolvedValue([{ id: 1 }]),
+}));
+
+// ❌ 避免部分 Mock——测试的是 Mock 而非真实行为
+jest.mock('./utils', () => ({
+  ...jest.requireActual('./utils'),
+  calculateTotal: jest.fn(), // 其他函数是真实的，这个是假的
+}));
+```
+
+### 测试辅助工具
+
+```typescript
+// ✅ 使用 testing-library 进行 DOM 测试
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+it('should submit form', async () => {
+  render(<LoginForm />);
+  await userEvent.type(screen.getByLabelText('Email'), 'alice@example.com');
+  await userEvent.click(screen.getByRole('button', { name: 'Submit' }));
+  expect(screen.getByText('Welcome, Alice!')).toBeInTheDocument();
+});
+
+// ✅ 使用 MSW 进行 API mock（Mock Service Worker）
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
+
+const server = setupServer(
+  http.get('/api/users/:id', ({ params }) => {
+    return HttpResponse.json({ id: params.id, name: 'Alice' });
+  })
+);
+
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+```
+
+---
+
+## 模块解析
+
+### ESM vs CJS 差异和陷阱
+
+```typescript
+// ❌ CJS 风格在 ESM 中不可用
+// package.json: "type": "module"
+const fs = require('fs');           // Error: require is not defined
+module.exports = { foo: 'bar' };    // Error: module is not defined
+
+// ✅ ESM 正确写法
+import fs from 'node:fs';
+export const foo = 'bar';
+
+// ✅ 在 ESM 中获取 __dirname
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// ❌ ESM 中动态 require
+const moduleName = 'lodash';
+const _ = require(moduleName); // Error!
+
+// ✅ ESM 动态 import
+const _ = await import(moduleName);
+```
+
+### tsconfig paths 与 path aliases
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@utils/*": ["./src/utils/*"]
+    }
+  }
+}
+```
+
+```typescript
+// ✅ 使用别名前
+import { Button } from '../../components/ui/Button';
+import { formatDate } from '../../../utils/date';
+
+// ✅ 使用别名后——清晰且不易因文件移动而断裂
+import { Button } from '@components/ui/Button';
+import { formatDate } from '@utils/date';
+```
+
+```typescript
+// ⚠️ tsconfig paths 只影响 TS 编译，不影响运行时
+// 需要配合打包工具（Vite、webpack）或 tsx 的别名解析
+
+// vite.config.ts
+import { resolve } from 'node:path';
+
+export default defineConfig({
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src'),
+    },
+  },
+});
+
+// ⚠️ 发布 npm 包时，tsconfig paths 不会自动解析
+// 需要 tsc-alias 或 tsconfig-paths 处理
+```
+
+### package.json exports field
+
+```json
+// package.json
+{
+  "name": "my-library",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/utils.mjs",
+      "require": "./dist/utils.cjs",
+      "types": "./dist/utils.d.ts"
+    },
+    "./*": "./dist/*"
+  }
+}
+```
+
+```typescript
+// ✅ 消费者使用
+import { foo } from 'my-library';        // 解析到 "." 条件
+import { bar } from 'my-library/utils';   // 解析到 "./utils" 条件
+
+// ❌ 没有 exports 映射的路径无法访问
+import { secret } from 'my-library/internal'; // Error!
+```
+
+### 动态 import() 和代码分割
+
+```typescript
+// ✅ 条件加载模块
+async function loadChartLibrary() {
+  if (typeof window === 'undefined') return null; // SSR 跳过
+  const { Chart } = await import('chart.js');
+  return Chart;
+}
+
+// ✅ React 懒加载组件
+const AdminPanel = lazy(() => import('./AdminPanel'));
+// 配合 Suspense 使用
+<Suspense fallback={<Loading />}>
+  <AdminPanel />
+</Suspense>
+
+// ✅ 带错误处理
+const AdminPanel = lazy(() =>
+  import('./AdminPanel').catch(() => ({
+    default: () => <ErrorFallback />,
+  }))
+);
+```
+
+---
+
+## TS 4.9+ / 5.x 新特性
+
+### satisfies 关键字（TS 4.9+）
+
+```typescript
+// ❌ 没有 satisfies：类型太宽泛
+const palette = {
+  red: '#ff0000',
+  green: '#00ff00',
+  blue: '#0000ff',
+};
+// palette.red 类型是 string，丢失了 '#ff0000' 的精确值
+
+// ✅ satisfies 保留字面量类型，同时验证结构
+const palette = {
+  red: '#ff0000',
+  green: '#00ff00',
+  blue: '#0000ff',
+} satisfies Record<string, `#${string}`>;
+
+// palette.red 类型是 '#ff0000'（不是 string）
+// 但添加新属性时仍会验证格式
+```
+
+```typescript
+// ✅ satisfies 用于验证对象符合接口
+interface UserConfig {
+  theme: 'light' | 'dark';
+  locale: string;
+}
+
+const config = {
+  theme: 'dark',
+  locale: 'en-US',
+} satisfies UserConfig;
+// config.theme 类型是 'dark'（不是 'light' | 'dark'）
+// 所有属性都通过 satisfies 类型检查
+```
+
+### const 类型参数（TS 5.0+）
+
+```typescript
+// ❌ 之前：需要 as const 断言
+function getRoutes<T extends readonly string[]>(routes: T) {
+  return routes;
+}
+const routes = getRoutes(['home', 'about'] as const);
+
+// ✅ TS 5.0+：const 类型参数
+function getRoutes<const T extends readonly string[]>(routes: T) {
+  return routes;
+}
+const routes = getRoutes(['home', 'about']);
+// routes 类型是 readonly ['home', 'about']
+```
+
+```typescript
+// ✅ 真实场景：类型安全的配置对象
+declare function createConfig<const T extends Record<string, unknown>>(
+  config: T
+): T;
+
+const config = createConfig({
+  api: { url: 'https://api.example.com', version: 2 },
+  features: { newDashboard: true },
+});
+// config.api.url 类型是 'https://api.example.com'（字面量）
+```
+
+### 装饰器（Stage 3 Decorators, TS 5.0+）
+
+```typescript
+// ✅ Stage 3 装饰器（TS 5.0+，experimentalDecorators 不再需要）
+function logged<This, Args extends unknown[], Return>(
+  target: (this: This, ...args: Args) => Return,
+  context: ClassMethodDecoratorContext
+) {
+  return function (this: This, ...args: Args): Return {
+    console.log(`Calling ${String(context.name)} with`, args);
+    return target.apply(this, args);
+  };
+}
+
+class Calculator {
+  @logged
+  add(a: number, b: number): number {
+    return a + b;
+  }
+}
+
+// 输出: Calling add with [1, 2]
+new Calculator().add(1, 2);
+```
+
+```typescript
+// ⚠️ Stage 3 装饰器与旧版 experimentalDecorators 不同
+// 旧版：tsconfig 中需要 "experimentalDecorators": true
+// 新版（TS 5.0+）：默认支持，无需额外配置
+
+// ❌ 旧版装饰器签名（仍支持但标记为 legacy）
+function deprecated<T extends { new (...args: any[]): {} }>(constructor: T) {
+  return class extends constructor { /* ... */ };
+}
+
+// ✅ 新版装饰器按类型区分 context
+function sealed<T extends { new (...args: any[]): {} }>(
+  target: T,
+  context: ClassDecoratorContext
+) {
+  // context.kind === 'class'
+}
+```
+
+### using 声明（显式资源管理，TS 5.2+）
+
+```typescript
+// ✅ 使用 Symbol.dispose 实现自动清理
+class TempFile implements Disposable {
+  private path: string;
+
+  constructor() {
+    this.path = `/tmp/file-${Date.now()}`;
+  }
+
+  write(data: string) { /* ... */ }
+
+  [Symbol.dispose]() {
+    // 自动清理——无论函数如何退出（正常/异常）
+    fs.unlinkSync(this.path);
+    console.log(`Cleaned up: ${this.path}`);
+  }
+}
+
+function processFile() {
+  using file = new TempFile(); // using 声明
+  file.write('data');
+  // 作用域结束时自动调用 file[Symbol.dispose]()
+}
+```
+
+```typescript
+// ✅ AsyncDisposable 用于异步资源（TS 5.2+）
+class DatabaseConnection implements AsyncDisposable {
+  private db: sqlite3.Database;
+
+  async connect() {
+    this.db = new sqlite3.Database(':memory:');
+  }
+
+  async [Symbol.asyncDispose]() {
+    await this.db.close();
+  }
+}
+
+async function query() {
+  await using conn = new DatabaseConnection(); // await using
+  await conn.connect();
+  // 作用域结束时自动 await conn[Symbol.asyncDispose]()
+}
+```
+
+### 枚举改进（TS 5.0+）
+
+```typescript
+// ✅ 所有枚举现在都是 union 枚举（TS 5.0+）
+enum Color {
+  Red = 'RED',
+  Green = 'GREEN',
+}
+
+// 之前：Color 作为类型时行为不一致
+// 现在：Color 完全作为字符串字面量联合类型
+const color: Color = Color.Red; // TypeScript 现在对 Color 类型有更好的推断
+```
 
 ## Review Checklist
 

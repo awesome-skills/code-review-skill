@@ -193,6 +193,8 @@ public record PaymentProperties(String apiKey, int timeout, String url) {}
 
 ### N+1 查询问题
 
+> 📖 通用原理和跨语言方案详见 [N+1 查询跨语言指南](cross-cutting/n-plus-one-queries.md)
+
 ```java
 // ❌ FetchType.EAGER 或 循环中触发懒加载
 // Entity 定义

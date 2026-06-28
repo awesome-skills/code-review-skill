@@ -190,6 +190,8 @@ pub fn fast_copy(src: &[u8], dst: &mut [u8]) {
 
 ## 异步代码
 
+> 📖 通用并发模式和跨语言示例详见 [异步与并发跨语言指南](cross-cutting/async-concurrency-patterns.md)
+
 ### 避免阻塞操作
 
 ```rust
@@ -550,6 +552,8 @@ impl TaskManager {
 ---
 
 ## 错误处理
+
+> 📖 通用原则和跨语言示例详见 [错误处理跨语言指南](cross-cutting/error-handling-principles.md)
 
 ### 库 vs 应用的错误类型
 

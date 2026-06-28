@@ -354,33 +354,9 @@ When reviewing upload features, check size limits, MIME detection, extensions, a
 
 ### Use parameterized queries
 
-```php
-<?php
+PHP's PDO and mysqli both support prepared statements. Never concatenate user input into SQL strings. Dynamic identifiers (table/column names) must go through a whitelist mapping.
 
-// ❌ concatenated SQL is an injection risk
-$sql = "SELECT * FROM users WHERE email = '" . $_GET['email'] . "'";
-$user = $pdo->query($sql)->fetch();
-
-// ✅ PDO prepared statement + bound value
-$stmt = $pdo->prepare('SELECT id, email FROM users WHERE email = :email');
-$stmt->execute(['email' => $email]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
-```
-
-Parameters can only bind values — not table names, column names, or sort direction. Dynamic identifiers must go through a whitelist mapping.
-
-```php
-<?php
-
-// ✅ whitelist the dynamic sort column
-$columns = [
-    'created' => 'created_at',
-    'email' => 'email',
-];
-
-$column = $columns[$_GET['sort'] ?? 'created'] ?? $columns['created'];
-$stmt = $pdo->query("SELECT id, email FROM users ORDER BY {$column} DESC");
-```
+> **跨语言 SQL 注入防护详见 [SQL Injection Prevention Guide](cross-cutting/sql-injection-prevention.md)**，含 Python/Java/Go/Node.js/PHP/C# 示例及 ORM 不安全用法。
 
 ### Wrap multi-step writes in transactions
 
@@ -409,6 +385,8 @@ Don't casually put external, non-rollbackable side effects (an actual charge, an
 
 ### Avoid N+1 queries
 
+> 📖 For cross-language N+1 patterns and solutions, see [N+1 Queries Guide](cross-cutting/n-plus-one-queries.md)
+
 ```php
 <?php
 
@@ -432,6 +410,8 @@ In ORMs like Laravel/Doctrine, check eager loading, join fetch, selected columns
 ---
 
 ## Error Handling
+
+> 📖 For cross-language error handling principles, see [Error Handling Guide](cross-cutting/error-handling-principles.md)
 
 ### Catch specific exceptions, keep context
 
