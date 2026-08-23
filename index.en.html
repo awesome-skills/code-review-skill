@@ -432,7 +432,7 @@
       </span>
     </div>
     <div class="one-liner-sub">
-      v1.0 &middot; awesome-skills &middot; MIT &middot; 20 languages &middot; 21,000+ lines
+      v1.0 &middot; awesome-skills &middot; MIT &middot; 21 languages &middot; 21,000+ lines
     </div>
   </div>
 
@@ -487,6 +487,7 @@
     <div class="cat-head">┌── mobile / systems ──┘</div>
     <div class="lang-row"><span class="file">kotlin.md</span><span class="desc">Kotlin/Android coroutines, Compose, Flow, null safety <span class="dotleader">...........</span></span><span class="lines">1,020</span></div>
     <div class="lang-row"><span class="file">swift.md</span><span class="desc">Swift 5.9+/6, SwiftUI, concurrency, Sendable, optionals <span class="dotleader">..........</span></span><span class="lines">930</span></div>
+    <div class="lang-row"><span class="file">dart.md</span><span class="desc">Dart/Flutter rebuilds, const, null safety, isolates, state <span class="dotleader">.........</span></span><span class="lines">650</span></div>
     <div class="lang-row"><span class="file">c.md</span><span class="desc">C pointer safety, UB, secure coding, portability, testing <span class="dotleader">.....</span></span><span class="lines">890</span></div>
     <div class="lang-row"><span class="file">cpp.md</span><span class="desc">C++ RAII, smart pointers, C++20/23, constexpr, testing <span class="dotleader">........</span></span><span class="lines">890</span></div>
     <div class="lang-row"><span class="file">qt.md</span><span class="desc">Qt object model, Model/View, QML, Qt6 migration, testing <span class="dotleader">.......</span></span><span class="lines">760</span></div>
@@ -561,9 +562,12 @@
   <h2 class="sec">INSTALLATION</h2>
   <section class="body">
 
-    <p>Clone into the Claude Code skills directory. Two commands.</p>
+    <p>Install with <span class="em">npx skills</span> for mainstream agents, or clone into the Claude Code skills directory.</p>
 
-<pre class="codeblock"><span class="cmt"># macOS / Linux</span>
+<pre class="codeblock"><span class="cmt"># npx skills (Cursor / Claude Code / Codex / OpenCode / others)</span>
+<span class="prompt">$</span> <span class="cmd">npx skills add</span> <span class="arg">awesome-skills/code-review-skill</span> --skill code-review-skill
+
+<span class="cmt"># or clone into the Claude Code skills directory — macOS / Linux</span>
 <span class="prompt">$</span> <span class="cmd">git clone</span> <span class="arg">https://github.com/awesome-skills/code-review-skill.git</span> \
     ~/.claude/skills/code-review-skill
 

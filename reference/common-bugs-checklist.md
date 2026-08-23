@@ -230,6 +230,22 @@ Quick-reference bug patterns organized by category. For detailed code examples, 
 
 **Full guide:** [Swift Review Guide](swift.md)
 
+## Dart / Flutter
+
+- [ ] Missing `const` on static widget subtrees, or `_buildFoo()` helpers instead of extracted widgets
+- [ ] `!` / `as` / unconstrained `late` used to silence null safety
+- [ ] Heavy `jsonDecode` / image / crypto work on the UI isolate
+- [ ] `Future` or `Stream` created inside `build` (new instance every rebuild)
+- [ ] `setState` / `BuildContext` used after `await` without `mounted` / `context.mounted`
+- [ ] `ref.watch` / `context.watch` in a callback; `read` used in `build` (or the reverse)
+- [ ] `BlocProvider.value` / `ChangeNotifierProvider.value` given a new instance constructed in `build` (use `create`; `value` does not dispose)
+- [ ] `BlocProvider(create: ...)` captures a stale `id` — missing `ValueKey(id)` remount or `didUpdateWidget` reload (`UniqueKey()` remounts every rebuild)
+- [ ] Platform channel `invokeMethod` without `PlatformException` handling
+- [ ] List children holding `State` missing a stable `ValueKey` (or using `UniqueKey()` in `build`)
+- [ ] `TextEditingController` / `AnimationController` / `StreamSubscription` not disposed
+
+**Full guide:** [Dart / Flutter Review Guide](dart.md)
+
 ## C
 
 - [ ] Pointer/buffer overflow or underflow

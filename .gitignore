@@ -23,3 +23,6 @@ build/
 # Local config
 .env
 .env.local
+
+# npx skills / agent local install artifacts
+.agents/
