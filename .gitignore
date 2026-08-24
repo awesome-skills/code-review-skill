@@ -24,5 +24,7 @@ build/
 .env
 .env.local
 
-# npx skills / agent local install artifacts
+# Skill install artifacts (created by `npx skills add`)
 .agents/
+skills-lock.json
+.skills.json

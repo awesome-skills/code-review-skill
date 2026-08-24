@@ -336,7 +336,7 @@ code-review-skill/
 **Install with `npx skills` (Cursor, Claude Code, Codex, OpenCode, and other agents):**
 
 ```bash
-npx skills add awesome-skills/code-review-skill --skill code-review-skill
+npx skills add awesome-skills/code-review-skill
 ```
 
 The skills CLI finds `SKILL.md` at the repo root. Do not nest this skill under `skills/`.
@@ -636,7 +636,7 @@ code-review-skill/
 **使用 `npx skills` 安装（Cursor、Claude Code、Codex、OpenCode 及其他 Agent）：**
 
 ```bash
-npx skills add awesome-skills/code-review-skill --skill code-review-skill
+npx skills add awesome-skills/code-review-skill
 ```
 
 skills CLI 会发现仓库根目录的 `SKILL.md`。不要把本技能嵌套到 `skills/` 目录下。
