@@ -360,11 +360,12 @@ function SlowLike({ postId, likes }) {
 }
 
 // ✅ useOptimistic 即时反馈，失败自动回滚
-import { startTransition, useOptimistic } from 'react';
+import { startTransition, useOptimistic, useState } from 'react';
 
 function FastLike({ postId, likes }) {
+  const [likeCount, setLikeCount] = useState(likes);
   const [optimisticLikes, addOptimisticLike] = useOptimistic(
-    likes,
+    likeCount,
     (currentLikes, increment: number) => currentLikes + increment
   );
 
@@ -372,9 +373,10 @@ function FastLike({ postId, likes }) {
     startTransition(async () => {
       addOptimisticLike(1);  // 立即更新 UI
       try {
-        await likePost(postId);  // 后台同步
+        const newCount = await likePost(postId);  // 后台同步
+        startTransition(() => setLikeCount(newCount));
       } catch {
-        // React 自动回滚到 likes 原值
+        // React 自动回滚到 likeCount 原值
       }
     });
   };

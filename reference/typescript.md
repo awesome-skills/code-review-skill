@@ -954,7 +954,12 @@ class DatabaseConnection implements AsyncDisposable {
   }
 
   async [Symbol.asyncDispose]() {
-    await this.db?.close();
+    const db = this.db;
+    if (!db) return;
+    this.db = null;
+    await new Promise<void>((resolve, reject) => {
+      db.close((err) => (err ? reject(err) : resolve()));
+    });
   }
 }
 
