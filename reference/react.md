@@ -373,7 +373,7 @@ function FastLike({ postId, likes }) {
     startTransition(async () => {
       addOptimisticLike(1);  // 立即更新 UI
       try {
-        const newCount = await likePost(postId);  // 后台同步
+        const newCount = await likePost(postId);  // 后台同步，返回服务端最新的点赞数
         startTransition(() => setLikeCount(newCount));
       } catch {
         // React 自动回滚到 likeCount 原值
