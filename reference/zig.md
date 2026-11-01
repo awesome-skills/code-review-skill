@@ -35,7 +35,9 @@ fn readNamesBad() ![][]const u8 {
 
 // ✅ Good: caller chooses allocator and owns the returned memory.
 fn readNames(allocator: std.mem.Allocator) ![][]const u8 {
-    return try allocator.alloc([]const u8, 10);
+    const names = try allocator.alloc([]const u8, 10);
+    @memset(names, "");
+    return names;
 }
 ```
 

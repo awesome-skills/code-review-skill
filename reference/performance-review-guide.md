@@ -493,12 +493,14 @@ app.get('/static-data', (req, res) => {
 const compression = require('compression');
 app.use(compression());
 
-// ✅ 只返回必要字段
+// ✅ 只返回必要字段（白名单过滤）
 // 请求: GET /users?fields=id,name,email
+const ALLOWED_FIELDS = new Set(['id', 'name', 'email']);
 app.get('/users', async (req, res) => {
-  const fields = req.query.fields?.split(',') || ['id', 'name'];
+  const requested = typeof req.query.fields === 'string' ? req.query.fields.split(',') : [];
+  const fields = requested.filter((f) => ALLOWED_FIELDS.has(f));
   const users = await User.findAll({
-    attributes: fields,
+    attributes: fields.length ? fields : ['id', 'name'],
   });
   res.json(users);
 });
