@@ -692,27 +692,35 @@ export function useFetch<T>(url: MaybeRefOrGetter<string>) {
   const data = ref<T | null>(null)
   const error = ref<Error | null>(null)
   const loading = ref(false)
+  let controller: AbortController | null = null
 
   const execute = async () => {
+    controller?.abort()
+    const current = new AbortController()
+    controller = current
     loading.value = true
     error.value = null
 
     try {
-      const response = await fetch(toValue(url))
+      const response = await fetch(toValue(url), { signal: current.signal })
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`)
       }
       data.value = await response.json()
     } catch (e) {
-      error.value = e as Error
+      if ((e as Error).name !== 'AbortError') {
+        error.value = e as Error
+      }
     } finally {
-      loading.value = false
+      if (controller === current) {
+        loading.value = false
+      }
     }
   }
 
   // 响应式 URL 时自动重新获取
-  watchEffect(() => {
-    toValue(url)  // 追踪依赖
+  watchEffect((onCleanup) => {
+    onCleanup(() => controller?.abort())
     execute()
   })
 

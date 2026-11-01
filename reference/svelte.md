@@ -422,10 +422,12 @@ import { fail, redirect } from '@sveltejs/kit';
 
 export const actions = {
   delete: async ({ request, locals }) => {
+    if (!locals.user) return fail(401, { message: 'Unauthorized' });
     const formData = await request.formData();
     const id = formData.get('id');
 
-    if (!id) return fail(400, { message: 'Missing id' });
+    if (typeof id !== 'string' || !id) return fail(400, { message: 'Missing id' });
+    if (!locals.user.isAdmin && locals.user.id !== id) return fail(403, { message: 'Forbidden' });
 
     await locals.db.users.delete(id);
     throw redirect(303, '/users');
@@ -923,9 +925,12 @@ export async function load() {
 
 // ✅ 私有环境变量只在 server load 中使用
 // src/routes/admin/+page.server.js (server-only)
-export async function load({ locals }) {
+export async function load({ fetch }) {
   // secrets stay on server
-  const data = await fetch(process.env.SECRET_API_KEY + '/admin');
+  const res = await fetch('https://api.example.com/admin', {
+    headers: { Authorization: `Bearer ${process.env.SECRET_API_KEY}` },
+  });
+  const data = await res.json();
   return { data };  // only derived data is sent to client
 }
 

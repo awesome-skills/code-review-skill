@@ -947,14 +947,14 @@ function processFile() {
 ```typescript
 // ✅ AsyncDisposable 用于异步资源（TS 5.2+）
 class DatabaseConnection implements AsyncDisposable {
-  private db: sqlite3.Database;
+  private db: sqlite3.Database | null = null;
 
   async connect() {
     this.db = new sqlite3.Database(':memory:');
   }
 
   async [Symbol.asyncDispose]() {
-    await this.db.close();
+    await this.db?.close();
   }
 }
 

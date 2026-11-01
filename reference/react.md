@@ -360,7 +360,7 @@ function SlowLike({ postId, likes }) {
 }
 
 // ✅ useOptimistic 即时反馈，失败自动回滚
-import { useOptimistic } from 'react';
+import { startTransition, useOptimistic } from 'react';
 
 function FastLike({ postId, likes }) {
   const [optimisticLikes, addOptimisticLike] = useOptimistic(
@@ -368,13 +368,15 @@ function FastLike({ postId, likes }) {
     (currentLikes, increment: number) => currentLikes + increment
   );
 
-  const handleLike = async () => {
-    addOptimisticLike(1);  // 立即更新 UI
-    try {
-      await likePost(postId);  // 后台同步
-    } catch {
-      // React 自动回滚到 likes 原值
-    }
+  const handleLike = () => {
+    startTransition(async () => {
+      addOptimisticLike(1);  // 立即更新 UI
+      try {
+        await likePost(postId);  // 后台同步
+      } catch {
+        // React 自动回滚到 likes 原值
+      }
+    });
   };
 
   return <button onClick={handleLike}>{optimisticLikes} likes</button>;

@@ -241,13 +241,14 @@ float f = 3.14f;
 int i = *(int *)&f;  // UB
 
 // ✅ Good: use memcpy or union (C11 allows type-punning via union)
-int i;
+_Static_assert(sizeof(uint32_t) == sizeof(float), "size mismatch");
+uint32_t i;
 memcpy(&i, &f, sizeof(i));
 
 // ✅ Also acceptable in C11:
-union { float f; int i; } u;
+union { float f; uint32_t i; } u;
 u.f = 3.14f;
-int i = u.i;
+uint32_t i = u.i;
 ```
 
 ### Shift operations
@@ -554,8 +555,8 @@ void handle(struct Msg *m) {
 }
 
 // ✅ Good: validate before use
-void handle(struct Msg *m, size_t total_size) {
-    if (m->len > total_size - sizeof(struct Msg)) {
+int handle(struct Msg *m, size_t total_size) {
+    if (total_size < sizeof(struct Msg) || m->len > total_size - sizeof(struct Msg)) {
         return -EINVAL;
     }
     char buf[256];
@@ -563,6 +564,7 @@ void handle(struct Msg *m, size_t total_size) {
         return -E2BIG;
     }
     memcpy(buf, m->data, m->len);
+    return 0;
 }
 ```
 
@@ -670,10 +672,12 @@ typeof(x) y = x;
 
 // ✅ Good: use standard C or isolate extensions
 // In a platform-specific header:
-#ifdef __GNUC__
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
     #define TYPEOF(x) typeof(x)
+#elif defined(__GNUC__) || defined(__clang__)
+    #define TYPEOF(x) __typeof__(x)
 #else
-    #define TYPEOF(x) decltype(x)  /* C++23 or compiler-specific */
+    #error "TYPEOF requires C23 or a GNU-compatible compiler"
 #endif
 ```
 
