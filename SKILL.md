@@ -124,6 +124,15 @@ For each file, check:
 - **Maintainability** - Clear names, single responsibility, comments
 - **Reuse** - Before accepting new code, search for existing utilities/helpers that could replace it. Check adjacent files and shared modules for similar patterns. See [Universal Quality Guide](reference/code-quality-universal.md) for anti-patterns like parameter sprawl, leaky abstractions, nested conditionals, stringly-typed code, TOCTOU, and no-op updates.
 
+**Before reporting: verify each finding.** A checklist produces candidates, not conclusions. For every 🔴 or 🟡 issue, confirm it against the actual code before writing it up:
+
+1. **Locate it** - cite `file:line`, and read the surrounding code (callers, guards, types) to make sure the problem is not already handled elsewhere.
+2. **Trigger it** - name the concrete input or state that reaches the bad path (e.g. "`items=[]` reaches `items[0]` on line 42").
+3. **State the wrong result** - what actually happens: crash, wrong value, leaked data, extra query.
+4. **Confirm when cheap** - if the project has tests, a short failing test or a trace through the code is the strongest evidence.
+
+If you cannot complete steps 1-3, either drop the finding or downgrade it to a 💡 `[suggestion]` / question ("What happens if `items` is empty?"). Do not report an unverified issue as 🔴 `[blocking]`. Fewer, verified findings are worth more than a long list the author has to disprove.
+
 ### Phase 4: Summary & Decision (2-3 minutes)
 
 1. Summarize key concerns
