@@ -106,6 +106,24 @@ Quick-reference bug patterns organized by category. For detailed code examples, 
 
 **Full guide:** [Python Review Guide](python.md)
 
+## ML / Data Science
+
+- [ ] Scaler/imputer/encoder fitted before the train/test split (or outside the CV `Pipeline`)
+- [ ] Feature selection or SMOTE applied to the full dataset before cross-validation
+- [ ] Same user/patient/session in both train and test (random split instead of `GroupKFold`)
+- [ ] Shuffled split on time-ordered data; rolling features that include the current row
+- [ ] Hyperparameters or thresholds chosen by test-set score
+- [ ] Accuracy reported on imbalanced data with no `DummyClassifier` baseline
+- [ ] `roc_auc_score` given hard labels instead of probabilities
+- [ ] Chained assignment (`df[mask]["col"] = x`) that never writes to `df`
+- [ ] `merge` without `validate=` silently duplicating rows
+- [ ] `(n, 1)` predictions minus `(n,)` targets broadcasting to `(n, n)`
+- [ ] Missing `optimizer.zero_grad()`, `model.eval()`, or `torch.no_grad()`; `running_loss += loss` instead of `loss.item()`
+- [ ] Softmax/sigmoid applied before `CrossEntropyLoss` / `BCELoss` instead of passing logits
+- [ ] `torch.load(..., weights_only=False)` / `pickle.load` on files you don't control
+
+**Full guide:** [ML / Data Science Review Guide](ml-data-science.md)
+
 ## Rust
 
 **Ownership & Borrowing:**
