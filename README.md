@@ -96,7 +96,7 @@ It covers **20+ languages and frameworks** with over **21,000 lines** of careful
       <td>~1,020</td>
     </tr>
     <tr>
-      <td rowspan="11"><strong>Backend</strong></td>
+      <td rowspan="12"><strong>Backend</strong></td>
       <td>&#9749; Java 17/21 + Spring Boot 3</td>
       <td><code>reference/java.md</code></td>
       <td>~410</td>
@@ -150,6 +150,11 @@ It covers **20+ languages and frameworks** with over **21,000 lines** of careful
       <td>&#128013; Python</td>
       <td><code>reference/python.md</code></td>
       <td>~1,070</td>
+    </tr>
+    <tr>
+      <td>&#128202; ML / Data Science</td>
+      <td><code>reference/ml-data-science.md</code></td>
+      <td>~550</td>
     </tr>
     <tr>
       <td rowspan="7"><strong>Mobile / Systems</strong></td>
@@ -297,6 +302,7 @@ code-review-skill/
 |   +-- python.md                         # Python async, typing, pytest
 |   +-- django.md                         # Django / DRF security, serializers, async
 |   +-- fastapi.md                        # FastAPI Depends, Pydantic v2, async, test-driven verification
+|   +-- ml-data-science.md                # ML / data science: leakage, evaluation, pandas, PyTorch
 |   +-- go.md                             # Go goroutines, channels, context, interfaces
 |   +-- kotlin.md                         # Kotlin / Android coroutines, Compose, Flow
 |   +-- swift.md                          # Swift 5.9+/6, SwiftUI, concurrency, optionals
@@ -385,6 +391,7 @@ Focus on: security, performance, and maintainability.
 | `Review this Java PR` | Loads `java.md` - checks virtual threads, JPA, Spring Boot 3 patterns |
 | `Review this Java 8 / Spring Boot 2 PR` | Loads `java8.md` - Stream/Optional, java.time, RestTemplate timeouts, javax.* |
 | `Review this Flutter widget` | Loads `dart.md` - rebuilds, const, null safety, isolates, Riverpod/Bloc, keys, disposal |
+| `Review this training pipeline` | Loads `ml-data-science.md` - data leakage, evaluation, seeds, pandas pitfalls, PyTorch loop |
 | `Security review of this Go service` | Loads `go.md` + `security-review-guide.md` |
 | `Architecture review` | Loads `architecture-review-guide.md` - SOLID, anti-patterns, coupling |
 | `Performance review` | Loads `performance-review-guide.md` - Web Vitals, N+1, complexity |
@@ -516,6 +523,7 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 | | &#128230; NestJS | `reference/nestjs.md` | ~590 |
 | | &#128013; Django / DRF | `reference/django.md` | ~1,030 |
 | | &#128013; Python | `reference/python.md` | ~1,070 |
+| | &#128202; ML / 数据科学 | `reference/ml-data-science.md` | ~550 |
 | | &#128057; Go | `reference/go.md` | ~990 |
 | | &#129408; Rust | `reference/rust.md` | ~840 |
 | | &#128187; C# / .NET 8 | `reference/csharp.md` | ~520 |
@@ -597,6 +605,7 @@ code-review-skill/
 |   +-- python.md                         # Python async、类型注解、pytest
 |   +-- django.md                         # Django / DRF 安全、Serializer、异步视图
 |   +-- fastapi.md                        # FastAPI Depends、Pydantic v2、异步、测试驱动验证
+|   +-- ml-data-science.md                # ML / 数据科学：数据泄漏、评估、pandas、PyTorch
 |   +-- go.md                             # Go goroutine、channel、context、接口
 |   +-- kotlin.md                         # Kotlin / Android 协程、Compose、Flow
 |   +-- swift.md                          # Swift 5.9+/6、SwiftUI、并发、可选值
@@ -685,6 +694,7 @@ Use code-review-skill to review this PR
 | `审查这个 Java PR` | 加载 `java.md`，检查虚拟线程、JPA、Spring Boot 3 |
 | `审查这个 Java 8 / Spring Boot 2 PR` | 加载 `java8.md`，检查 Stream/Optional、java.time、RestTemplate 超时、javax.* |
 | `审查这个 Flutter 组件` | 加载 `dart.md`，检查重建、const、空安全、isolate、Riverpod/Bloc、Key、释放 |
+| `审查这个训练流程` | 加载 `ml-data-science.md`，检查数据泄漏、评估方法、随机种子、pandas 陷阱、PyTorch 训练循环 |
 | `对这个 Go 服务进行安全审查` | 加载 `go.md` + `security-review-guide.md` |
 | `架构审查` | 加载 `architecture-review-guide.md`，检查 SOLID 与反模式 |
 | `性能审查` | 加载 `performance-review-guide.md`，分析 Web Vitals、N+1 等 |

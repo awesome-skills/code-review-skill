@@ -2,7 +2,7 @@
 name: code-review-skill
 description: |
   Provides comprehensive code review guidance for React 19, Vue 3, Angular 17+, Svelte 5,
-  Rust, TypeScript, Java, Java 8, PHP, Ruby, Rails, Python, Django, FastAPI, Go, C#/.NET, Kotlin, Swift,
+  Rust, TypeScript, Java, Java 8, PHP, Ruby, Rails, Python, Django, FastAPI, ML / data science (scikit-learn, pandas, PyTorch), Go, C#/.NET, Kotlin, Swift,
   Dart, Flutter, NestJS, C/C++, Zig, CSS/Less/Sass, Qt, and more.
   Covers architecture review, performance review, security audit, code quality anti-patterns,
   and common bugs across all ecosystems.
@@ -191,6 +191,7 @@ Use labels to indicate priority:
 | **Python** | [Python Guide](reference/python.md) | 可变默认参数, 异常处理, 类属性 |
 | **Django / DRF** | [Django Guide](reference/django.md) | 安全审查, N+1 查询, Serializer 反模式, ViewSet, 异步视图 |
 | **FastAPI** | [FastAPI Guide](reference/fastapi.md) | Depends, Pydantic v2 validation, async correctness, sessions/N+1, auth vs authorization, test-driven verification |
+| **ML / Data Science** | [ML / Data Science Guide](reference/ml-data-science.md) | Data leakage, evaluation & baselines, reproducibility, pandas/NumPy pitfalls, PyTorch training loops, train/serve skew, notebooks |
 | **Java** | [Java Guide](reference/java.md) | Java 17/21 新特性, Spring Boot 3, 虚拟线程, Stream/Optional |
 | **Java 8 / Legacy** | [Java 8 Guide](reference/java8.md) | Java 8, Spring Boot 2, javax.*, Stream/Optional, java.time, CompletableFuture |
 | **PHP** | [PHP Guide](reference/php.md) | PHP 8.x type system, PDO, security review, Composer, PHPUnit/PHPStan |

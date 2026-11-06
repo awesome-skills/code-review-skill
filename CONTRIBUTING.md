@@ -25,6 +25,7 @@ code-review-skill/
 │   ├── python.md               # Type hints, async, testing
 │   ├── django.md               # Django / DRF, N+1, serializers, async views
 │   ├── fastapi.md              # FastAPI, Depends, Pydantic v2, async
+│   ├── ml-data-science.md      # ML / data science: leakage, evaluation, pandas, PyTorch
 │   ├── java.md                 # Java 17/21, Spring Boot 3, virtual threads
 │   ├── java8.md                # Java 8, Spring Boot 2, javax.*, legacy stack
 │   ├── kotlin.md               # Kotlin / Android, coroutines, Flow, Compose
