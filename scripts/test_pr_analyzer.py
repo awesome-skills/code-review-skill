@@ -319,6 +319,13 @@ class GenerateSuggestionsTest(unittest.TestCase):
         result = pr_analyzer.generate_suggestions(files, 0.2, risks)
         self.assertTrue(any('test' in s.lower() for s in result))
 
+    def test_react_suggestion(self):
+        for filename, lang in [('App.tsx', 'TypeScript/React'), ('App.jsx', 'JavaScript/React')]:
+            files = [FileStats(filename=filename, additions=20, deletions=5,
+                               language=lang)]
+            result = pr_analyzer.generate_suggestions(files, 0.1, [])
+            self.assertTrue(any('hooks' in s.lower() for s in result))
+
     def test_rust_suggestion(self):
         files = [FileStats(filename='lib.rs', additions=10, deletions=5,
                            language='Rust')]

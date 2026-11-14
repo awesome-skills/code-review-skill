@@ -43,37 +43,36 @@ Quick-reference bug patterns organized by category. For detailed code examples, 
 
 ## React / React 19
 
-- [ ] Hooks called conditionally or in loops (violates Rules of Hooks)
-- [ ] `useEffect` dependency array incomplete or incorrect
-- [ ] `useEffect` missing cleanup function (subscriptions, timers, fetches)
-- [ ] `useEffect` used for derived state (use `useMemo` instead)
-- [ ] `useMemo`/`useCallback` over-used or used without `React.memo`
-- [ ] Component defined inside another component (re-mounts every render)
-- [ ] Unstable props (inline objects/functions passed to memo components)
-- [ ] Direct mutation of props
-- [ ] List missing `key` or using array index as key (reorderable lists)
-- [ ] Server Component using client APIs (`useState`, `useEffect`, `onClick`)
-- [ ] `'use client'` on parent making entire subtree client-side
-- [ ] `useActionState` calling `setState` instead of returning new state
-- [ ] `useFormStatus` called in same component as `<form>` (must be in child)
-- [ ] `useOptimistic` used for critical operations (payments, deletions)
-- [ ] Single Suspense boundary for entire page (slow blocks fast)
-- [ ] Missing Error Boundary wrapping Suspense
-- [ ] `use()` Hook receiving a new Promise each render
+- [ ] Hooks called conditionally, in loops, or after early `return` (violates Rules of Hooks)
+- [ ] `useEffect` dependency array incomplete or missing cleanup (`AbortController`, timers, listeners)
+- [ ] `useEffect` used for derived state or user-event responses instead of render calculation / event handlers
+- [ ] Direct mutation of state or props (`array.sort()`, `push()`) bypassing `Object.is` re-render detection
+- [ ] List missing `key`, using array `index` on reorderable/filterable lists, or using `Math.random()` as `key`
+- [ ] Component defined inside another component (unmounts and loses focus/state every render)
+- [ ] React 19 callback `ref` implicitly returning assignment (`ref={el => (myRef.current = el)}`) instead of block body or cleanup fn
+- [ ] Server Component using client APIs, or `'use client'` placed too high instead of passing RSC `children`
+- [ ] Server Component passing full DB/ORM entity across `'use client'` boundary (serializes sensitive fields into HTML)
+- [ ] Next.js 15+ reading `params`, `searchParams`, `cookies()`, or `headers()` synchronously without `await`
+- [ ] `useFormStatus` called in same component that renders `<form>` (must be in a child component)
+- [ ] `useOptimistic` called outside an Action/`startTransition`, failing to update base state on success, or used for payments
+- [ ] `'use server'` Action missing authentication/authorization, schema validation, or catching Next.js `redirect()` inside `try/catch`
+- [ ] Single Suspense boundary blocking fast sections, or missing `<ErrorBoundary>` around `<Suspense>`
+- [ ] `use()` Hook given an uncached Promise created inline during a Client Component render (infinite suspend loop)
+- [ ] Unsanitized `dangerouslySetInnerHTML` or unvalidated `<a href={userUrl}>` allowing `javascript:` XSS
+- [ ] Interactive `<div onClick>` instead of `<button type="button">`, or non-SSR-safe IDs instead of `useId()`
 
 **TanStack Query v5:**
-- [ ] `queryKey` missing parameters that affect data
-- [ ] Default `staleTime: 0` causing excessive refetches
-- [ ] `useSuspenseQuery` with `enabled` option (not supported)
-- [ ] Mutation not invalidating related queries on success
-- [ ] Optimistic update missing rollback in `onError`
-- [ ] Using v4 array syntax (`useQuery(['key'], fn)`) instead of v5 object syntax
+- [ ] `queryKey` missing parameters that affect `queryFn` results
+- [ ] Default `staleTime: 0` causing excessive refetches on remount
+- [ ] `useSuspenseQuery` with unsupported `enabled` option, or sequential `useSuspenseQuery` calls causing request waterfalls
+- [ ] `variables`-based optimistic UI not returning `queryClient.invalidateQueries(...)` Promise in `onSettled` (causes UI flash)
+- [ ] Using removed v4 positional syntax (`useQuery(['key'], fn)`) or removed `useQuery` `onSuccess`/`onError` callbacks
 
 **Testing:**
-- [ ] Using `container.querySelector` instead of `screen.getByRole`
-- [ ] Using `fireEvent` instead of `userEvent`
+- [ ] Using `container.querySelector` instead of `screen.getByRole` / `getByLabelText`
+- [ ] Using `fireEvent` instead of `await userEvent.setup().click(...)`
 - [ ] Testing implementation details instead of user-visible behavior
-- [ ] Using `getBy*` for async content (use `findBy*`)
+- [ ] Using synchronous `getBy*` for async UI updates instead of `await screen.findBy*`
 
 **Full guide:** [React Review Guide](react.md)
 

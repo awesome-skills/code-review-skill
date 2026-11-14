@@ -117,7 +117,7 @@ function GoodTodoList() {
     );
   };
 
-  return <button onClick={handleSort}>Sort ({todos.length})</button>;
+  return <button type="button" onClick={handleSort}>Sort ({todos.length})</button>;
 }
 ```
 
@@ -201,6 +201,7 @@ function GoodEffect({ userId }: { userId: string }) {
 
   useEffect(() => {
     const controller = new AbortController();
+    setUser(null);
     setError(null);
 
     async function loadUser() {
@@ -329,7 +330,7 @@ function OverOptimized() {
 function ProperlyOptimized() {
   const config = { timeout: 5000 };
   const handleClick = () => console.log('clicked');
-  return <button onClick={handleClick}>{config.timeout}</button>;
+  return <button type="button" onClick={handleClick}>{config.timeout}</button>;
 }
 
 // ✅ 当下游是昂贵的 React.memo 组件或作为 Hook 依赖时，配对使用 useMemo + useCallback
@@ -340,7 +341,11 @@ const MemoizedChart = React.memo(function Chart({
   onSelect: (count: number) => void;
   points: Point[];
 }) {
-  return <div onClick={() => onSelect(points.length)}>{points.length}</div>;
+  return (
+    <button type="button" onClick={() => onSelect(points.length)}>
+      {points.length}
+    </button>
+  );
 });
 
 function Dashboard({ rawPoints }: { rawPoints: RawPoint[] }) {
@@ -1040,7 +1045,7 @@ function TodoList() {
       {todos.map(todo => (
         <TodoItem key={todo.id} todo={todo} />
       ))}
-      {isPending && (
+      {isPending && variables !== undefined && (
         <TodoItem
           todo={{ id: 'optimistic-temp', title: variables, completed: false }}
           isOptimistic
