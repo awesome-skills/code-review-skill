@@ -267,6 +267,23 @@ Quick-reference bug patterns organized by category. For detailed code examples, 
 
 **Full guide:** [C++ Review Guide](cpp.md)
 
+## Qt
+
+- [ ] Double ownership (`QObject` parent combined with `std::unique_ptr` or stack allocation)
+- [ ] Transient child `QDialog` / `QMenu` / `QNetworkReply` without `Qt::WA_DeleteOnClose` or `deleteLater()` (session-lifetime leak)
+- [ ] Synchronous `delete this` inside a slot instead of `deleteLater()`
+- [ ] Lambda `connect()` or `QTimer::singleShot` missing receiver context `QObject` (dangling `this` + wrong thread affinity)
+- [ ] `QCoreApplication::processEvents()` or nested `QDialog::exec()` causing reentrant use-after-free
+- [ ] Raw `blockSignals(true/false)` instead of RAII `QSignalBlocker`
+- [ ] Range-`for` over a non-`const` Qt container without `std::as_const()` (implicit-sharing detach)
+- [ ] Chained `QString::arg(a).arg(b)` instead of multi-arg `arg(a, b)`
+- [ ] Accessing `QWidget`, `QQuickItem`, or `QPixmap` off the GUI thread, or destroying a running `QThread` without `quit()` + `wait()`
+- [ ] `beginInsertRows` / `beginRemoveRows` called on an empty batch or with an exclusive `last` index
+- [ ] Unparented C++-owned `QObject*` returned from `Q_INVOKABLE` (adopted and freed by QML `JavaScriptOwnership` GC)
+- [ ] `QProcess::startCommand()` with user input (shell injection) or `QSqlQuery` string interpolation
+
+**Full guide:** [Qt Review Guide](qt.md)
+
 ## SQL
 
 - [ ] String concatenation for queries (SQL injection risk) — use parameterized queries

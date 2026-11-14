@@ -72,6 +72,7 @@ def detect_language(filename: str) -> str:
         '.cs': 'C#',
         '.vue': 'Vue',
         '.svelte': 'Svelte',
+        '.qml': 'QML',
         '.sql': 'SQL',
         '.md': 'Markdown',
         '.json': 'JSON',
@@ -96,6 +97,7 @@ def is_test_file(filename: str) -> bool:
     """Check if file is a test file."""
     test_patterns = [
         r'(?:^|/)test_[^/]+\.py$',   # Python: test_handler.py (anchored to path segment)
+        r'(?:^|/)tst_[^/]+\.(cpp|cc|cxx|qml)$',  # Qt Test: tst_parser.cpp / tst_view.qml
         r'[^/]+_test\.',             # *_test.<ext> — Rust, Go, etc.
         r'[^/]+\.test\.(js|ts|tsx|jsx)$',  # JS/TS: handler.test.ts
         r'[^/]+\.spec\.(js|ts|tsx|jsx)$',  # JS/TS: handler.spec.ts
@@ -327,6 +329,8 @@ def generate_suggestions(files: List[FileStats], complexity: float, risks: List[
         suggestions.append("Check for unwrap() usage and error handling")
     if 'C' in languages or 'C++' in languages or 'C/C++' in languages:
         suggestions.append("Check for memory safety, bounds checks, and UB risks")
+    if 'QML' in languages:
+        suggestions.append("Check C++/QML ownership, binding loops, and qualified property access")
     if 'SQL' in languages:
         suggestions.append("Review for SQL injection and query performance")
 
