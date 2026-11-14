@@ -323,6 +323,8 @@ def generate_suggestions(files: List[FileStats], complexity: float, risks: List[
     languages = set(f.language for f in files)
     if 'TypeScript' in languages or 'TypeScript/React' in languages:
         suggestions.append("Check for proper type usage (avoid 'any')")
+    if 'TypeScript/React' in languages or 'JavaScript/React' in languages:
+        suggestions.append("Check Hooks rules, effect cleanup, and Server/Client Component boundaries")
     if 'Rust' in languages:
         suggestions.append("Check for unwrap() usage and error handling")
     if 'C' in languages or 'C++' in languages or 'C/C++' in languages:

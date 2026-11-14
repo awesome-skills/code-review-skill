@@ -183,7 +183,7 @@ Use labels to indicate priority:
 
 | Language/Framework | Reference File | Key Topics |
 |-------------------|----------------|------------|
-| **React** | [React Guide](reference/react.md) | Hooks, useEffect, React 19 Actions, RSC, Suspense, TanStack Query v5 |
+| **React** | [React Guide](reference/react.md) | Hooks, 状态/Key, React 19 Actions/Ref, RSC & Next.js 15, Suspense, TanStack Query v5, XSS/A11y, 测试 |
 | **Vue 3** | [Vue Guide](reference/vue.md) | Composition API, 响应性系统, Props/Emits, Watchers, Composables |
 | **Angular 17+** | [Angular Guide](reference/angular.md) | Signals, Standalone, RxJS, Zoneless, 模板优化, 测试, 路由守卫, HttpInterceptor |
 | **Rust** | [Rust Guide](reference/rust.md) | 所有权/借用, Unsafe 审查, 异步代码, 取消安全性, 错误处理 |

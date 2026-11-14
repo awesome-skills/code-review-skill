@@ -43,7 +43,7 @@ It covers **20+ languages and frameworks** with over **21,000 lines** of careful
 
 ### &#10024; Key Features
 
-- **Progressive Disclosure** — Core skill is ~220 lines; language guides (~200–1,100 lines each) load only when needed.
+- **Progressive Disclosure** — Core skill is ~220 lines; language guides (~200–1,200 lines each) load only when needed.
 - **Four-Phase Review Process** — Structured workflow from understanding scope to delivering clear feedback.
 - **Severity Labeling** — Every finding is categorized: `blocking` · `important` · `nit` · `suggestion` · `learning` · `praise`
 - **Security-First** — Dedicated security checklists per language ecosystem.
@@ -68,7 +68,7 @@ It covers **20+ languages and frameworks** with over **21,000 lines** of careful
       <td rowspan="6"><strong>Frontend</strong></td>
       <td>&#9883;&#65039; React 19 / Next.js / TanStack Query v5</td>
       <td><code>reference/react.md</code></td>
-      <td>~870</td>
+      <td>~1,240</td>
     </tr>
     <tr>
       <td>&#128154; Vue 3.5 + Composition API</td>
@@ -396,12 +396,12 @@ Focus on: security, performance, and maintainability.
 <details>
 <summary><strong>&#9883;&#65039; React 19</strong></summary>
 
-- `useActionState` - Unified form state management
-- `useFormStatus` - Access parent form status without prop drilling
-- `useOptimistic` - Optimistic UI updates with automatic rollback
-- Server Components & Server Actions patterns (Next.js 15+)
-- Suspense boundary design, Error Boundary integration, streaming SSR
-- `use()` Hook for consuming Promises
+- `useActionState`, `useFormStatus`, and `useOptimistic` inside Transitions with base-state sync
+- React 19 `ref` as prop, ref cleanup callbacks, and React Compiler render purity
+- Server Components, RSC DTO serialization safety, Next.js 15 async dynamic APIs, and Server Action auth/validation
+- Suspense boundaries, `ErrorBoundary` reset recovery, streaming SSR, and `use()` Hook pitfalls
+- TanStack Query v5 (`queryOptions`, `useSuspenseQueries`, flicker-free `onSettled` invalidation)
+- XSS (`dangerouslySetInnerHTML`, `javascript:` URLs), `useId()` accessibility, and React Testing Library
 
 </details>
 
@@ -489,7 +489,7 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 
 ### &#10024; 核心特性
 
-- **渐进式加载** — 核心技能仅 ~220 行，各语言指南（每份 200–1,100 行）仅在需要时才加载。
+- **渐进式加载** — 核心技能仅 ~220 行，各语言指南（每份 200–1,200 行）仅在需要时才加载。
 - **四阶段审查流程** — 从理解 PR 范围到输出清晰反馈，每一步都有规可循。
 - **严重性标记** — 每条发现均分级：`blocking` · `important` · `nit` · `suggestion` · `learning` · `praise`
 - **安全优先** — 每个语言生态均配备专属安全检查清单。
@@ -502,7 +502,7 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 
 | 分类 | 技术栈 | 指南文件 | 行数 |
 |------|--------|----------|------|
-| **前端** | &#9883;&#65039; React 19 / Next.js / TanStack Query v5 | `reference/react.md` | ~870 |
+| **前端** | &#9883;&#65039; React 19 / Next.js / TanStack Query v5 | `reference/react.md` | ~1,240 |
 | | &#128154; Vue 3.5 Composition API | `reference/vue.md` | ~920 |
 | | &#128302; Angular 17+ / Signals / Zoneless | `reference/angular.md` | ~790 |
 | | &#128293; Svelte 5 / SvelteKit | `reference/svelte.md` | ~1,060 |
@@ -696,12 +696,12 @@ Use code-review-skill to review this PR
 <details>
 <summary><strong>&#9883;&#65039; React 19</strong></summary>
 
-- `useActionState` — 统一的表单状态管理
-- `useFormStatus` — 无需 props 透传即可访问父表单状态
-- `useOptimistic` — 带自动回滚的乐观 UI 更新
-- Server Components & Server Actions（Next.js 15+）
-- Suspense 边界设计、Error Boundary 集成、流式 SSR
-- `use()` Hook 消费 Promise
+- `useActionState`、`useFormStatus` 以及基于 Transition 与基准态同步的 `useOptimistic`
+- React 19 `ref` 直传与清理函数、React Compiler 渲染纯度规范
+- Server Components、RSC 跨边界 DTO 脱敏、Next.js 15 异步动态 API 与 Server Actions 鉴权校验
+- Suspense 独立边界、`ErrorBoundary` 恢复、流式 SSR 与 `use()` Hook 死循环避坑
+- TanStack Query v5（`queryOptions`、`useSuspenseQueries`、`onSettled` 防闪烁乐观更新）
+- XSS（`dangerouslySetInnerHTML`、`javascript:` 协议注入）、`useId()` 无障碍与组件测试
 
 </details>
 
