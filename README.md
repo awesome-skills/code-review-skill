@@ -43,7 +43,7 @@ It covers **20+ languages and frameworks** with over **21,000 lines** of careful
 
 ### &#10024; Key Features
 
-- **Progressive Disclosure** — Core skill is ~220 lines; language guides (~200–1,100 lines each) load only when needed.
+- **Progressive Disclosure** — Core skill is ~220 lines; language guides (~200–1,200 lines each) load only when needed.
 - **Four-Phase Review Process** — Structured workflow from understanding scope to delivering clear feedback.
 - **Severity Labeling** — Every finding is categorized: `blocking` · `important` · `nit` · `suggestion` · `learning` · `praise`
 - **Security-First** — Dedicated security checklists per language ecosystem.
@@ -185,7 +185,7 @@ It covers **20+ languages and frameworks** with over **21,000 lines** of careful
     <tr>
       <td>&#128421;&#65039; Qt Framework</td>
       <td><code>reference/qt.md</code></td>
-      <td>~760</td>
+      <td>~1,200</td>
     </tr>
     <tr>
       <td rowspan="9"><strong>Cross-Cutting</strong></td>
@@ -451,7 +451,7 @@ Focus on: security, performance, and maintainability.
 
 - **C**: Pointer/buffer safety, undefined behavior, resource cleanup, integer overflow
 - **C++**: RAII ownership, Rule of 0/3/5, move semantics, exception safety, `noexcept`
-- **Qt**: Object parent/child memory model, thread-safe signal/slot connections, GUI performance
+- **Qt**: `QObject` parent/child ownership, event-loop reentrancy, thread-safe signals/slots, implicit sharing, QML ownership, Qt 6 migration
 
 </details>
 
@@ -489,7 +489,7 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 
 ### &#10024; 核心特性
 
-- **渐进式加载** — 核心技能仅 ~220 行，各语言指南（每份 200–1,100 行）仅在需要时才加载。
+- **渐进式加载** — 核心技能仅 ~220 行，各语言指南（每份 200–1,200 行）仅在需要时才加载。
 - **四阶段审查流程** — 从理解 PR 范围到输出清晰反馈，每一步都有规可循。
 - **严重性标记** — 每条发现均分级：`blocking` · `important` · `nit` · `suggestion` · `learning` · `praise`
 - **安全优先** — 每个语言生态均配备专属安全检查清单。
@@ -525,7 +525,7 @@ MIT &copy; [awesome-skills](https://github.com/awesome-skills)
 | | &#9881;&#65039; C | `reference/c.md` | ~890 |
 | | &#128297; C++ | `reference/cpp.md` | ~890 |
 | | &#9889; Zig | `reference/zig.md` | ~440 |
-| | &#128421;&#65039; Qt 框架 | `reference/qt.md` | ~760 |
+| | &#128421;&#65039; Qt 框架 | `reference/qt.md` | ~1,200 |
 | **架构** | &#127963;&#65039; 架构设计审查 | `reference/architecture-review-guide.md` | ~470 |
 | | &#9889; 性能审查 | `reference/performance-review-guide.md` | ~820 |
 | | &#128269; 通用质量反模式 | `reference/code-quality-universal.md` | ~490 |
@@ -751,7 +751,7 @@ Use code-review-skill to review this PR
 
 - **C**：指针/缓冲区安全、未定义行为、资源清理、整数溢出
 - **C++**：RAII 所有权、Rule of 0/3/5、移动语义、异常安全、`noexcept`
-- **Qt**：父子内存模型、线程安全的信号/槽连接、GUI 性能优化
+- **Qt**：`QObject` 父子内存模型、事件循环重入、线程安全的信号/槽、隐式共享、QML 所有权、Qt 6 迁移
 
 </details>
 

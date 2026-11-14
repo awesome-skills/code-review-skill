@@ -3,7 +3,7 @@ name: code-review-skill
 description: |
   Provides comprehensive code review guidance for React 19, Vue 3, Angular 17+, Svelte 5,
   Rust, TypeScript, Java, Java 8, PHP, Ruby, Rails, Python, Django, FastAPI, Go, C#/.NET, Kotlin, Swift,
-  Dart, Flutter, NestJS, C/C++, Zig, CSS/Less/Sass, Qt, and more.
+  Dart, Flutter, NestJS, C/C++, Zig, CSS/Less/Sass, Qt/QML, and more.
   Covers architecture review, performance review, security audit, code quality anti-patterns,
   and common bugs across all ecosystems.
   Use when: reviewing pull requests, conducting PR reviews, code review, reviewing code changes,
@@ -206,7 +206,7 @@ Use labels to indicate priority:
 | **C++** | [C++ Guide](reference/cpp.md) | RAII, 智能指针, C++20/23, constexpr, 测试 |
 | **Zig** | [Zig Guide](reference/zig.md) | Allocators, error unions, defer/errdefer, comptime, C interop |
 | **CSS/Less/Sass** | [CSS Guide](reference/css-less-sass.md) | 变量规范, !important, 性能优化, 响应式, 兼容性 |
-| **Qt** | [Qt Guide](reference/qt.md) | 对象模型, 信号/槽, Model/View, QML, Qt6 迁移, 测试 |
+| **Qt** | [Qt Guide](reference/qt.md) | 对象模型, 事件循环, 信号/槽, 隐式共享, Model/View, QML, Qt6 迁移, 安全与测试 |
 
 ## Cross-Cutting Guides
 

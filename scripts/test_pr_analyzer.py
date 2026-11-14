@@ -93,6 +93,7 @@ class DetectLanguageTest(unittest.TestCase):
             'Activity.kt': 'Kotlin',
             'ViewController.swift': 'Swift',
             'app.tsx': 'TypeScript/React',
+            'Main.qml': 'QML',
             'style.css': 'CSS',
             'query.sql': 'SQL',
         }
@@ -141,6 +142,10 @@ class IsTestFileTest(unittest.TestCase):
 
     def test_dunder_tests_directory(self):
         self.assertTrue(pr_analyzer.is_test_file('__tests__/Button.test.tsx'))
+
+    def test_qt_test_prefix(self):
+        self.assertTrue(pr_analyzer.is_test_file('tst_parser.cpp'))
+        self.assertTrue(pr_analyzer.is_test_file('autotests/tst_login.qml'))
 
     def test_non_test_files_rejected(self):
         self.assertFalse(pr_analyzer.is_test_file('handler.go'))
@@ -324,6 +329,12 @@ class GenerateSuggestionsTest(unittest.TestCase):
                            language='Rust')]
         result = pr_analyzer.generate_suggestions(files, 0.1, [])
         self.assertTrue(any('unwrap' in s.lower() for s in result))
+
+    def test_qml_suggestion(self):
+        files = [FileStats(filename='Main.qml', additions=15, deletions=3,
+                           language='QML')]
+        result = pr_analyzer.generate_suggestions(files, 0.1, [])
+        self.assertTrue(any('qml' in s.lower() for s in result))
 
 
 # ═══════════════════════════════════════════════════════════════
